@@ -14,7 +14,6 @@ const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
 const VERIFY_RADIUS_METERS = 500;
 const KAKAO_MAP_SDK_ID = "kakao-map-sdk";
 const CATEGORY_FILTERS: ShrineCategory[] = ["성지", "순교사적지", "순례지"];
-const ALL_RECORDS = "all";
 
 declare global {
   interface Window {
@@ -59,16 +58,6 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
-function formatDateTime(value: string) {
-  return new Date(value).toLocaleString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
 export default function PilgrimageApp() {
   const [activeTab, setActiveTab] = useState<"map" | "route" | "verify" | "records">("map");
   const [selectedCategories, setSelectedCategories] = useState<ShrineCategory[]>(CATEGORY_FILTERS);
@@ -82,7 +71,6 @@ export default function PilgrimageApp() {
   const [nickname, setNickname] = useState("");
   const [comment, setComment] = useState("");
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>();
-  const [recordShrineFilter, setRecordShrineFilter] = useState<string>(ALL_RECORDS);
 
   useEffect(() => {
     setVisits(loadVisitRecords());
@@ -114,12 +102,16 @@ export default function PilgrimageApp() {
   const verifyShrine = shrines.find((shrine) => shrine.id === verifyShrineId) ?? shrines[0];
   const verifyDistanceMeters = position ? Math.round(distanceKm(position, verifyShrine) * 1000) : undefined;
   const canVerify = verifyDistanceMeters !== undefined && verifyDistanceMeters <= VERIFY_RADIUS_METERS;
-  const visitedShrineIds = new Set(visits.map((visit) => visit.shrineId));
-  const progress = Math.round((visitedShrineIds.size / shrines.length) * 100);
-  const filteredRecordVisits = recordShrineFilter === ALL_RECORDS
-    ? visits
-    : visits.filter((visit) => visit.shrineId === recordShrineFilter);
+  const visitedShrineCount = new Set(visits.map((visit) => visit.shrineId)).size;
   const verifiedVisitCount = visits.filter((visit) => visit.verified).length;
+  const shrineRecordStats = shrines
+    .map((shrine) => ({
+      shrine,
+      count: visits.filter((visit) => visit.shrineId === shrine.id).length,
+      verifiedCount: visits.filter((visit) => visit.shrineId === shrine.id && visit.verified).length
+    }))
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count || a.shrine.name.localeCompare(b.shrine.name, "ko"));
   const handleSelectShrine = useCallback((shrine: Shrine) => {
     setFocusedShrineId(shrine.id);
     setVerifyShrineId(shrine.id);
@@ -357,35 +349,42 @@ export default function PilgrimageApp() {
 
         {activeTab === "records" ? (
           <section className="screen">
-          <div className="progress-card">
-            <span>나의 순례 진행률</span>
-            <strong>{progress}%</strong>
-            <div className="progress-track"><div style={{ width: `${progress}%` }} /></div>
-            <p>{visitedShrineIds.size} / {shrines.length}곳 방문 기록 · GPS 인증 {verifiedVisitCount}건</p>
-          </div>
-
-          <div className="filter-card">
-            <label>
-              인증 보기
-              <select value={recordShrineFilter} onChange={(event) => setRecordShrineFilter(event.target.value)}>
-                <option value={ALL_RECORDS}>전체 성지</option>
-                {shrines.map((shrine) => (
-                  <option key={shrine.id} value={shrine.id}>{shrine.name}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          {filteredRecordVisits.length === 0 ? (
-            <div className="empty-state">아직 남긴 방문 기록이 없습니다.</div>
-          ) : (
-            <div className="record-list">
-              {filteredRecordVisits.map((visit) => {
-                const shrine = shrines.find((item) => item.id === visit.shrineId);
-                return shrine ? <VisitCard key={visit.id} visit={visit} shrine={shrine} /> : null;
-              })}
+            <div className="metric-grid">
+              <div>
+                <span>전체 인증</span>
+                <strong>{visits.length}건</strong>
+              </div>
+              <div>
+                <span>GPS 인증</span>
+                <strong>{verifiedVisitCount}건</strong>
+              </div>
+              <div>
+                <span>인증된 성지</span>
+                <strong>{visitedShrineCount}곳</strong>
+              </div>
             </div>
-          )}
+
+            <section className="insight-card">
+              <div className="panel-heading">
+                <strong>성지별 인증 통계</strong>
+                <span>{shrineRecordStats.length}곳</span>
+              </div>
+              {shrineRecordStats.length === 0 ? (
+                <div className="empty-state compact">아직 집계할 인증 기록이 없습니다.</div>
+              ) : (
+                <div className="stat-list">
+                  {shrineRecordStats.map(({ shrine, count, verifiedCount }) => (
+                    <button key={shrine.id} onClick={() => handleSelectShrine(shrine)}>
+                      <span>
+                        <strong>{shrine.name}</strong>
+                        <small>{shrine.region} · {shrine.category} · GPS {verifiedCount}건</small>
+                      </span>
+                      <b>{count}건</b>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </section>
           </section>
         ) : null}
       </aside>
@@ -542,21 +541,6 @@ function ShrineDetail({
         </a>
         <button onClick={onToggle}>{selected ? "선택 해제" : "코스 선택"}</button>
         <button onClick={onVerify}>나도 인증하기</button>
-      </div>
-    </article>
-  );
-}
-
-function VisitCard({ visit, shrine, compact = false }: { visit: VisitRecord; shrine: Shrine; compact?: boolean }) {
-  const time = visit.visitedAt ?? visit.createdAt;
-  return (
-    <article className={`record-card ${compact ? "compact-record" : ""}`}>
-      {visit.imageDataUrl ? <img src={visit.imageDataUrl} alt="" /> : <div className="photo-placeholder">사진 없음</div>}
-      <div>
-        <span className={`record-badge ${visit.verified ? "verified" : ""}`}>{visit.verified ? "GPS 인증" : "기록 저장"}</span>
-        <h3>{shrine.name}</h3>
-        <p>{visit.comment}</p>
-        <small>{shrine.region} · {visit.nickname} · {formatDateTime(time)}</small>
       </div>
     </article>
   );

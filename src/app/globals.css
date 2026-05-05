@@ -504,7 +504,8 @@ textarea {
   gap: 8px;
 }
 
-.popular-list button {
+.popular-list button,
+.stat-list button {
   display: flex;
   min-height: 42px;
   align-items: center;
@@ -519,7 +520,8 @@ textarea {
   box-shadow: var(--emboss);
 }
 
-.popular-list span {
+.popular-list span,
+.stat-list span {
   min-width: 0;
   overflow: hidden;
   text-align: left;
@@ -527,8 +529,38 @@ textarea {
   white-space: nowrap;
 }
 
-.popular-list strong {
+.popular-list strong,
+.stat-list b {
   color: var(--muted);
+  white-space: nowrap;
+}
+
+.stat-list {
+  display: grid;
+  gap: 8px;
+}
+
+.stat-list button {
+  min-height: 58px;
+  padding: 10px 12px;
+}
+
+.stat-list span {
+  display: grid;
+  gap: 3px;
+}
+
+.stat-list span strong {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.stat-list small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
