@@ -327,7 +327,6 @@ export default function PilgrimageApp() {
 
         <KakaoMapPanel
           shrines={filteredShrines}
-          selectedIds={selectedIds}
           focusedShrineId={focusedShrineId}
           onSelectShrine={handleSelectShrine}
         />
@@ -598,12 +597,10 @@ export default function PilgrimageApp() {
 
 function KakaoMapPanel({
   shrines: mapShrines,
-  selectedIds,
   focusedShrineId,
   onSelectShrine
 }: {
   shrines: Shrine[];
-  selectedIds: string[];
   focusedShrineId: string;
   onSelectShrine: (shrine: Shrine) => void;
 }) {
@@ -652,7 +649,7 @@ function KakaoMapPanel({
     }
 
     const kakaoMaps = window.kakao.maps;
-    const centerShrine = mapShrines.find((shrine) => shrine.id === focusedShrineId) ?? mapShrines[0] ?? shrines[0];
+    const centerShrine = mapShrines[0] ?? shrines[0];
     const center = new kakaoMaps.LatLng(centerShrine.lat, centerShrine.lng);
 
     if (!mapRef.current) {
@@ -684,9 +681,8 @@ function KakaoMapPanel({
         map,
         position
       });
-      const isSelected = selectedIds.includes(shrine.id);
       const infoWindow = new kakaoMaps.InfoWindow({
-        content: `<div class="kakao-info-window"><strong>${escapeHtml(shrine.name)}</strong><span>${escapeHtml(shrine.category)}${isSelected ? " · 코스 선택됨" : ""}</span></div>`
+        content: `<div class="kakao-info-window"><strong>${escapeHtml(shrine.name)}</strong><span>${escapeHtml(shrine.category)}</span></div>`
       });
 
       marker.setMap(map);
@@ -706,7 +702,20 @@ function KakaoMapPanel({
       markersRef.current.forEach((marker) => marker.setMap(null));
       infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
     };
-  }, [focusedShrineId, mapShrines, onSelectShrine, selectedIds, status]);
+  }, [mapShrines, onSelectShrine, status]);
+
+  useEffect(() => {
+    if (status !== "ready" || !mapRef.current || !window.kakao?.maps) {
+      return;
+    }
+
+    const shrine = shrines.find((item) => item.id === focusedShrineId);
+    if (!shrine) {
+      return;
+    }
+
+    mapRef.current.setCenter(new window.kakao.maps.LatLng(shrine.lat, shrine.lng));
+  }, [focusedShrineId, status]);
 
   return (
     <div className="map-panel" aria-label="카카오 성지 지도">
