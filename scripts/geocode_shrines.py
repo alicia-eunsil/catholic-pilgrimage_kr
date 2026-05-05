@@ -178,7 +178,11 @@ def main():
         time.sleep(0.15)
 
     with open(OUTPUT_PATH, "w", newline="", encoding="utf-8-sig") as output_file:
-        writer = csv.DictWriter(output_file, fieldnames=["id", "name", "category", "diocese", "address", "region", "lat", "lng"])
+        writer = csv.DictWriter(
+            output_file,
+            fieldnames=["id", "name", "category", "diocese", "address", "region", "lat", "lng"],
+            lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(output_rows)
 

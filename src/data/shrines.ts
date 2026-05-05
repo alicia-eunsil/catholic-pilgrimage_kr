@@ -843,10 +843,10 @@ export const shrines: Shrine[] = [
     name: "왜고개성지(순교성지)",
     category: "성지",
     diocese: "서울대교구",
-    address: "서울특별시 영산구 한강대로 40길 46",
+    address: "서울특별시 용산구 한강대로 40길 46",
     region: "서울",
-    lat: 37.5294718,
-    lng: 126.9716576,
+    lat: 37.5299024,
+    lng: 126.9719253,
     description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
   },
   {
