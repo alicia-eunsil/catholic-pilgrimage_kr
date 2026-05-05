@@ -14,6 +14,7 @@ const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
 const VERIFY_RADIUS_METERS = 500;
 const KAKAO_MAP_SDK_ID = "kakao-map-sdk";
 const CATEGORY_FILTERS: ShrineCategory[] = ["성지", "순교사적지", "순례지"];
+const ALL_RECORDS = "all";
 
 declare global {
   interface Window {
@@ -58,6 +59,16 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
+function formatDateTime(value: string) {
+  return new Date(value).toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
 export default function PilgrimageApp() {
   const [activeTab, setActiveTab] = useState<"map" | "route" | "verify" | "records">("map");
   const [selectedCategories, setSelectedCategories] = useState<ShrineCategory[]>(CATEGORY_FILTERS);
@@ -71,6 +82,7 @@ export default function PilgrimageApp() {
   const [nickname, setNickname] = useState("");
   const [comment, setComment] = useState("");
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>();
+  const [recordShrineFilter, setRecordShrineFilter] = useState<string>(ALL_RECORDS);
 
   useEffect(() => {
     setVisits(loadVisitRecords());
@@ -104,6 +116,30 @@ export default function PilgrimageApp() {
   const canVerify = verifyDistanceMeters !== undefined && verifyDistanceMeters <= VERIFY_RADIUS_METERS;
   const visitedShrineIds = new Set(visits.map((visit) => visit.shrineId));
   const progress = Math.round((visitedShrineIds.size / shrines.length) * 100);
+  const focusedVisits = visits.filter((visit) => visit.shrineId === focusedShrine.id);
+  const focusedRegionShrines = shrines.filter((shrine) => shrine.region === focusedShrine.region);
+  const focusedRegionVisitCount = visits.filter((visit) => {
+    const shrine = shrines.find((item) => item.id === visit.shrineId);
+    return shrine?.region === focusedShrine.region;
+  }).length;
+  const focusedRegionVisitedCount = new Set(
+    visits
+      .map((visit) => shrines.find((shrine) => shrine.id === visit.shrineId))
+      .filter((shrine): shrine is Shrine => Boolean(shrine) && shrine.region === focusedShrine.region)
+      .map((shrine) => shrine.id)
+  ).size;
+  const shrineVisitCounts = shrines
+    .map((shrine) => ({
+      shrine,
+      count: visits.filter((visit) => visit.shrineId === shrine.id).length
+    }))
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count || a.shrine.name.localeCompare(b.shrine.name, "ko"))
+    .slice(0, 5);
+  const filteredRecordVisits = recordShrineFilter === ALL_RECORDS
+    ? visits
+    : visits.filter((visit) => visit.shrineId === recordShrineFilter);
+  const verifiedVisitCount = visits.filter((visit) => visit.verified).length;
   const handleSelectShrine = useCallback((shrine: Shrine) => {
     setFocusedShrineId(shrine.id);
     setVerifyShrineId(shrine.id);
@@ -173,13 +209,15 @@ export default function PilgrimageApp() {
       return;
     }
 
+    const visitedAt = new Date().toISOString();
     const nextVisit: VisitRecord = {
       id: `${Date.now()}-${verifyShrineId}`,
       shrineId: verifyShrineId,
       nickname: trimmedNickname,
       comment: trimmedComment,
       imageDataUrl,
-      createdAt: new Date().toISOString(),
+      createdAt: visitedAt,
+      visitedAt,
       userLat: position?.lat,
       userLng: position?.lng,
       distanceMeters: verifyDistanceMeters,
@@ -242,32 +280,95 @@ export default function PilgrimageApp() {
 
         {activeTab === "map" ? (
           <section className="screen">
-            <ShrineDetail shrine={focusedShrine} selected={selectedIds.includes(focusedShrine.id)} onToggle={() => toggleSelected(focusedShrine.id)} />
+            <ShrineDetail
+              shrine={focusedShrine}
+              selected={selectedIds.includes(focusedShrine.id)}
+              onToggle={() => toggleSelected(focusedShrine.id)}
+              onVerify={() => {
+                setVerifyShrineId(focusedShrine.id);
+                setActiveTab("verify");
+              }}
+            />
 
-            <div className="panel-heading">
-              <strong>성지 목록</strong>
-              <span>{filteredShrines.length}곳</span>
+            <div className="metric-grid shrine-stats">
+              <div>
+                <span>이 성지 인증</span>
+                <strong>{focusedVisits.length}건</strong>
+              </div>
+              <div>
+                <span>{focusedShrine.region} 성지</span>
+                <strong>{focusedRegionShrines.length}곳</strong>
+              </div>
+              <div>
+                <span>{focusedShrine.region} 방문</span>
+                <strong>{focusedRegionVisitedCount}곳</strong>
+              </div>
             </div>
 
-            <div className="list">
-              {filteredShrines.length === 0 ? (
-                <div className="empty-state">필터를 하나 이상 선택하면 성지 목록이 표시됩니다.</div>
+            <section className="insight-card">
+              <div className="panel-heading">
+                <strong>{focusedShrine.region} 지역 통계</strong>
+                <span>{focusedRegionVisitCount}개 인증 기록</span>
+              </div>
+              <div className="region-bars">
+                {CATEGORY_FILTERS.map((category) => {
+                  const total = focusedRegionShrines.filter((shrine) => shrine.category === category).length;
+                  const width = focusedRegionShrines.length ? Math.round((total / focusedRegionShrines.length) * 100) : 0;
+                  return (
+                    <div key={category} className="region-bar">
+                      <span>{category}</span>
+                      <div><i style={{ width: `${width}%` }} /></div>
+                      <strong>{total}</strong>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section className="insight-card">
+              <div className="panel-heading">
+                <strong>최근 인증 사진</strong>
+                <span>{focusedVisits.length ? focusedShrine.name : "아직 없음"}</span>
+              </div>
+              {focusedVisits.length === 0 ? (
+                <div className="empty-state compact">이 성지에는 아직 인증 기록이 없습니다.</div>
               ) : (
-                filteredShrines.map((shrine) => (
-                  <ShrineRow
-                    key={shrine.id}
-                    shrine={shrine}
-                    selected={selectedIds.includes(shrine.id)}
-                    visited={visitedShrineIds.has(shrine.id)}
-                    onFocus={() => {
-                      setFocusedShrineId(shrine.id);
-                      setVerifyShrineId(shrine.id);
-                    }}
-                    onToggle={() => toggleSelected(shrine.id)}
-                  />
-                ))
+                <div className="visit-gallery">
+                  {focusedVisits.slice(0, 3).map((visit) => (
+                    <VisitCard key={visit.id} visit={visit} shrine={focusedShrine} compact />
+                  ))}
+                </div>
               )}
-            </div>
+            </section>
+
+            <section className="insight-card">
+              <div className="panel-heading">
+                <strong>많이 인증된 성지</strong>
+                <span>상위 {shrineVisitCounts.length}곳</span>
+              </div>
+              {shrineVisitCounts.length === 0 ? (
+                <div className="empty-state compact">아직 집계할 인증 기록이 없습니다.</div>
+              ) : (
+                <div className="popular-list">
+                  {shrineVisitCounts.map(({ shrine, count }) => (
+                    <button key={shrine.id} onClick={() => handleSelectShrine(shrine)}>
+                      <span>{shrine.name}</span>
+                      <strong>{count}건</strong>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            <button
+              className="primary-action sticky-action"
+              onClick={() => {
+                setVerifyShrineId(focusedShrine.id);
+                setActiveTab("verify");
+              }}
+            >
+              나도 인증하기
+            </button>
           </section>
         ) : null}
 
@@ -360,26 +461,28 @@ export default function PilgrimageApp() {
             <span>나의 순례 진행률</span>
             <strong>{progress}%</strong>
             <div className="progress-track"><div style={{ width: `${progress}%` }} /></div>
-            <p>{visitedShrineIds.size} / {shrines.length}곳 방문 기록</p>
+            <p>{visitedShrineIds.size} / {shrines.length}곳 방문 기록 · GPS 인증 {verifiedVisitCount}건</p>
           </div>
 
-          {visits.length === 0 ? (
+          <div className="filter-card">
+            <label>
+              인증 보기
+              <select value={recordShrineFilter} onChange={(event) => setRecordShrineFilter(event.target.value)}>
+                <option value={ALL_RECORDS}>전체 성지</option>
+                {shrines.map((shrine) => (
+                  <option key={shrine.id} value={shrine.id}>{shrine.name}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {filteredRecordVisits.length === 0 ? (
             <div className="empty-state">아직 남긴 방문 기록이 없습니다.</div>
           ) : (
             <div className="record-list">
-              {visits.map((visit) => {
+              {filteredRecordVisits.map((visit) => {
                 const shrine = shrines.find((item) => item.id === visit.shrineId);
-                return (
-                  <article key={visit.id} className="record-card">
-                    {visit.imageDataUrl ? <img src={visit.imageDataUrl} alt="" /> : null}
-                    <div>
-                      <span className={`record-badge ${visit.verified ? "verified" : ""}`}>{visit.verified ? "GPS 인증" : "기록 저장"}</span>
-                      <h3>{shrine?.name ?? "알 수 없는 성지"}</h3>
-                      <p>{visit.comment}</p>
-                      <small>{visit.nickname} · {new Date(visit.createdAt).toLocaleString("ko-KR")}</small>
-                    </div>
-                  </article>
-                );
+                return shrine ? <VisitCard key={visit.id} visit={visit} shrine={shrine} /> : null;
               })}
             </div>
           )}
@@ -512,7 +615,17 @@ function KakaoMapPanel({
   );
 }
 
-function ShrineDetail({ shrine, selected, onToggle }: { shrine: Shrine; selected: boolean; onToggle: () => void }) {
+function ShrineDetail({
+  shrine,
+  selected,
+  onToggle,
+  onVerify
+}: {
+  shrine: Shrine;
+  selected: boolean;
+  onToggle: () => void;
+  onVerify: () => void;
+}) {
   return (
     <article className="detail-card">
       <div>
@@ -528,35 +641,23 @@ function ShrineDetail({ shrine, selected, onToggle }: { shrine: Shrine; selected
           블로그 후기
         </a>
         <button onClick={onToggle}>{selected ? "선택 해제" : "코스 선택"}</button>
+        <button onClick={onVerify}>나도 인증하기</button>
       </div>
     </article>
   );
 }
 
-function ShrineRow({
-  shrine,
-  selected,
-  visited,
-  onFocus,
-  onToggle
-}: {
-  shrine: Shrine;
-  selected: boolean;
-  visited: boolean;
-  onFocus: () => void;
-  onToggle: () => void;
-}) {
+function VisitCard({ visit, shrine, compact = false }: { visit: VisitRecord; shrine: Shrine; compact?: boolean }) {
+  const time = visit.visitedAt ?? visit.createdAt;
   return (
-    <article className="shrine-row" onClick={onFocus}>
+    <article className={`record-card ${compact ? "compact-record" : ""}`}>
+      {visit.imageDataUrl ? <img src={visit.imageDataUrl} alt="" /> : <div className="photo-placeholder">사진 없음</div>}
       <div>
-        <span className="category-badge" style={{ color: categoryStyle[shrine.category].color, background: categoryStyle[shrine.category].bg }}>
-          {shrine.category}
-        </span>
-        {visited ? <span className="visited-badge">방문</span> : null}
+        <span className={`record-badge ${visit.verified ? "verified" : ""}`}>{visit.verified ? "GPS 인증" : "기록 저장"}</span>
         <h3>{shrine.name}</h3>
-        <p>{shrine.diocese} · {shrine.region}</p>
+        <p>{visit.comment}</p>
+        <small>{shrine.region} · {visit.nickname} · {formatDateTime(time)}</small>
       </div>
-      <button onClick={(event) => { event.stopPropagation(); onToggle(); }}>{selected ? "해제" : "선택"}</button>
     </article>
   );
 }

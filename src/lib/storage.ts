@@ -5,6 +5,7 @@ export type VisitRecord = {
   comment: string;
   imageDataUrl?: string;
   createdAt: string;
+  visitedAt?: string;
   userLat?: number;
   userLng?: number;
   distanceMeters?: number;

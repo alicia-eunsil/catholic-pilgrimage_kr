@@ -372,6 +372,8 @@ textarea {
 .progress-card,
 .record-card,
 .empty-state,
+.insight-card,
+.filter-card,
 .metric-grid div,
 .route-list li {
   border: 1px solid rgba(255, 255, 255, 0.76);
@@ -416,6 +418,10 @@ textarea {
   text-decoration: none;
 }
 
+.detail-actions button:last-child {
+  grid-column: 1 / -1;
+}
+
 .detail-actions a {
   border: 1px solid rgba(17, 24, 39, 0.1);
   border-radius: 8px;
@@ -437,6 +443,100 @@ textarea {
 .panel-heading strong {
   color: var(--ink);
   font-size: 15px;
+}
+
+.shrine-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.insight-card,
+.filter-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.filter-card label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.region-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.region-bar {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) 32px;
+  gap: 10px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.region-bar div {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.region-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #9aa3af, #cfd6df);
+}
+
+.visit-gallery {
+  display: grid;
+  gap: 10px;
+}
+
+.popular-list {
+  display: grid;
+  gap: 8px;
+}
+
+.popular-list button {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(244, 246, 248, 0.92));
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 720;
+  box-shadow: var(--emboss);
+}
+
+.popular-list span {
+  min-width: 0;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popular-list strong {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.sticky-action {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  box-shadow: 0 -10px 22px rgba(247, 248, 250, 0.88), 0 10px 18px rgba(75, 85, 99, 0.20), var(--emboss);
 }
 
 .category-badge,
@@ -516,6 +616,11 @@ textarea {
   color: var(--muted);
   line-height: 1.5;
   text-align: center;
+}
+
+.empty-state.compact {
+  padding: 16px 12px;
+  box-shadow: none;
 }
 
 .route-list {
@@ -622,8 +727,36 @@ textarea {
   object-fit: cover;
 }
 
+.photo-placeholder {
+  display: grid;
+  min-height: 120px;
+  place-items: center;
+  background: linear-gradient(180deg, #f8fafc, #eef1f5);
+  color: var(--subtle);
+  font-size: 13px;
+  font-weight: 720;
+}
+
 .record-card div {
   padding: 14px;
+}
+
+.compact-record {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  min-height: 112px;
+}
+
+.compact-record img,
+.compact-record .photo-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 112px;
+  object-fit: cover;
+}
+
+.compact-record div {
+  align-content: center;
 }
 
 .record-badge {
