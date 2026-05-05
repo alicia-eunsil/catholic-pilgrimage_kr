@@ -520,6 +520,109 @@ textarea {
   gap: 10px;
 }
 
+.visit-table {
+  display: grid;
+  gap: 8px;
+}
+
+.visit-row {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  min-height: 74px;
+  overflow: hidden;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: var(--emboss);
+}
+
+.visit-row img,
+.visit-photo-placeholder {
+  width: 74px;
+  height: 74px;
+  object-fit: cover;
+}
+
+.visit-photo-placeholder {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #f8fafc, #eef1f5);
+  color: var(--subtle);
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.visit-row > div {
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  min-width: 0;
+  padding: 9px 10px;
+}
+
+.visit-row > div > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.visit-row strong {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visit-row span,
+.visit-row small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.visit-row p {
+  overflow: hidden;
+  margin: 0;
+  color: #374151;
+  font-size: 13px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pagination button {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(244, 246, 248, 0.92));
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 780;
+  box-shadow: var(--emboss);
+}
+
+.pagination button.active {
+  border-color: rgba(75, 85, 99, 0.44);
+  background: linear-gradient(180deg, #87909c, var(--accent-pressed));
+  color: #ffffff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -2px 0 rgba(15, 23, 42, 0.18),
+    0 8px 16px rgba(75, 85, 99, 0.20);
+}
+
 .popular-list {
   display: grid;
   gap: 8px;
