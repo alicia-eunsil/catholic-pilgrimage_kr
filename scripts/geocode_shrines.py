@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+import ssl
 import sys
 import time
 import urllib.parse
@@ -96,14 +97,33 @@ def read_input_rows(path):
         return list(csv.DictReader(input_file))
 
 
+def kakao_request(path, params, api_key):
+    query = urllib.parse.urlencode(params)
+    request = urllib.request.Request(f"https://dapi.kakao.com{path}?{query}")
+    request.add_header("Authorization", f"KakaoAK {api_key}")
+    context = ssl._create_unverified_context() if os.environ.get("KAKAO_INSECURE_SSL") == "1" else None
+
+    with urllib.request.urlopen(request, timeout=15, context=context) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
 def geocode(address, api_key):
     query = urllib.parse.urlencode({"query": address})
-    request = urllib.request.Request(f"https://dapi.kakao.com/v2/local/search/address.json?{query}")
-    request.add_header("Authorization", f"KakaoAK {api_key}")
+    payload = kakao_request("/v2/local/search/address.json", {"query": address}, api_key)
 
-    with urllib.request.urlopen(request, timeout=15) as response:
-        payload = json.loads(response.read().decode("utf-8"))
+    documents = payload.get("documents", [])
+    if not documents:
+        return None
 
+    first = documents[0]
+    return {
+        "lat": first.get("y", ""),
+        "lng": first.get("x", "")
+    }
+
+
+def geocode_keyword(keyword, api_key):
+    payload = kakao_request("/v2/local/search/keyword.json", {"query": keyword}, api_key)
     documents = payload.get("documents", [])
     if not documents:
         return None
@@ -139,6 +159,8 @@ def main():
             continue
 
         coords = geocode(address, api_key)
+        if not coords:
+            coords = geocode_keyword(f"{name} {address.split()[0] if address.split() else ''}", api_key)
         if not coords:
             print(f"{index}행: 주소 좌표를 찾지 못했습니다: {address}", file=sys.stderr)
             coords = {"lat": "", "lng": ""}

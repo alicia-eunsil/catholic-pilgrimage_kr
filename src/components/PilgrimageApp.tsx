@@ -25,7 +25,7 @@ declare global {
         InfoWindow: new (options: { content: string }) => KakaoInfoWindow;
         LatLngBounds: new () => KakaoLatLngBounds;
         event: {
-          addListener: (target: KakaoMarker, type: "click", handler: () => void) => void;
+          addListener: (target: KakaoMarker, type: "click" | "mouseover" | "mouseout", handler: () => void) => void;
         };
       };
     };
@@ -462,11 +462,12 @@ function KakaoMapPanel({
       });
 
       marker.setMap(map);
-      infoWindow.open(map, marker);
       markersRef.current.push(marker);
       infoWindowsRef.current.push(infoWindow);
 
       kakaoMaps.event.addListener(marker, "click", () => onSelectShrine(shrine));
+      kakaoMaps.event.addListener(marker, "mouseover", () => infoWindow.open(map, marker));
+      kakaoMaps.event.addListener(marker, "mouseout", () => infoWindow.close());
     });
 
     if (mapShrines.length > 1) {

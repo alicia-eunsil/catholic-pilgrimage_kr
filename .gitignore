@@ -6,4 +6,3 @@ out
 __pycache__
 *.pyc
 data/shrines.geocoded.csv
-data/korean_catholic_holy_sites.geocoded.csv
