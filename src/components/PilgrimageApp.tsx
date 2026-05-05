@@ -133,80 +133,92 @@ export default function PilgrimageApp() {
 
   return (
     <main className="app-shell">
-      <section className="topbar">
-        <div>
-          <p className="eyebrow">Catholic Pilgrimage KR</p>
-          <h1>성지순례 지도</h1>
+      <section className="map-side">
+        <div className="map-toolbar">
+          <div>
+            <p className="eyebrow">Catholic Pilgrimage KR</p>
+            <h1>성지순례 지도</h1>
+          </div>
+          <button className="location-button" onClick={requestLocation}>
+            현재 위치
+          </button>
         </div>
-        <button className="location-button" onClick={requestLocation}>
-          현재 위치
-        </button>
-      </section>
 
-      {locationError ? <p className="notice">{locationError}</p> : null}
-
-      <section className="tabbar" aria-label="주요 화면">
-        <button className={activeTab === "map" ? "active" : ""} onClick={() => setActiveTab("map")}>지도</button>
-        <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>코스</button>
-        <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>인증</button>
-        <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>기록</button>
-      </section>
-
-      {activeTab === "map" ? (
-        <section className="screen">
-          <div className="filters">
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="성지명, 교구, 주소 검색" />
-            <div className="chips">
-              {categories.map((item) => (
-                <button key={item} className={category === item ? "selected" : ""} onClick={() => setCategory(item)}>
-                  {item}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="map-panel" aria-label="성지 지도 미리보기">
-            {filteredShrines.map((shrine, index) => {
-              const selected = selectedIds.includes(shrine.id);
-              const left = 12 + ((index * 23) % 74);
-              const top = 16 + ((index * 31) % 64);
-              return (
-                <button
-                  key={shrine.id}
-                  className={`map-marker ${selected ? "picked" : ""}`}
-                  style={{ left: `${left}%`, top: `${top}%`, background: categoryStyle[shrine.category].color }}
-                  onClick={() => {
-                    setFocusedShrineId(shrine.id);
-                    toggleSelected(shrine.id);
-                  }}
-                  title={shrine.name}
-                >
-                  {index + 1}
-                </button>
-              );
-            })}
-            <div className="map-caption">Kakao Maps API 연동 전 임시 지도 화면</div>
-          </div>
-
-          <ShrineDetail shrine={focusedShrine} selected={selectedIds.includes(focusedShrine.id)} onToggle={() => toggleSelected(focusedShrine.id)} />
-
-          <div className="list">
-            {filteredShrines.map((shrine) => (
-              <ShrineRow
-                key={shrine.id}
-                shrine={shrine}
-                selected={selectedIds.includes(shrine.id)}
-                visited={visitedShrineIds.has(shrine.id)}
-                onFocus={() => setFocusedShrineId(shrine.id)}
-                onToggle={() => toggleSelected(shrine.id)}
-              />
+        <div className="filters">
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="성지명, 교구, 주소 검색" />
+          <div className="chips">
+            {categories.map((item) => (
+              <button key={item} className={category === item ? "selected" : ""} onClick={() => setCategory(item)}>
+                {item}
+              </button>
             ))}
           </div>
-        </section>
-      ) : null}
+        </div>
 
-      {activeTab === "route" ? (
-        <section className="screen">
+        {locationError ? <p className="notice">{locationError}</p> : null}
+
+        <div className="map-panel" aria-label="성지 지도 미리보기">
+          {filteredShrines.map((shrine, index) => {
+            const selected = selectedIds.includes(shrine.id);
+            const left = 12 + ((index * 23) % 74);
+            const top = 16 + ((index * 31) % 64);
+            return (
+              <button
+                key={shrine.id}
+                className={`map-marker ${selected ? "picked" : ""}`}
+                style={{ left: `${left}%`, top: `${top}%`, background: categoryStyle[shrine.category].color }}
+                onClick={() => {
+                  setFocusedShrineId(shrine.id);
+                  setVerifyShrineId(shrine.id);
+                  setActiveTab("map");
+                }}
+                title={shrine.name}
+              >
+                {index + 1}
+              </button>
+            );
+          })}
+          <div className="map-caption">Kakao Maps API 연동 전 임시 지도 화면</div>
+        </div>
+      </section>
+
+      <aside className="info-side">
+        <section className="tabbar" aria-label="주요 화면">
+          <button className={activeTab === "map" ? "active" : ""} onClick={() => setActiveTab("map")}>소개</button>
+          <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>코스</button>
+          <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>인증</button>
+          <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>기록</button>
+        </section>
+
+        {activeTab === "map" ? (
+          <section className="screen">
+            <ShrineDetail shrine={focusedShrine} selected={selectedIds.includes(focusedShrine.id)} onToggle={() => toggleSelected(focusedShrine.id)} />
+
+            <div className="panel-heading">
+              <strong>성지 목록</strong>
+              <span>{filteredShrines.length}곳</span>
+            </div>
+
+            <div className="list">
+              {filteredShrines.map((shrine) => (
+                <ShrineRow
+                  key={shrine.id}
+                  shrine={shrine}
+                  selected={selectedIds.includes(shrine.id)}
+                  visited={visitedShrineIds.has(shrine.id)}
+                  onFocus={() => {
+                    setFocusedShrineId(shrine.id);
+                    setVerifyShrineId(shrine.id);
+                  }}
+                  onToggle={() => toggleSelected(shrine.id)}
+                />
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {activeTab === "route" ? (
+          <section className="screen">
           <div className="metric-grid">
             <div>
               <span>선택 성지</span>
@@ -242,11 +254,11 @@ export default function PilgrimageApp() {
               })}
             </ol>
           )}
-        </section>
-      ) : null}
+          </section>
+        ) : null}
 
-      {activeTab === "verify" ? (
-        <section className="screen">
+        {activeTab === "verify" ? (
+          <section className="screen">
           <div className="form-card">
             <label>
               방문 성지
@@ -285,11 +297,11 @@ export default function PilgrimageApp() {
 
             <button className="primary-action" onClick={submitVisit}>방문 기록 남기기</button>
           </div>
-        </section>
-      ) : null}
+          </section>
+        ) : null}
 
-      {activeTab === "records" ? (
-        <section className="screen">
+        {activeTab === "records" ? (
+          <section className="screen">
           <div className="progress-card">
             <span>나의 순례 진행률</span>
             <strong>{progress}%</strong>
@@ -317,8 +329,9 @@ export default function PilgrimageApp() {
               })}
             </div>
           )}
-        </section>
-      ) : null}
+          </section>
+        ) : null}
+      </aside>
     </main>
   );
 }
