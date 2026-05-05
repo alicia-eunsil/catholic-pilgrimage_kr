@@ -423,11 +423,12 @@ function KakaoMapPanel({
       return;
     }
 
+    const kakaoMaps = window.kakao.maps;
     const centerShrine = mapShrines.find((shrine) => shrine.id === focusedShrineId) ?? mapShrines[0] ?? shrines[0];
-    const center = new window.kakao.maps.LatLng(centerShrine.lat, centerShrine.lng);
+    const center = new kakaoMaps.LatLng(centerShrine.lat, centerShrine.lng);
 
     if (!mapRef.current) {
-      mapRef.current = new window.kakao.maps.Map(containerRef.current, {
+      mapRef.current = new kakaoMaps.Map(containerRef.current, {
         center,
         level: 12
       });
@@ -445,18 +446,18 @@ function KakaoMapPanel({
     markersRef.current = [];
     infoWindowsRef.current = [];
 
-    const bounds = new window.kakao.maps.LatLngBounds();
+    const bounds = new kakaoMaps.LatLngBounds();
 
     mapShrines.forEach((shrine) => {
-      const position = new window.kakao.maps.LatLng(shrine.lat, shrine.lng);
+      const position = new kakaoMaps.LatLng(shrine.lat, shrine.lng);
       bounds.extend(position);
 
-      const marker = new window.kakao.maps.Marker({
+      const marker = new kakaoMaps.Marker({
         map,
         position
       });
       const isSelected = selectedIds.includes(shrine.id);
-      const infoWindow = new window.kakao.maps.InfoWindow({
+      const infoWindow = new kakaoMaps.InfoWindow({
         content: `<div class="kakao-info-window"><strong>${escapeHtml(shrine.name)}</strong><span>${escapeHtml(shrine.category)}${isSelected ? " · 코스 선택됨" : ""}</span></div>`
       });
 
@@ -465,7 +466,7 @@ function KakaoMapPanel({
       markersRef.current.push(marker);
       infoWindowsRef.current.push(infoWindow);
 
-      window.kakao.maps.event.addListener(marker, "click", () => onSelectShrine(shrine));
+      kakaoMaps.event.addListener(marker, "click", () => onSelectShrine(shrine));
     });
 
     if (mapShrines.length > 1) {
