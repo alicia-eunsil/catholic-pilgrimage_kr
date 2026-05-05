@@ -16,6 +16,7 @@
   --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
   --soft-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
   --emboss: inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(15, 23, 42, 0.06);
+  --button-font-size: 13px;
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Arial, sans-serif;
 }
 
@@ -52,6 +53,7 @@ a {
 }
 
 button {
+  font-size: var(--button-font-size);
   transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, border-color 140ms ease;
 }
 
@@ -244,7 +246,6 @@ textarea {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(244, 246, 248, 0.92));
   color: var(--muted);
   cursor: pointer;
-  font-size: 13px;
   font-weight: 720;
   box-shadow: 0 5px 12px rgba(15, 23, 42, 0.04), var(--emboss);
 }
@@ -650,7 +651,6 @@ textarea {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(244, 246, 248, 0.92));
   color: var(--muted);
   cursor: pointer;
-  font-size: 12px;
   font-weight: 780;
   box-shadow: var(--emboss);
 }
@@ -795,7 +795,8 @@ textarea {
   background: transparent;
   color: inherit;
   cursor: pointer;
-  font: inherit;
+  font-size: var(--button-font-size);
+  font-weight: inherit;
   text-align: left;
 }
 
