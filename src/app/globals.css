@@ -24,7 +24,7 @@
 
 html,
 body {
-  min-height: 100%;
+  height: 100%;
 }
 
 body {
@@ -35,6 +35,7 @@ body {
     linear-gradient(135deg, #f8fafc 0%, #eef1f5 52%, #f6f3ed 100%);
   color: var(--ink);
   font-family: var(--font);
+  overflow: hidden;
 }
 
 button,
@@ -90,9 +91,11 @@ h3 {
 .app-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 432px;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   padding: 14px;
   gap: 14px;
+  overflow: hidden;
 }
 
 .map-side,
@@ -109,7 +112,7 @@ h3 {
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
   min-width: 0;
-  min-height: calc(100vh - 28px);
+  min-height: 0;
 }
 
 .map-toolbar {
@@ -327,7 +330,7 @@ textarea {
 .info-side {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  min-height: calc(100vh - 28px);
+  min-height: 0;
 }
 
 .tabbar {
@@ -636,11 +639,12 @@ textarea {
 @media (max-width: 860px) {
   .app-shell {
     grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 58fr) minmax(0, 42fr);
     padding: 10px;
   }
 
   .map-side {
-    min-height: 58vh;
+    min-height: 0;
   }
 
   .map-toolbar {
@@ -662,15 +666,15 @@ textarea {
   }
 
   .map-panel {
-    min-height: 360px;
+    min-height: 0;
   }
 
   .info-side {
-    min-height: auto;
+    min-height: 0;
   }
 
   .screen {
-    max-height: none;
+    min-height: 0;
   }
 }
 
