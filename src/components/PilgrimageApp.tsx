@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { categories, shrines, type Shrine, type ShrineCategory } from "@/data/shrines";
+import { shrines, type Shrine, type ShrineCategory } from "@/data/shrines";
 import { distanceKm, estimatedDriveMinutes, optimizeRoute, totalRouteDistanceKm, type LatLng } from "@/lib/geo";
 import { loadVisitRecords, saveVisitRecords, type VisitRecord } from "@/lib/storage";
 
@@ -13,6 +13,7 @@ const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
 
 const VERIFY_RADIUS_METERS = 500;
 const KAKAO_MAP_SDK_ID = "kakao-map-sdk";
+const CATEGORY_FILTERS: ShrineCategory[] = ["성지", "순교사적지", "순례지"];
 
 declare global {
   interface Window {
@@ -59,7 +60,7 @@ function escapeHtml(value: string) {
 
 export default function PilgrimageApp() {
   const [activeTab, setActiveTab] = useState<"map" | "route" | "verify" | "records">("map");
-  const [category, setCategory] = useState<(typeof categories)[number]>("전체");
+  const [selectedCategories, setSelectedCategories] = useState<ShrineCategory[]>(CATEGORY_FILTERS);
   const [query, setQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [focusedShrineId, setFocusedShrineId] = useState(shrines[0].id);
@@ -77,7 +78,7 @@ export default function PilgrimageApp() {
 
   const filteredShrines = useMemo(() => {
     return shrines.filter((shrine) => {
-      const matchesCategory = category === "전체" || shrine.category === category;
+      const matchesCategory = selectedCategories.includes(shrine.category);
       const normalizedQuery = query.trim().toLowerCase();
       const matchesQuery =
         normalizedQuery.length === 0 ||
@@ -87,7 +88,7 @@ export default function PilgrimageApp() {
 
       return matchesCategory && matchesQuery;
     });
-  }, [category, query]);
+  }, [selectedCategories, query]);
 
   const selectedShrines = useMemo(() => {
     return selectedIds
@@ -116,6 +117,19 @@ export default function PilgrimageApp() {
       }
       return [...current, id];
     });
+  }
+
+  function toggleCategory(category: ShrineCategory) {
+    setSelectedCategories((current) => {
+      if (current.includes(category)) {
+        return current.filter((item) => item !== category);
+      }
+      return [...current, category];
+    });
+  }
+
+  function toggleAllCategories() {
+    setSelectedCategories((current) => (current.length === CATEGORY_FILTERS.length ? [] : CATEGORY_FILTERS));
   }
 
   function requestLocation() {
@@ -196,8 +210,11 @@ export default function PilgrimageApp() {
         <div className="filters">
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="성지명, 교구, 주소 검색" />
           <div className="chips">
-            {categories.map((item) => (
-              <button key={item} className={category === item ? "selected" : ""} onClick={() => setCategory(item)}>
+            <button className={selectedCategories.length === CATEGORY_FILTERS.length ? "selected" : ""} onClick={toggleAllCategories}>
+              전체
+            </button>
+            {CATEGORY_FILTERS.map((item) => (
+              <button key={item} className={selectedCategories.includes(item) ? "selected" : ""} onClick={() => toggleCategory(item)}>
                 {item}
               </button>
             ))}
@@ -205,6 +222,7 @@ export default function PilgrimageApp() {
         </div>
 
         {locationError ? <p className="notice">{locationError}</p> : null}
+        {filteredShrines.length === 0 ? <div className="map-empty">선택한 조건에 맞는 성지가 없습니다.</div> : null}
 
         <KakaoMapPanel
           shrines={filteredShrines}
@@ -232,19 +250,23 @@ export default function PilgrimageApp() {
             </div>
 
             <div className="list">
-              {filteredShrines.map((shrine) => (
-                <ShrineRow
-                  key={shrine.id}
-                  shrine={shrine}
-                  selected={selectedIds.includes(shrine.id)}
-                  visited={visitedShrineIds.has(shrine.id)}
-                  onFocus={() => {
-                    setFocusedShrineId(shrine.id);
-                    setVerifyShrineId(shrine.id);
-                  }}
-                  onToggle={() => toggleSelected(shrine.id)}
-                />
-              ))}
+              {filteredShrines.length === 0 ? (
+                <div className="empty-state">필터를 하나 이상 선택하면 성지 목록이 표시됩니다.</div>
+              ) : (
+                filteredShrines.map((shrine) => (
+                  <ShrineRow
+                    key={shrine.id}
+                    shrine={shrine}
+                    selected={selectedIds.includes(shrine.id)}
+                    visited={visitedShrineIds.has(shrine.id)}
+                    onFocus={() => {
+                      setFocusedShrineId(shrine.id);
+                      setVerifyShrineId(shrine.id);
+                    }}
+                    onToggle={() => toggleSelected(shrine.id)}
+                  />
+                ))
+              )}
             </div>
           </section>
         ) : null}
