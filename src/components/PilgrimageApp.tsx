@@ -190,6 +190,11 @@ export default function PilgrimageApp() {
     setQuery(searchInput);
   }
 
+  function resetSearch() {
+    setSearchInput("");
+    setQuery("");
+  }
+
   function sortShrineList(nextKey: ShrineSortKey) {
     if (nextKey === shrineSortKey) {
       setShrineSortDirection((current) => (current === "asc" ? "desc" : "asc"));
@@ -300,6 +305,9 @@ export default function PilgrimageApp() {
                 <circle cx="11" cy="11" r="6" />
                 <path d="m16 16 4 4" />
               </svg>
+            </button>
+            <button className="reset-button" onClick={resetSearch} aria-label="검색 초기화">
+              ↺
             </button>
           </div>
           <div className="chips">

@@ -173,7 +173,7 @@ h3 {
 
 .search-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 44px;
+  grid-template-columns: minmax(0, 1fr) 44px 44px;
   gap: 8px;
 }
 
@@ -205,7 +205,8 @@ select,
   padding: 0 13px;
 }
 
-.search-button {
+.search-button,
+.reset-button {
   display: grid;
   height: 44px;
   place-items: center;
@@ -215,6 +216,11 @@ select,
   color: white;
   cursor: pointer;
   box-shadow: 0 8px 16px rgba(100, 112, 125, 0.14), var(--emboss);
+}
+
+.reset-button {
+  font-size: 17px;
+  font-weight: 760;
 }
 
 .search-button svg {
