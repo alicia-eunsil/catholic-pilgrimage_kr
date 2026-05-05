@@ -15,6 +15,11 @@ const VERIFY_RADIUS_METERS = 500;
 const KAKAO_MAP_SDK_ID = "kakao-map-sdk";
 const CATEGORY_FILTERS: ShrineCategory[] = ["성지", "순교사적지", "순례지"];
 const VISITS_PER_PAGE = 10;
+const CATEGORY_ORDER: Record<ShrineCategory, number> = {
+  성지: 0,
+  순교사적지: 1,
+  순례지: 2
+};
 
 declare global {
   interface Window {
@@ -49,6 +54,7 @@ type KakaoInfoWindow = {
 type KakaoLatLngBounds = {
   extend: (latLng: KakaoLatLng) => void;
 };
+type ShrineSortKey = "diocese" | "category" | "name" | "address";
 
 function escapeHtml(value: string) {
   return value
@@ -71,6 +77,7 @@ function formatDateTime(value: string) {
 export default function PilgrimageApp() {
   const [activeTab, setActiveTab] = useState<"map" | "route" | "verify" | "records">("map");
   const [selectedCategories, setSelectedCategories] = useState<ShrineCategory[]>(CATEGORY_FILTERS);
+  const [searchInput, setSearchInput] = useState("");
   const [query, setQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [focusedShrineId, setFocusedShrineId] = useState(shrines[0].id);
@@ -83,6 +90,8 @@ export default function PilgrimageApp() {
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>();
   const [introVisitPage, setIntroVisitPage] = useState(1);
   const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string } | undefined>();
+  const [showShrineList, setShowShrineList] = useState(false);
+  const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
 
   useEffect(() => {
     setVisits(loadVisitRecords());
@@ -134,6 +143,14 @@ export default function PilgrimageApp() {
     }))
     .filter((item) => item.count > 0)
     .sort((a, b) => b.count - a.count || a.shrine.name.localeCompare(b.shrine.name, "ko"));
+  const sortedShrineList = useMemo(() => {
+    return [...shrines].sort((a, b) => {
+      if (shrineSortKey === "category") {
+        return CATEGORY_ORDER[a.category] - CATEGORY_ORDER[b.category] || a.name.localeCompare(b.name, "ko");
+      }
+      return a[shrineSortKey].localeCompare(b[shrineSortKey], "ko") || a.name.localeCompare(b.name, "ko");
+    });
+  }, [shrineSortKey]);
   const handleSelectShrine = useCallback((shrine: Shrine) => {
     setFocusedShrineId(shrine.id);
     setVerifyShrineId(shrine.id);
@@ -161,6 +178,10 @@ export default function PilgrimageApp() {
 
   function toggleAllCategories() {
     setSelectedCategories((current) => (current.length === CATEGORY_FILTERS.length ? [] : CATEGORY_FILTERS));
+  }
+
+  function runSearch() {
+    setQuery(searchInput);
   }
 
   function requestLocation() {
@@ -235,13 +256,30 @@ export default function PilgrimageApp() {
             <p className="eyebrow">Catholic Pilgrimage KR</p>
             <h1>성지순례 지도</h1>
           </div>
-          <button className="location-button" onClick={requestLocation}>
-            현재 위치
+          <button className="list-button" onClick={() => setShowShrineList(true)}>
+            성지목록보기
           </button>
         </div>
 
         <div className="filters">
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="성지명, 교구, 주소 검색" />
+          <div className="search-row">
+            <input
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  runSearch();
+                }
+              }}
+              placeholder="성지명, 교구, 주소 검색"
+            />
+            <button className="search-button" onClick={runSearch} aria-label="검색">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6" />
+                <path d="m16 16 4 4" />
+              </svg>
+            </button>
+          </div>
           <div className="chips">
             <button className={selectedCategories.length === CATEGORY_FILTERS.length ? "selected" : ""} onClick={toggleAllCategories}>
               전체
@@ -399,6 +437,8 @@ export default function PilgrimageApp() {
               </span>
             </div>
 
+            <button className="secondary-action" onClick={requestLocation}>현재 위치 확인</button>
+
             <label>
               닉네임
               <input value={nickname} onChange={(event) => setNickname(event.target.value)} placeholder="예: 순례자요한" />
@@ -469,6 +509,59 @@ export default function PilgrimageApp() {
             닫기
           </button>
           <img src={expandedImage.src} alt={expandedImage.alt} onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
+
+      {showShrineList ? (
+        <div className="list-modal" role="dialog" aria-modal="true" aria-label="성지 목록" onClick={() => setShowShrineList(false)}>
+          <section className="list-modal-panel" onClick={(event) => event.stopPropagation()}>
+            <div className="list-modal-header">
+              <div>
+                <strong>성지 목록</strong>
+                <span>{shrines.length}곳</span>
+              </div>
+              <button onClick={() => setShowShrineList(false)}>닫기</button>
+            </div>
+
+            <label className="sort-control">
+              정렬
+              <select value={shrineSortKey} onChange={(event) => setShrineSortKey(event.target.value as ShrineSortKey)}>
+                <option value="diocese">교구순</option>
+                <option value="category">성지구분순</option>
+                <option value="name">성지명순</option>
+                <option value="address">주소순</option>
+              </select>
+            </label>
+
+            <div className="shrine-table-wrap">
+              <table className="shrine-table">
+                <thead>
+                  <tr>
+                    <th>교구</th>
+                    <th>성지구분</th>
+                    <th>성지명</th>
+                    <th>주소</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedShrineList.map((shrine) => (
+                    <tr
+                      key={shrine.id}
+                      onClick={() => {
+                        handleSelectShrine(shrine);
+                        setShowShrineList(false);
+                      }}
+                    >
+                      <td>{shrine.diocese}</td>
+                      <td>{shrine.category}</td>
+                      <td>{shrine.name}</td>
+                      <td>{shrine.address}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
         </div>
       ) : null}
     </main>

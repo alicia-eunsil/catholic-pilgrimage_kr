@@ -136,7 +136,9 @@ h3 {
 }
 
 .location-button,
+.list-button,
 .primary-action,
+.secondary-action,
 .detail-actions button,
 .shrine-row button {
   border: 1px solid rgba(75, 85, 99, 0.18);
@@ -148,10 +150,15 @@ h3 {
   box-shadow: 0 10px 18px rgba(75, 85, 99, 0.20), var(--emboss);
 }
 
-.location-button {
+.location-button,
+.list-button {
   min-width: 96px;
   min-height: 42px;
   padding: 0 14px;
+}
+
+.list-button {
+  min-width: 112px;
 }
 
 .filters {
@@ -160,6 +167,12 @@ h3 {
   padding: 14px 26px 16px;
   background: rgba(255, 255, 255, 0.58);
   border-bottom: 1px solid var(--line);
+}
+
+.search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 8px;
 }
 
 .filters input,
@@ -188,6 +201,28 @@ select,
 .form-card input {
   height: 44px;
   padding: 0 13px;
+}
+
+.search-button {
+  display: grid;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgba(75, 85, 99, 0.18);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #aeb6c2, #7f8793);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 10px 18px rgba(75, 85, 99, 0.18), var(--emboss);
+}
+
+.search-button svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
 }
 
 textarea {
@@ -430,13 +465,21 @@ textarea {
 
 .detail-actions a,
 .detail-actions button,
-.primary-action {
+.primary-action,
+.secondary-action {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
   justify-content: center;
   padding: 0 12px;
   text-decoration: none;
+}
+
+.secondary-action {
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  background: linear-gradient(180deg, #ffffff, #f4f6f8);
+  color: var(--accent-strong);
+  box-shadow: var(--emboss);
 }
 
 .detail-actions button:last-child {
@@ -655,6 +698,124 @@ textarea {
   cursor: pointer;
   font-weight: 760;
   box-shadow: var(--soft-shadow), var(--emboss);
+}
+
+.list-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(16px);
+}
+
+.list-modal-panel {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  width: min(1040px, 100%);
+  max-height: min(82dvh, 760px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28), var(--emboss);
+}
+
+.list-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.list-modal-header div {
+  display: grid;
+  gap: 3px;
+}
+
+.list-modal-header strong {
+  font-size: 18px;
+}
+
+.list-modal-header span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.list-modal-header button {
+  min-width: 60px;
+  height: 36px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffffff, #f4f6f8);
+  color: var(--accent-strong);
+  cursor: pointer;
+  font-weight: 760;
+  box-shadow: var(--emboss);
+}
+
+.sort-control {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 180px);
+  gap: 10px;
+  align-items: center;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.shrine-table-wrap {
+  min-height: 0;
+  overflow: auto;
+}
+
+.shrine-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.shrine-table th,
+.shrine-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.07);
+  text-align: left;
+  vertical-align: top;
+}
+
+.shrine-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(247, 248, 250, 0.96);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.shrine-table tbody tr {
+  cursor: pointer;
+}
+
+.shrine-table tbody tr:hover {
+  background: rgba(226, 232, 240, 0.52);
+}
+
+.shrine-table td:nth-child(1),
+.shrine-table td:nth-child(2) {
+  white-space: nowrap;
+}
+
+.shrine-table td:nth-child(3) {
+  min-width: 140px;
+  font-weight: 760;
 }
 
 .popular-list {
