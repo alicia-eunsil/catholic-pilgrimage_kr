@@ -215,6 +215,11 @@ export default function PilgrimageApp() {
     setQuery("");
   }
 
+  function resetRoute() {
+    setSelectedIds([]);
+    setShowRouteOnMap(false);
+  }
+
   function sortShrineList(nextKey: ShrineSortKey) {
     if (nextKey === shrineSortKey) {
       setShrineSortDirection((current) => (current === "asc" ? "desc" : "asc"));
@@ -449,11 +454,9 @@ export default function PilgrimageApp() {
             <button className="primary-action" disabled={route.length < 2} onClick={() => setShowRouteOnMap(true)}>
               코스보기
             </button>
-            {routeMapActive ? (
-              <button className="secondary-action" onClick={() => setShowRouteOnMap(false)}>
-                전체 지도
-              </button>
-            ) : null}
+            <button className="secondary-action" disabled={selectedIds.length === 0} onClick={resetRoute}>
+              코스 리셋
+            </button>
           </div>
 
           {route.length < 2 ? (
