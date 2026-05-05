@@ -61,6 +61,12 @@ button:active {
   transform: scale(0.98);
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+  transform: none;
+}
+
 h1,
 h2,
 h3,
@@ -373,6 +379,37 @@ textarea {
   color: #92400e;
 }
 
+.route-map-badge {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 9px 8px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 780;
+  box-shadow: var(--soft-shadow), var(--emboss);
+  backdrop-filter: blur(16px);
+}
+
+.route-map-badge button {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffffff, #f4f6f8);
+  color: var(--accent-strong);
+  cursor: pointer;
+  font-weight: 760;
+  box-shadow: var(--emboss);
+}
+
 .map-empty {
   position: absolute;
   left: 40px;
@@ -468,6 +505,16 @@ textarea {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
+
+.route-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.route-actions .primary-action:only-child {
+  grid-column: 1 / -1;
 }
 
 .detail-actions a,

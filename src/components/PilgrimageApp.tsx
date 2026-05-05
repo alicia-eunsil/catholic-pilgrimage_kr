@@ -30,6 +30,14 @@ declare global {
         Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMap;
         Marker: new (options: { position: KakaoLatLng; map?: KakaoMap }) => KakaoMarker;
         InfoWindow: new (options: { content: string }) => KakaoInfoWindow;
+        Polyline: new (options: {
+          path: KakaoLatLng[];
+          strokeColor: string;
+          strokeOpacity: number;
+          strokeStyle: string;
+          strokeWeight: number;
+          map?: KakaoMap;
+        }) => KakaoPolyline;
         LatLngBounds: new () => KakaoLatLngBounds;
         event: {
           addListener: (target: KakaoMarker, type: "click" | "mouseover" | "mouseout", handler: () => void) => void;
@@ -47,6 +55,9 @@ type KakaoMap = {
 type KakaoMarker = {
   setMap: (map: KakaoMap | null) => void;
 };
+type KakaoPolyline = {
+  setMap: (map: KakaoMap | null) => void;
+};
 type KakaoInfoWindow = {
   open: (map: KakaoMap, marker: KakaoMarker) => void;
   close: () => void;
@@ -54,6 +65,7 @@ type KakaoInfoWindow = {
 type KakaoLatLngBounds = {
   extend: (latLng: KakaoLatLng) => void;
 };
+const EMPTY_ROUTE_SHRINES: Shrine[] = [];
 type ShrineSortKey = "diocese" | "category" | "name" | "address";
 type SortDirection = "asc" | "desc";
 
@@ -94,6 +106,7 @@ export default function PilgrimageApp() {
   const [showShrineList, setShowShrineList] = useState(false);
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
+  const [showRouteOnMap, setShowRouteOnMap] = useState(false);
 
   useEffect(() => {
     setVisits(loadVisitRecords());
@@ -121,6 +134,9 @@ export default function PilgrimageApp() {
 
   const route = useMemo(() => optimizeRoute(selectedShrines, position), [selectedShrines, position]);
   const routeDistance = totalRouteDistanceKm(route, position);
+  const routeMapActive = showRouteOnMap && route.length > 1;
+  const visibleMapShrines = routeMapActive ? route : filteredShrines;
+  const visibleRouteShrines = routeMapActive ? route : EMPTY_ROUTE_SHRINES;
   const focusedShrine = shrines.find((shrine) => shrine.id === focusedShrineId) ?? shrines[0];
   const verifyShrine = shrines.find((shrine) => shrine.id === verifyShrineId) ?? shrines[0];
   const verifyDistanceMeters = position ? Math.round(distanceKm(position, verifyShrine) * 1000) : undefined;
@@ -174,6 +190,7 @@ export default function PilgrimageApp() {
   }
 
   function toggleCategory(category: ShrineCategory) {
+    setShowRouteOnMap(false);
     setSelectedCategories((current) => {
       if (current.includes(category)) {
         return current.filter((item) => item !== category);
@@ -183,14 +200,17 @@ export default function PilgrimageApp() {
   }
 
   function toggleAllCategories() {
+    setShowRouteOnMap(false);
     setSelectedCategories((current) => (current.length === CATEGORY_FILTERS.length ? [] : CATEGORY_FILTERS));
   }
 
   function runSearch() {
+    setShowRouteOnMap(false);
     setQuery(searchInput);
   }
 
   function resetSearch() {
+    setShowRouteOnMap(false);
     setSearchInput("");
     setQuery("");
   }
@@ -323,11 +343,14 @@ export default function PilgrimageApp() {
         </div>
 
         {locationError ? <p className="notice">{locationError}</p> : null}
-        {filteredShrines.length === 0 ? <div className="map-empty">선택한 조건에 맞는 성지가 없습니다.</div> : null}
+        {visibleMapShrines.length === 0 ? <div className="map-empty">선택한 조건에 맞는 성지가 없습니다.</div> : null}
 
         <KakaoMapPanel
-          shrines={filteredShrines}
+          shrines={visibleMapShrines}
+          routeShrines={visibleRouteShrines}
+          routeActive={routeMapActive}
           focusedShrineId={focusedShrineId}
+          onClearRoute={() => setShowRouteOnMap(false)}
           onSelectShrine={handleSelectShrine}
         />
       </section>
@@ -422,7 +445,18 @@ export default function PilgrimageApp() {
             </div>
           </div>
 
-          {route.length === 0 ? (
+          <div className="route-actions">
+            <button className="primary-action" disabled={route.length < 2} onClick={() => setShowRouteOnMap(true)}>
+              코스보기
+            </button>
+            {routeMapActive ? (
+              <button className="secondary-action" onClick={() => setShowRouteOnMap(false)}>
+                전체 지도
+              </button>
+            ) : null}
+          </div>
+
+          {route.length < 2 ? (
             <div className="empty-state">지도 탭에서 성지를 2곳 이상 선택하면 좌표 기반 추천 코스가 생성됩니다.</div>
           ) : (
             <ol className="route-list">
@@ -517,7 +551,13 @@ export default function PilgrimageApp() {
               ) : (
                 <div className="stat-list">
                   {shrineRecordStats.map(({ shrine, count, verifiedCount }) => (
-                    <button key={shrine.id} onClick={() => handleSelectShrine(shrine)}>
+                    <button
+                      key={shrine.id}
+                      onClick={() => {
+                        setShowRouteOnMap(false);
+                        handleSelectShrine(shrine);
+                      }}
+                    >
                       <span>
                         <strong>{shrine.name}</strong>
                         <small>{shrine.region} · GPS {verifiedCount}건</small>
@@ -575,6 +615,7 @@ export default function PilgrimageApp() {
                     <tr
                       key={shrine.id}
                       onClick={() => {
+                        setShowRouteOnMap(false);
                         handleSelectShrine(shrine);
                         setShowShrineList(false);
                       }}
@@ -597,17 +638,24 @@ export default function PilgrimageApp() {
 
 function KakaoMapPanel({
   shrines: mapShrines,
+  routeShrines,
+  routeActive,
   focusedShrineId,
+  onClearRoute,
   onSelectShrine
 }: {
   shrines: Shrine[];
+  routeShrines: Shrine[];
+  routeActive: boolean;
   focusedShrineId: string;
+  onClearRoute: () => void;
   onSelectShrine: (shrine: Shrine) => void;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<KakaoMap | null>(null);
   const markersRef = useRef<KakaoMarker[]>([]);
   const infoWindowsRef = useRef<KakaoInfoWindow[]>([]);
+  const polylineRef = useRef<KakaoPolyline | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "missing-key" | "error">("loading");
 
   useEffect(() => {
@@ -668,8 +716,10 @@ function KakaoMapPanel({
 
     markersRef.current.forEach((marker) => marker.setMap(null));
     infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
+    polylineRef.current?.setMap(null);
     markersRef.current = [];
     infoWindowsRef.current = [];
+    polylineRef.current = null;
 
     const bounds = new kakaoMaps.LatLngBounds();
 
@@ -694,6 +744,18 @@ function KakaoMapPanel({
       kakaoMaps.event.addListener(marker, "mouseout", () => infoWindow.close());
     });
 
+    if (routeShrines.length > 1) {
+      const routePath = routeShrines.map((shrine) => new kakaoMaps.LatLng(shrine.lat, shrine.lng));
+      polylineRef.current = new kakaoMaps.Polyline({
+        map,
+        path: routePath,
+        strokeColor: "#7c8794",
+        strokeOpacity: 0.88,
+        strokeStyle: "solid",
+        strokeWeight: 5
+      });
+    }
+
     if (mapShrines.length > 1) {
       map.setBounds(bounds);
     }
@@ -701,8 +763,9 @@ function KakaoMapPanel({
     return () => {
       markersRef.current.forEach((marker) => marker.setMap(null));
       infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
+      polylineRef.current?.setMap(null);
     };
-  }, [mapShrines, onSelectShrine, status]);
+  }, [mapShrines, onSelectShrine, routeShrines, status]);
 
   useEffect(() => {
     if (status !== "ready" || !mapRef.current || !window.kakao?.maps) {
@@ -720,6 +783,12 @@ function KakaoMapPanel({
   return (
     <div className="map-panel" aria-label="카카오 성지 지도">
       <div ref={containerRef} className="kakao-map" />
+      {routeActive ? (
+        <div className="route-map-badge">
+          <span>코스 표시 중</span>
+          <button onClick={onClearRoute}>전체 지도</button>
+        </div>
+      ) : null}
       {status === "loading" ? <div className="map-caption">Kakao Maps 로딩 중</div> : null}
       {status === "missing-key" ? <div className="map-caption warning">NEXT_PUBLIC_KAKAO_MAP_KEY 환경변수가 필요합니다.</div> : null}
       {status === "error" ? <div className="map-caption warning">Kakao Maps를 불러오지 못했습니다. 도메인 등록을 확인해 주세요.</div> : null}
