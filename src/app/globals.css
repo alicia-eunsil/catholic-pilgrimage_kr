@@ -572,18 +572,8 @@ textarea {
 
 .visit-row > div > div {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: flex-end;
   min-width: 0;
-}
-
-.visit-row strong {
-  overflow: hidden;
-  color: var(--ink);
-  font-size: 13px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .visit-row span,

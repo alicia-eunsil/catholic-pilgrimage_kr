@@ -310,11 +310,10 @@ export default function PilgrimageApp() {
                         )}
                         <div>
                           <div>
-                            <strong>{visit.nickname}</strong>
                             <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
                           </div>
                           <p>{visit.comment}</p>
-                          <small>{visit.verified ? "GPS 인증" : "기록 저장"}</small>
+                          <small>{visit.nickname} · {visit.verified ? "GPS 인증" : "기록 저장"}</small>
                         </div>
                       </article>
                     ))}
