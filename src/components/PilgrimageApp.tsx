@@ -337,8 +337,8 @@ export default function PilgrimageApp() {
         <section className="tabbar" aria-label="주요 화면">
           <button className={activeTab === "map" ? "active" : ""} onClick={() => setActiveTab("map")}>소개</button>
           <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>코스</button>
-          <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>인증</button>
           <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>기록</button>
+          <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>인증</button>
         </section>
 
         {activeTab === "map" ? (
