@@ -82,6 +82,7 @@ export default function PilgrimageApp() {
   const [comment, setComment] = useState("");
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>();
   const [introVisitPage, setIntroVisitPage] = useState(1);
+  const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string } | undefined>();
 
   useEffect(() => {
     setVisits(loadVisitRecords());
@@ -296,7 +297,17 @@ export default function PilgrimageApp() {
                   <div className="visit-table">
                     {pagedFocusedVisits.map((visit) => (
                       <article key={visit.id} className="visit-row">
-                        {visit.imageDataUrl ? <img src={visit.imageDataUrl} alt="" /> : <div className="visit-photo-placeholder">사진 없음</div>}
+                        {visit.imageDataUrl ? (
+                          <button
+                            className="visit-photo-button"
+                            onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${focusedShrine.name} 인증 사진` })}
+                            aria-label={`${focusedShrine.name} 인증 사진 크게 보기`}
+                          >
+                            <img src={visit.imageDataUrl} alt="" />
+                          </button>
+                        ) : (
+                          <div className="visit-photo-placeholder">사진 없음</div>
+                        )}
                         <div>
                           <div>
                             <strong>{visit.nickname}</strong>
@@ -452,6 +463,15 @@ export default function PilgrimageApp() {
           </section>
         ) : null}
       </aside>
+
+      {expandedImage ? (
+        <div className="image-modal" role="dialog" aria-modal="true" onClick={() => setExpandedImage(undefined)}>
+          <button className="image-modal-close" onClick={() => setExpandedImage(undefined)} aria-label="사진 닫기">
+            닫기
+          </button>
+          <img src={expandedImage.src} alt={expandedImage.alt} onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
     </main>
   );
 }
