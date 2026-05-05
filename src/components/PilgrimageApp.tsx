@@ -55,6 +55,7 @@ type KakaoLatLngBounds = {
   extend: (latLng: KakaoLatLng) => void;
 };
 type ShrineSortKey = "diocese" | "category" | "name" | "address";
+type SortDirection = "asc" | "desc";
 
 function escapeHtml(value: string) {
   return value
@@ -92,6 +93,7 @@ export default function PilgrimageApp() {
   const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string } | undefined>();
   const [showShrineList, setShowShrineList] = useState(false);
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
+  const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
 
   useEffect(() => {
     setVisits(loadVisitRecords());
@@ -145,12 +147,16 @@ export default function PilgrimageApp() {
     .sort((a, b) => b.count - a.count || a.shrine.name.localeCompare(b.shrine.name, "ko"));
   const sortedShrineList = useMemo(() => {
     return [...shrines].sort((a, b) => {
+      const direction = shrineSortDirection === "asc" ? 1 : -1;
+      let result: number;
       if (shrineSortKey === "category") {
-        return CATEGORY_ORDER[a.category] - CATEGORY_ORDER[b.category] || a.name.localeCompare(b.name, "ko");
+        result = CATEGORY_ORDER[a.category] - CATEGORY_ORDER[b.category] || a.name.localeCompare(b.name, "ko");
+      } else {
+        result = a[shrineSortKey].localeCompare(b[shrineSortKey], "ko") || a.name.localeCompare(b.name, "ko");
       }
-      return a[shrineSortKey].localeCompare(b[shrineSortKey], "ko") || a.name.localeCompare(b.name, "ko");
+      return result * direction;
     });
-  }, [shrineSortKey]);
+  }, [shrineSortDirection, shrineSortKey]);
   const handleSelectShrine = useCallback((shrine: Shrine) => {
     setFocusedShrineId(shrine.id);
     setVerifyShrineId(shrine.id);
@@ -182,6 +188,22 @@ export default function PilgrimageApp() {
 
   function runSearch() {
     setQuery(searchInput);
+  }
+
+  function sortShrineList(nextKey: ShrineSortKey) {
+    if (nextKey === shrineSortKey) {
+      setShrineSortDirection((current) => (current === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setShrineSortKey(nextKey);
+    setShrineSortDirection("asc");
+  }
+
+  function sortIndicator(key: ShrineSortKey) {
+    if (key !== shrineSortKey) {
+      return "";
+    }
+    return shrineSortDirection === "asc" ? " ▲" : " ▼";
   }
 
   function requestLocation() {
@@ -523,24 +545,22 @@ export default function PilgrimageApp() {
               <button onClick={() => setShowShrineList(false)}>닫기</button>
             </div>
 
-            <label className="sort-control">
-              정렬
-              <select value={shrineSortKey} onChange={(event) => setShrineSortKey(event.target.value as ShrineSortKey)}>
-                <option value="diocese">교구순</option>
-                <option value="category">성지구분순</option>
-                <option value="name">성지명순</option>
-                <option value="address">주소순</option>
-              </select>
-            </label>
-
             <div className="shrine-table-wrap">
               <table className="shrine-table">
                 <thead>
                   <tr>
-                    <th>교구</th>
-                    <th>성지구분</th>
-                    <th>성지명</th>
-                    <th>주소</th>
+                    <th>
+                      <button onClick={() => sortShrineList("diocese")}>교구{sortIndicator("diocese")}</button>
+                    </th>
+                    <th>
+                      <button onClick={() => sortShrineList("category")}>성지구분{sortIndicator("category")}</button>
+                    </th>
+                    <th>
+                      <button onClick={() => sortShrineList("name")}>성지명{sortIndicator("name")}</button>
+                    </th>
+                    <th>
+                      <button onClick={() => sortShrineList("address")}>주소{sortIndicator("address")}</button>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

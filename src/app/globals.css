@@ -713,7 +713,7 @@ textarea {
 
 .list-modal-panel {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   width: min(1040px, 100%);
   max-height: min(82dvh, 760px);
   overflow: hidden;
@@ -759,18 +759,6 @@ textarea {
   box-shadow: var(--emboss);
 }
 
-.sort-control {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 180px);
-  gap: 10px;
-  align-items: center;
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 720;
-}
-
 .shrine-table-wrap {
   min-height: 0;
   overflow: auto;
@@ -798,6 +786,17 @@ textarea {
   color: var(--muted);
   font-size: 12px;
   font-weight: 800;
+}
+
+.shrine-table th button {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
 }
 
 .shrine-table tbody tr {
