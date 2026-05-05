@@ -116,26 +116,6 @@ export default function PilgrimageApp() {
   const canVerify = verifyDistanceMeters !== undefined && verifyDistanceMeters <= VERIFY_RADIUS_METERS;
   const visitedShrineIds = new Set(visits.map((visit) => visit.shrineId));
   const progress = Math.round((visitedShrineIds.size / shrines.length) * 100);
-  const focusedVisits = visits.filter((visit) => visit.shrineId === focusedShrine.id);
-  const focusedRegionShrines = shrines.filter((shrine) => shrine.region === focusedShrine.region);
-  const focusedRegionVisitCount = visits.filter((visit) => {
-    const shrine = shrines.find((item) => item.id === visit.shrineId);
-    return shrine?.region === focusedShrine.region;
-  }).length;
-  const focusedRegionVisitedCount = new Set(
-    visits
-      .map((visit) => shrines.find((shrine) => shrine.id === visit.shrineId))
-      .filter((shrine): shrine is Shrine => Boolean(shrine) && shrine.region === focusedShrine.region)
-      .map((shrine) => shrine.id)
-  ).size;
-  const shrineVisitCounts = shrines
-    .map((shrine) => ({
-      shrine,
-      count: visits.filter((visit) => visit.shrineId === shrine.id).length
-    }))
-    .filter((item) => item.count > 0)
-    .sort((a, b) => b.count - a.count || a.shrine.name.localeCompare(b.shrine.name, "ko"))
-    .slice(0, 5);
   const filteredRecordVisits = recordShrineFilter === ALL_RECORDS
     ? visits
     : visits.filter((visit) => visit.shrineId === recordShrineFilter);
@@ -289,86 +269,6 @@ export default function PilgrimageApp() {
                 setActiveTab("verify");
               }}
             />
-
-            <div className="metric-grid shrine-stats">
-              <div>
-                <span>이 성지 인증</span>
-                <strong>{focusedVisits.length}건</strong>
-              </div>
-              <div>
-                <span>{focusedShrine.region} 성지</span>
-                <strong>{focusedRegionShrines.length}곳</strong>
-              </div>
-              <div>
-                <span>{focusedShrine.region} 방문</span>
-                <strong>{focusedRegionVisitedCount}곳</strong>
-              </div>
-            </div>
-
-            <section className="insight-card">
-              <div className="panel-heading">
-                <strong>{focusedShrine.region} 지역 통계</strong>
-                <span>{focusedRegionVisitCount}개 인증 기록</span>
-              </div>
-              <div className="region-bars">
-                {CATEGORY_FILTERS.map((category) => {
-                  const total = focusedRegionShrines.filter((shrine) => shrine.category === category).length;
-                  const width = focusedRegionShrines.length ? Math.round((total / focusedRegionShrines.length) * 100) : 0;
-                  return (
-                    <div key={category} className="region-bar">
-                      <span>{category}</span>
-                      <div><i style={{ width: `${width}%` }} /></div>
-                      <strong>{total}</strong>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-
-            <section className="insight-card">
-              <div className="panel-heading">
-                <strong>최근 인증 사진</strong>
-                <span>{focusedVisits.length ? focusedShrine.name : "아직 없음"}</span>
-              </div>
-              {focusedVisits.length === 0 ? (
-                <div className="empty-state compact">이 성지에는 아직 인증 기록이 없습니다.</div>
-              ) : (
-                <div className="visit-gallery">
-                  {focusedVisits.slice(0, 3).map((visit) => (
-                    <VisitCard key={visit.id} visit={visit} shrine={focusedShrine} compact />
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <section className="insight-card">
-              <div className="panel-heading">
-                <strong>많이 인증된 성지</strong>
-                <span>상위 {shrineVisitCounts.length}곳</span>
-              </div>
-              {shrineVisitCounts.length === 0 ? (
-                <div className="empty-state compact">아직 집계할 인증 기록이 없습니다.</div>
-              ) : (
-                <div className="popular-list">
-                  {shrineVisitCounts.map(({ shrine, count }) => (
-                    <button key={shrine.id} onClick={() => handleSelectShrine(shrine)}>
-                      <span>{shrine.name}</span>
-                      <strong>{count}건</strong>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <button
-              className="primary-action sticky-action"
-              onClick={() => {
-                setVerifyShrineId(focusedShrine.id);
-                setActiveTab("verify");
-              }}
-            >
-              나도 인증하기
-            </button>
           </section>
         ) : null}
 
