@@ -1,14 +1,21 @@
 :root {
   color-scheme: light;
-  --bg: #f5f2eb;
+  --bg: #f4f5f7;
+  --panel: rgba(255, 255, 255, 0.82);
   --surface: #ffffff;
-  --surface-soft: #f9f6ef;
-  --ink: #1f2933;
-  --muted: #667085;
-  --line: #ded7c9;
-  --accent: #276749;
-  --accent-strong: #1f513a;
-  --shadow: 0 12px 26px rgba(47, 40, 29, 0.1);
+  --surface-soft: #f7f8fa;
+  --ink: #111827;
+  --muted: #6b7280;
+  --subtle: #9ca3af;
+  --line: rgba(17, 24, 39, 0.1);
+  --line-strong: rgba(17, 24, 39, 0.16);
+  --accent: #0f7b55;
+  --accent-strong: #075e41;
+  --blue: #2563eb;
+  --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  --soft-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  --emboss: inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(15, 23, 42, 0.06);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Arial, sans-serif;
 }
 
 * {
@@ -22,9 +29,12 @@ body {
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(37, 99, 235, 0.10), transparent 28%),
+    radial-gradient(circle at 88% 18%, rgba(15, 123, 85, 0.12), transparent 26%),
+    linear-gradient(135deg, #f8fafc 0%, #eef1f5 52%, #f6f3ed 100%);
   color: var(--ink);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font);
 }
 
 button,
@@ -39,6 +49,14 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+button {
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
 h1,
 h2,
 h3,
@@ -48,33 +66,50 @@ p {
 
 h1 {
   margin-bottom: 0;
-  font-size: 30px;
-  line-height: 1.15;
+  color: #0b1220;
+  font-size: 32px;
+  font-weight: 760;
+  line-height: 1.08;
 }
 
 h2 {
   margin-bottom: 10px;
+  color: #0b1220;
   font-size: 24px;
+  font-weight: 750;
+  line-height: 1.18;
 }
 
 h3 {
   margin-bottom: 4px;
+  color: #111827;
   font-size: 16px;
+  font-weight: 720;
 }
 
 .app-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 420px;
+  grid-template-columns: minmax(0, 1fr) 432px;
   min-height: 100vh;
+  padding: 14px;
+  gap: 14px;
+}
+
+.map-side,
+.info-side {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow), var(--emboss);
+  backdrop-filter: blur(22px);
 }
 
 .map-side {
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
   min-width: 0;
-  min-height: 100vh;
-  background: #e8efe8;
-  border-right: 1px solid var(--line);
+  min-height: calc(100vh - 28px);
 }
 
 .map-toolbar {
@@ -82,16 +117,16 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 24px 28px 16px;
-  background: rgba(255, 255, 255, 0.88);
+  padding: 24px 26px 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.72));
   border-bottom: 1px solid var(--line);
 }
 
 .eyebrow {
-  margin: 0 0 5px;
+  margin: 0 0 6px;
   color: var(--accent);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 760;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -100,16 +135,17 @@ h3 {
 .primary-action,
 .detail-actions button,
 .shrine-row button {
-  border: 0;
+  border: 1px solid rgba(15, 123, 85, 0.16);
   border-radius: 8px;
-  background: var(--accent);
+  background: linear-gradient(180deg, #168961, #0f734f);
   color: white;
   cursor: pointer;
-  font-weight: 800;
+  font-weight: 720;
+  box-shadow: 0 10px 18px rgba(15, 123, 85, 0.22), var(--emboss);
 }
 
 .location-button {
-  min-width: 92px;
+  min-width: 96px;
   min-height: 42px;
   padding: 0 14px;
 }
@@ -117,8 +153,8 @@ h3 {
 .filters {
   display: grid;
   gap: 10px;
-  padding: 14px 28px;
-  background: rgba(255, 255, 255, 0.72);
+  padding: 14px 26px 16px;
+  background: rgba(255, 255, 255, 0.58);
   border-bottom: 1px solid var(--line);
 }
 
@@ -127,22 +163,32 @@ select,
 textarea,
 .form-card input {
   width: 100%;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(17, 24, 39, 0.12);
   border-radius: 8px;
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--ink);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05), inset 0 -1px 0 rgba(255, 255, 255, 0.78);
+  outline: none;
+}
+
+.filters input:focus,
+select:focus,
+textarea:focus,
+.form-card input:focus {
+  border-color: rgba(37, 99, 235, 0.48);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12), inset 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .filters input,
 select,
 .form-card input {
   height: 44px;
-  padding: 0 12px;
+  padding: 0 13px;
 }
 
 textarea {
-  min-height: 92px;
-  padding: 12px;
+  min-height: 94px;
+  padding: 12px 13px;
   resize: vertical;
 }
 
@@ -152,31 +198,39 @@ textarea {
   gap: 8px;
 }
 
-.chips button {
-  min-height: 38px;
-  border: 1px solid var(--line);
+.chips button,
+.tabbar button {
+  border: 1px solid rgba(17, 24, 39, 0.1);
   border-radius: 8px;
-  background: var(--surface);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(244, 246, 248, 0.92));
   color: var(--muted);
   cursor: pointer;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 720;
+  box-shadow: var(--emboss);
 }
 
-.chips button.selected {
-  border-color: var(--accent);
-  background: #e5f4eb;
+.chips button {
+  min-height: 38px;
+}
+
+.chips button.selected,
+.tabbar button.active {
+  border-color: rgba(15, 123, 85, 0.22);
+  background: linear-gradient(180deg, #ffffff, #e9f6f1);
   color: var(--accent-strong);
+  box-shadow: 0 8px 18px rgba(15, 123, 85, 0.12), var(--emboss);
 }
 
 .notice {
-  margin: 12px 28px 0;
-  padding: 10px 12px;
-  border: 1px solid #f2c94c;
+  margin: 12px 26px 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(245, 158, 11, 0.28);
   border-radius: 8px;
-  background: #fff8dc;
-  color: #6b4f00;
+  background: rgba(255, 251, 235, 0.9);
+  color: #92400e;
   font-size: 13px;
+  box-shadow: var(--emboss);
 }
 
 .map-panel {
@@ -184,13 +238,7 @@ textarea {
   grid-row: 4;
   min-height: 0;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.46) 1px, transparent 1px),
-    linear-gradient(rgba(255, 255, 255, 0.46) 1px, transparent 1px),
-    radial-gradient(circle at 20% 25%, rgba(39, 103, 73, 0.18), transparent 20%),
-    radial-gradient(circle at 72% 64%, rgba(23, 92, 211, 0.16), transparent 22%),
-    linear-gradient(135deg, #d7ead7 0%, #f5efd7 48%, #cde3ef 100%);
-  background-size: 48px 48px, 48px 48px, 100% 100%, 100% 100%, 100% 100%;
+  background: #e9edf2;
 }
 
 .kakao-map {
@@ -203,7 +251,7 @@ textarea {
 .kakao-info-window {
   display: grid;
   gap: 2px;
-  min-width: 120px;
+  min-width: 132px;
   padding: 8px 10px;
   color: var(--ink);
   font-size: 12px;
@@ -228,12 +276,12 @@ textarea {
   color: white;
   cursor: pointer;
   font-size: 13px;
-  font-weight: 900;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
+  font-weight: 800;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.2);
 }
 
 .map-marker.picked {
-  outline: 5px solid rgba(39, 103, 73, 0.25);
+  outline: 5px solid rgba(15, 123, 85, 0.24);
 }
 
 .map-caption {
@@ -242,51 +290,40 @@ textarea {
   bottom: 18px;
   z-index: 2;
   padding: 8px 10px;
-  border: 1px solid rgba(222, 215, 201, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.82);
   color: var(--muted);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 720;
+  box-shadow: var(--soft-shadow), var(--emboss);
+  backdrop-filter: blur(16px);
 }
 
 .map-caption.warning {
   max-width: min(420px, calc(100% - 36px));
-  border-color: #f2c94c;
-  background: #fff8dc;
-  color: #6b4f00;
+  border-color: rgba(245, 158, 11, 0.26);
+  background: rgba(255, 251, 235, 0.92);
+  color: #92400e;
 }
 
 .info-side {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  min-height: 100vh;
-  background: var(--surface-soft);
+  min-height: calc(100vh - 28px);
 }
 
 .tabbar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  padding: 16px 16px 12px;
-  background: var(--surface);
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.64);
   border-bottom: 1px solid var(--line);
 }
 
 .tabbar button {
   height: 42px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--muted);
-  cursor: pointer;
-  font-weight: 800;
-}
-
-.tabbar button.active {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: white;
 }
 
 .screen {
@@ -298,6 +335,17 @@ textarea {
   padding: 16px;
 }
 
+.screen::-webkit-scrollbar {
+  width: 10px;
+}
+
+.screen::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.18);
+  background-clip: padding-box;
+}
+
 .detail-card,
 .shrine-row,
 .form-card,
@@ -306,10 +354,10 @@ textarea {
 .empty-state,
 .metric-grid div,
 .route-list li {
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.76);
   border-radius: 8px;
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(250, 251, 252, 0.92));
+  box-shadow: var(--soft-shadow), var(--emboss);
 }
 
 .detail-card {
@@ -349,17 +397,19 @@ textarea {
 }
 
 .detail-actions a {
-  border: 1px solid var(--accent);
+  border: 1px solid rgba(17, 24, 39, 0.1);
   border-radius: 8px;
-  background: white;
-  color: var(--accent);
-  font-weight: 800;
+  background: linear-gradient(180deg, #ffffff, #f4f6f8);
+  color: var(--accent-strong);
+  font-weight: 720;
+  box-shadow: var(--emboss);
 }
 
 .panel-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 2px;
   color: var(--muted);
   font-size: 13px;
 }
@@ -377,9 +427,11 @@ textarea {
   min-height: 24px;
   margin: 0 5px 8px 0;
   padding: 0 8px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 800;
+  box-shadow: var(--emboss);
 }
 
 .visited-badge {
@@ -400,6 +452,11 @@ textarea {
   align-items: center;
   padding: 14px;
   cursor: pointer;
+}
+
+.shrine-row:hover {
+  border-color: rgba(37, 99, 235, 0.22);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.11), var(--emboss);
 }
 
 .shrine-row button {
@@ -425,12 +482,13 @@ textarea {
   margin-bottom: 8px;
   color: var(--muted);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 720;
 }
 
 .metric-grid strong,
 .progress-card strong {
   font-size: 24px;
+  font-weight: 760;
 }
 
 .empty-state {
@@ -462,9 +520,10 @@ textarea {
   height: 34px;
   place-items: center;
   border-radius: 50%;
-  background: var(--accent);
+  background: linear-gradient(180deg, #168961, #0f734f);
   color: white;
-  font-weight: 900;
+  font-weight: 800;
+  box-shadow: 0 8px 16px rgba(15, 123, 85, 0.2), var(--emboss);
 }
 
 .form-card {
@@ -478,21 +537,24 @@ textarea {
   gap: 7px;
   color: var(--muted);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 720;
 }
 
 .verify-status {
   display: grid;
   gap: 4px;
   padding: 12px;
-  border: 1px solid #f2c94c;
+  border: 1px solid rgba(245, 158, 11, 0.26);
   border-radius: 8px;
-  background: #fff8dc;
+  background: rgba(255, 251, 235, 0.92);
+  color: #92400e;
+  box-shadow: var(--emboss);
 }
 
 .verify-status.ok {
-  border-color: #84c89b;
-  background: #ecfdf3;
+  border-color: rgba(15, 123, 85, 0.26);
+  background: rgba(236, 253, 243, 0.94);
+  color: var(--accent-strong);
 }
 
 .verify-status span {
@@ -504,8 +566,9 @@ textarea {
   width: 100%;
   max-height: 260px;
   object-fit: cover;
+  border: 1px solid rgba(17, 24, 39, 0.1);
   border-radius: 8px;
-  border: 1px solid var(--line);
+  box-shadow: var(--soft-shadow);
 }
 
 .progress-card {
@@ -516,14 +579,16 @@ textarea {
   height: 12px;
   overflow: hidden;
   margin: 12px 0 8px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
   border-radius: 999px;
-  background: #eadfcd;
+  background: #e5e7eb;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
 }
 
 .progress-track div {
   height: 100%;
   border-radius: inherit;
-  background: var(--accent);
+  background: linear-gradient(90deg, #0f7b55, #2563eb);
 }
 
 .record-card {
@@ -542,8 +607,8 @@ textarea {
 }
 
 .record-badge {
-  background: #fff3cd;
-  color: #8a5a00;
+  background: #fff7ed;
+  color: #9a3412;
 }
 
 .record-badge.verified {
@@ -554,24 +619,23 @@ textarea {
 @media (max-width: 860px) {
   .app-shell {
     grid-template-columns: 1fr;
+    padding: 10px;
   }
 
   .map-side {
     min-height: 58vh;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
   }
 
   .map-toolbar {
-    padding: 16px 14px 12px;
+    padding: 18px 16px 12px;
   }
 
   .filters {
-    padding: 12px 14px;
+    padding: 12px 16px 14px;
   }
 
   .notice {
-    margin: 10px 14px 0;
+    margin: 10px 16px 0;
   }
 
   .map-panel {
@@ -589,7 +653,7 @@ textarea {
 
 @media (max-width: 520px) {
   h1 {
-    font-size: 24px;
+    font-size: 25px;
   }
 
   .map-toolbar {
