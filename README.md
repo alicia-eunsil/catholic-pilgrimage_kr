@@ -48,9 +48,18 @@ npm run dev
 
 Vercel에는 GitHub 저장소를 연결해서 배포하면 됩니다.
 
+## 환경변수
+
+카카오맵 표시에는 아래 환경변수가 필요합니다.
+
+```bash
+NEXT_PUBLIC_KAKAO_MAP_KEY="카카오_JavaScript_키"
+```
+
+Vercel 프로젝트의 Environment Variables에도 같은 이름으로 등록해야 합니다.
+
 ## 다음 개발 단계
 
 1. `data/korean_catholic_holy_sites.geocoded.csv`를 앱용 TypeScript/JSON 데이터로 자동 변환
-2. Kakao Maps JavaScript API 실제 지도 연동
-3. 네이버 블로그 검색 API 서버 라우트 추가
-4. 방문 기록을 서버에 저장할지 여부 재검토
+2. 네이버 블로그 검색 API 서버 라우트 추가
+3. 방문 기록을 서버에 저장할지 여부 재검토

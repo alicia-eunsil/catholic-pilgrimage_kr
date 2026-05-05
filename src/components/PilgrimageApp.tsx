@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { categories, shrines, type Shrine, type ShrineCategory } from "@/data/shrines";
 import { distanceKm, estimatedDriveMinutes, optimizeRoute, totalRouteDistanceKm, type LatLng } from "@/lib/geo";
 import { loadVisitRecords, saveVisitRecords, type VisitRecord } from "@/lib/storage";
@@ -12,6 +12,50 @@ const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
 };
 
 const VERIFY_RADIUS_METERS = 500;
+const KAKAO_MAP_SDK_ID = "kakao-map-sdk";
+
+declare global {
+  interface Window {
+    kakao?: {
+      maps: {
+        load: (callback: () => void) => void;
+        LatLng: new (lat: number, lng: number) => KakaoLatLng;
+        Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMap;
+        Marker: new (options: { position: KakaoLatLng; map?: KakaoMap }) => KakaoMarker;
+        InfoWindow: new (options: { content: string }) => KakaoInfoWindow;
+        LatLngBounds: new () => KakaoLatLngBounds;
+        event: {
+          addListener: (target: KakaoMarker, type: "click", handler: () => void) => void;
+        };
+      };
+    };
+  }
+}
+
+type KakaoLatLng = object;
+type KakaoMap = {
+  setBounds: (bounds: KakaoLatLngBounds) => void;
+  setCenter: (latLng: KakaoLatLng) => void;
+};
+type KakaoMarker = {
+  setMap: (map: KakaoMap | null) => void;
+};
+type KakaoInfoWindow = {
+  open: (map: KakaoMap, marker: KakaoMarker) => void;
+  close: () => void;
+};
+type KakaoLatLngBounds = {
+  extend: (latLng: KakaoLatLng) => void;
+};
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
 export default function PilgrimageApp() {
   const [activeTab, setActiveTab] = useState<"map" | "route" | "verify" | "records">("map");
@@ -59,6 +103,11 @@ export default function PilgrimageApp() {
   const canVerify = verifyDistanceMeters !== undefined && verifyDistanceMeters <= VERIFY_RADIUS_METERS;
   const visitedShrineIds = new Set(visits.map((visit) => visit.shrineId));
   const progress = Math.round((visitedShrineIds.size / shrines.length) * 100);
+  const handleSelectShrine = useCallback((shrine: Shrine) => {
+    setFocusedShrineId(shrine.id);
+    setVerifyShrineId(shrine.id);
+    setActiveTab("map");
+  }, []);
 
   function toggleSelected(id: string) {
     setSelectedIds((current) => {
@@ -157,29 +206,12 @@ export default function PilgrimageApp() {
 
         {locationError ? <p className="notice">{locationError}</p> : null}
 
-        <div className="map-panel" aria-label="성지 지도 미리보기">
-          {filteredShrines.map((shrine, index) => {
-            const selected = selectedIds.includes(shrine.id);
-            const left = 12 + ((index * 23) % 74);
-            const top = 16 + ((index * 31) % 64);
-            return (
-              <button
-                key={shrine.id}
-                className={`map-marker ${selected ? "picked" : ""}`}
-                style={{ left: `${left}%`, top: `${top}%`, background: categoryStyle[shrine.category].color }}
-                onClick={() => {
-                  setFocusedShrineId(shrine.id);
-                  setVerifyShrineId(shrine.id);
-                  setActiveTab("map");
-                }}
-                title={shrine.name}
-              >
-                {index + 1}
-              </button>
-            );
-          })}
-          <div className="map-caption">Kakao Maps API 연동 전 임시 지도 화면</div>
-        </div>
+        <KakaoMapPanel
+          shrines={filteredShrines}
+          selectedIds={selectedIds}
+          focusedShrineId={focusedShrineId}
+          onSelectShrine={handleSelectShrine}
+        />
       </section>
 
       <aside className="info-side">
@@ -333,6 +365,126 @@ export default function PilgrimageApp() {
         ) : null}
       </aside>
     </main>
+  );
+}
+
+function KakaoMapPanel({
+  shrines: mapShrines,
+  selectedIds,
+  focusedShrineId,
+  onSelectShrine
+}: {
+  shrines: Shrine[];
+  selectedIds: string[];
+  focusedShrineId: string;
+  onSelectShrine: (shrine: Shrine) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<KakaoMap | null>(null);
+  const markersRef = useRef<KakaoMarker[]>([]);
+  const infoWindowsRef = useRef<KakaoInfoWindow[]>([]);
+  const [status, setStatus] = useState<"loading" | "ready" | "missing-key" | "error">("loading");
+
+  useEffect(() => {
+    const appKey = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
+
+    if (!appKey) {
+      setStatus("missing-key");
+      return;
+    }
+
+    if (window.kakao?.maps) {
+      window.kakao.maps.load(() => setStatus("ready"));
+      return;
+    }
+
+    const existingScript = document.getElementById(KAKAO_MAP_SDK_ID) as HTMLScriptElement | null;
+    const script = existingScript ?? document.createElement("script");
+
+    if (!existingScript) {
+      script.id = KAKAO_MAP_SDK_ID;
+      script.async = true;
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false`;
+      document.head.appendChild(script);
+    }
+
+    script.onload = () => {
+      if (!window.kakao?.maps) {
+        setStatus("error");
+        return;
+      }
+      window.kakao.maps.load(() => setStatus("ready"));
+    };
+    script.onerror = () => setStatus("error");
+  }, []);
+
+  useEffect(() => {
+    if (status !== "ready" || !containerRef.current || !window.kakao?.maps) {
+      return;
+    }
+
+    const centerShrine = mapShrines.find((shrine) => shrine.id === focusedShrineId) ?? mapShrines[0] ?? shrines[0];
+    const center = new window.kakao.maps.LatLng(centerShrine.lat, centerShrine.lng);
+
+    if (!mapRef.current) {
+      mapRef.current = new window.kakao.maps.Map(containerRef.current, {
+        center,
+        level: 12
+      });
+    } else {
+      mapRef.current.setCenter(center);
+    }
+
+    const map = mapRef.current;
+    if (!map) {
+      return;
+    }
+
+    markersRef.current.forEach((marker) => marker.setMap(null));
+    infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
+    markersRef.current = [];
+    infoWindowsRef.current = [];
+
+    const bounds = new window.kakao.maps.LatLngBounds();
+
+    mapShrines.forEach((shrine) => {
+      const position = new window.kakao.maps.LatLng(shrine.lat, shrine.lng);
+      bounds.extend(position);
+
+      const marker = new window.kakao.maps.Marker({
+        map,
+        position
+      });
+      const isSelected = selectedIds.includes(shrine.id);
+      const infoWindow = new window.kakao.maps.InfoWindow({
+        content: `<div class="kakao-info-window"><strong>${escapeHtml(shrine.name)}</strong><span>${escapeHtml(shrine.category)}${isSelected ? " · 코스 선택됨" : ""}</span></div>`
+      });
+
+      marker.setMap(map);
+      infoWindow.open(map, marker);
+      markersRef.current.push(marker);
+      infoWindowsRef.current.push(infoWindow);
+
+      window.kakao.maps.event.addListener(marker, "click", () => onSelectShrine(shrine));
+    });
+
+    if (mapShrines.length > 1) {
+      map.setBounds(bounds);
+    }
+
+    return () => {
+      markersRef.current.forEach((marker) => marker.setMap(null));
+      infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
+    };
+  }, [focusedShrineId, mapShrines, onSelectShrine, selectedIds, status]);
+
+  return (
+    <div className="map-panel" aria-label="카카오 성지 지도">
+      <div ref={containerRef} className="kakao-map" />
+      {status === "loading" ? <div className="map-caption">Kakao Maps 로딩 중</div> : null}
+      {status === "missing-key" ? <div className="map-caption warning">NEXT_PUBLIC_KAKAO_MAP_KEY 환경변수가 필요합니다.</div> : null}
+      {status === "error" ? <div className="map-caption warning">Kakao Maps를 불러오지 못했습니다. 도메인 등록을 확인해 주세요.</div> : null}
+    </div>
   );
 }
 
