@@ -513,7 +513,7 @@ export default function PilgrimageApp() {
                     <button key={shrine.id} onClick={() => handleSelectShrine(shrine)}>
                       <span>
                         <strong>{shrine.name}</strong>
-                        <small>{shrine.region} · {shrine.category} · GPS {verifiedCount}건</small>
+                        <small>{shrine.region} · GPS {verifiedCount}건</small>
                       </span>
                       <b>{count}건</b>
                     </button>
