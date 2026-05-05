@@ -5,11 +5,14 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
+import zipfile
 
 
-INPUT_PATH = "data/shrines_template.csv"
-OUTPUT_PATH = "data/shrines.geocoded.csv"
+INPUT_PATH = "korean_catholic_holy_sites.xlsx"
+OUTPUT_PATH = "data/korean_catholic_holy_sites.geocoded.csv"
 VALID_CATEGORIES = {"성지", "순교사적지", "순례지"}
+NS = {"main": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
 def slugify(value):
@@ -20,6 +23,77 @@ def slugify(value):
 def extract_region(address):
     first = address.split()[0] if address.split() else ""
     return first.replace("특별시", "").replace("광역시", "").replace("특별자치시", "").replace("특별자치도", "").replace("도", "")
+
+
+def read_shared_strings(workbook):
+    try:
+        xml = workbook.read("xl/sharedStrings.xml")
+    except KeyError:
+        return []
+
+    root = ET.fromstring(xml)
+    values = []
+    for item in root.findall("main:si", NS):
+        text_parts = []
+        for text in item.findall(".//main:t", NS):
+            text_parts.append(text.text or "")
+        values.append("".join(text_parts))
+    return values
+
+
+def cell_value(cell, shared_strings):
+    value = cell.find("main:v", NS)
+    if value is None:
+        inline = cell.find("main:is/main:t", NS)
+        return (inline.text or "").strip() if inline is not None else ""
+
+    raw = value.text or ""
+    if cell.attrib.get("t") == "s":
+        return shared_strings[int(raw)].strip()
+    return raw.strip()
+
+
+def column_index(cell_ref):
+    letters = "".join(ch for ch in cell_ref if ch.isalpha())
+    index = 0
+    for letter in letters:
+        index = index * 26 + (ord(letter.upper()) - ord("A") + 1)
+    return index - 1
+
+
+def read_xlsx_rows(path):
+    with zipfile.ZipFile(path) as workbook:
+        shared_strings = read_shared_strings(workbook)
+        sheet_xml = workbook.read("xl/worksheets/sheet1.xml")
+
+    root = ET.fromstring(sheet_xml)
+    rows = []
+    for row in root.findall(".//main:sheetData/main:row", NS):
+        values = []
+        for cell in row.findall("main:c", NS):
+            index = column_index(cell.attrib.get("r", "A1"))
+            while len(values) <= index:
+                values.append("")
+            values[index] = cell_value(cell, shared_strings)
+        if any(values):
+            rows.append(values)
+
+    if not rows:
+        return []
+
+    headers = rows[0]
+    return [
+        {headers[index]: value for index, value in enumerate(row) if index < len(headers)}
+        for row in rows[1:]
+    ]
+
+
+def read_input_rows(path):
+    if path.endswith(".xlsx"):
+        return read_xlsx_rows(path)
+
+    with open(path, newline="", encoding="utf-8-sig") as input_file:
+        return list(csv.DictReader(input_file))
 
 
 def geocode(address, api_key):
@@ -47,8 +121,7 @@ def main():
         print("KAKAO_REST_API_KEY 환경변수를 설정해 주세요.", file=sys.stderr)
         return 1
 
-    with open(INPUT_PATH, newline="", encoding="utf-8-sig") as input_file:
-        rows = list(csv.DictReader(input_file))
+    rows = read_input_rows(INPUT_PATH)
 
     output_rows = []
     for index, row in enumerate(rows, start=1):

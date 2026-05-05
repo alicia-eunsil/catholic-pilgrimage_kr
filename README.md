@@ -24,7 +24,7 @@
 명동대성당,순례지,서울대교구,서울특별시 중구 명동길 74
 ```
 
-템플릿 파일은 `data/shrines_template.csv`에 있습니다.
+실제 입력 파일명은 프로젝트 루트의 `korean_catholic_holy_sites.xlsx`입니다.
 
 ## 지오코딩
 
@@ -35,7 +35,7 @@ export KAKAO_REST_API_KEY="카카오_REST_API_KEY"
 npm run geocode
 ```
 
-결과는 `data/shrines.geocoded.csv`에 저장됩니다.
+결과는 `data/korean_catholic_holy_sites.geocoded.csv`에 저장됩니다.
 
 ## 실행
 
@@ -50,7 +50,7 @@ Vercel에는 GitHub 저장소를 연결해서 배포하면 됩니다.
 
 ## 다음 개발 단계
 
-1. `data/shrines.geocoded.csv`를 앱용 TypeScript/JSON 데이터로 자동 변환
+1. `data/korean_catholic_holy_sites.geocoded.csv`를 앱용 TypeScript/JSON 데이터로 자동 변환
 2. Kakao Maps JavaScript API 실제 지도 연동
 3. 네이버 블로그 검색 API 서버 라우트 추가
 4. 방문 기록을 서버에 저장할지 여부 재검토
