@@ -2,7 +2,7 @@
 
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { shrines, type Shrine, type ShrineCategory } from "@/data/shrines";
-import { distanceKm, estimatedDriveMinutes, optimizeRoute, totalRouteDistanceKm, type LatLng } from "@/lib/geo";
+import { distanceKm, type LatLng } from "@/lib/geo";
 import { loadVisitRecords, saveVisitRecords, type VisitRecord } from "@/lib/storage";
 
 const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
@@ -83,6 +83,76 @@ const markerColors: Record<ShrineCategory, { fill: string; stroke: string }> = {
 };
 type ShrineSortKey = "diocese" | "category" | "name" | "address";
 type SortDirection = "asc" | "desc";
+type RecommendedCourse = {
+  id: string;
+  title: string;
+  theme: string;
+  region: string;
+  duration: string;
+  description: string;
+  shrineIds: string[];
+};
+
+const recommendedCourses: RecommendedCourse[] = [
+  {
+    id: "seoul-martyr-core",
+    title: "서울 도심 순교 코스",
+    theme: "도심 순교 성지",
+    region: "서울",
+    duration: "반나절-1일",
+    description: "대중교통으로 이동하기 좋은 서울 중심 순례 코스입니다. 처음 성지순례를 시작하는 사람에게 적합합니다.",
+    shrineIds: [
+      "명동대성당-순교성지",
+      "서소문-밖-네거리-순교성지-순교성지",
+      "중림동-약현성당-순례지",
+      "당고개-순교성지-순교성지",
+      "새남터-순교성지-순교성지",
+      "절두산-순교성지-순교성지"
+    ]
+  },
+  {
+    id: "naepo-pilgrimage",
+    title: "충남 내포 신앙의 길",
+    theme: "김대건 신부와 내포 교회",
+    region: "충남 당진-서산",
+    duration: "1일",
+    description: "솔뫼, 합덕, 신리, 해미를 잇는 대표 내포 순례 코스입니다. 자동차 이동 기준으로 구성했습니다.",
+    shrineIds: ["솔뫼성지", "합덕성당", "신리성지", "해미순교자국제성지"]
+  },
+  {
+    id: "jeonbuk-martyr",
+    title: "전주 전북 순교 코스",
+    theme: "호남 순교 신앙",
+    region: "전북 전주-완주-익산",
+    duration: "1일-1박 2일",
+    description: "전주 도심 성지와 전북 주요 순교 성지를 함께 보는 코스입니다. 여유 있게 이동하는 일정에 맞습니다.",
+    shrineIds: ["전동성당", "전주숲정이성지", "치명자산성지", "초남이성지", "천호성지"]
+  },
+  {
+    id: "jeju-faith-route",
+    title: "제주 신앙의 길",
+    theme: "제주 순교와 표착",
+    region: "제주",
+    duration: "1박 2일",
+    description: "제주의 순교 터와 김대건 신부 표착 기념지를 연결한 코스입니다. 제주 여행 일정과 함께 보기 좋습니다.",
+    shrineIds: [
+      "관덕정-순교-터",
+      "황사평-성지",
+      "김기량-순교-기념관",
+      "대정-성지-정난주-마리아의-묘",
+      "용수-성지-성-김대건-신부-표착기념관"
+    ]
+  },
+  {
+    id: "suwon-gyeonggi",
+    title: "수원교구 경기 성지 코스",
+    theme: "수도권 자동차 순례",
+    region: "경기",
+    duration: "1일-1박 2일",
+    description: "경기 남부와 광주권 성지를 묶은 코스입니다. 이동 거리가 있어 자동차 순례에 적합합니다.",
+    shrineIds: ["남양성모성지", "미리내성지", "어농성지", "은이골배마실성지", "천진암성지"]
+  }
+];
 
 function escapeHtml(value: string) {
   return value
@@ -114,12 +184,17 @@ function markerSvgDataUrl(category: ShrineCategory) {
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
+function resolveCourseShrines(course: RecommendedCourse) {
+  return course.shrineIds
+    .map((id) => shrines.find((shrine) => shrine.id === id))
+    .filter((shrine): shrine is Shrine => Boolean(shrine));
+}
+
 export default function PilgrimageApp() {
   const [activeTab, setActiveTab] = useState<"map" | "route" | "verify" | "records">("map");
   const [selectedCategories, setSelectedCategories] = useState<ShrineCategory[]>(CATEGORY_FILTERS);
   const [searchInput, setSearchInput] = useState("");
   const [query, setQuery] = useState("");
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [focusedShrineId, setFocusedShrineId] = useState(shrines[0].id);
   const [position, setPosition] = useState<LatLng | undefined>();
   const [locationError, setLocationError] = useState("");
@@ -133,7 +208,7 @@ export default function PilgrimageApp() {
   const [showShrineList, setShowShrineList] = useState(false);
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
-  const [showRouteOnMap, setShowRouteOnMap] = useState(false);
+  const [activeCourseId, setActiveCourseId] = useState<string | undefined>();
 
   useEffect(() => {
     setVisits(loadVisitRecords());
@@ -153,17 +228,11 @@ export default function PilgrimageApp() {
     });
   }, [selectedCategories, query]);
 
-  const selectedShrines = useMemo(() => {
-    return selectedIds
-      .map((id) => shrines.find((shrine) => shrine.id === id))
-      .filter((shrine): shrine is Shrine => Boolean(shrine));
-  }, [selectedIds]);
-
-  const route = useMemo(() => optimizeRoute(selectedShrines, position), [selectedShrines, position]);
-  const routeDistance = totalRouteDistanceKm(route, position);
-  const routeMapActive = showRouteOnMap && route.length > 1;
-  const visibleMapShrines = routeMapActive ? route : filteredShrines;
-  const visibleRouteShrines = routeMapActive ? route : EMPTY_ROUTE_SHRINES;
+  const activeCourse = recommendedCourses.find((course) => course.id === activeCourseId);
+  const activeCourseShrines = useMemo(() => (activeCourse ? resolveCourseShrines(activeCourse) : EMPTY_ROUTE_SHRINES), [activeCourse]);
+  const courseMapActive = activeCourseShrines.length > 1;
+  const visibleMapShrines = courseMapActive ? activeCourseShrines : filteredShrines;
+  const visibleRouteShrines = courseMapActive ? activeCourseShrines : EMPTY_ROUTE_SHRINES;
   const focusedShrine = shrines.find((shrine) => shrine.id === focusedShrineId) ?? shrines[0];
   const verifyShrine = shrines.find((shrine) => shrine.id === verifyShrineId) ?? shrines[0];
   const verifyDistanceMeters = position ? Math.round(distanceKm(position, verifyShrine) * 1000) : undefined;
@@ -207,17 +276,8 @@ export default function PilgrimageApp() {
     setActiveTab("map");
   }, []);
 
-  function toggleSelected(id: string) {
-    setSelectedIds((current) => {
-      if (current.includes(id)) {
-        return current.filter((selectedId) => selectedId !== id);
-      }
-      return [...current, id];
-    });
-  }
-
   function toggleCategory(category: ShrineCategory) {
-    setShowRouteOnMap(false);
+    setActiveCourseId(undefined);
     setSelectedCategories((current) => {
       if (current.includes(category)) {
         return current.filter((item) => item !== category);
@@ -227,24 +287,19 @@ export default function PilgrimageApp() {
   }
 
   function toggleAllCategories() {
-    setShowRouteOnMap(false);
+    setActiveCourseId(undefined);
     setSelectedCategories((current) => (current.length === CATEGORY_FILTERS.length ? [] : CATEGORY_FILTERS));
   }
 
   function runSearch() {
-    setShowRouteOnMap(false);
+    setActiveCourseId(undefined);
     setQuery(searchInput);
   }
 
   function resetSearch() {
-    setShowRouteOnMap(false);
+    setActiveCourseId(undefined);
     setSearchInput("");
     setQuery("");
-  }
-
-  function resetRoute() {
-    setSelectedIds([]);
-    setShowRouteOnMap(false);
   }
 
   function sortShrineList(nextKey: ShrineSortKey) {
@@ -380,9 +435,9 @@ export default function PilgrimageApp() {
         <KakaoMapPanel
           shrines={visibleMapShrines}
           routeShrines={visibleRouteShrines}
-          routeActive={routeMapActive}
+          routeActive={courseMapActive}
           focusedShrineId={focusedShrineId}
-          onClearRoute={() => setShowRouteOnMap(false)}
+          onClearRoute={() => setActiveCourseId(undefined)}
           onSelectShrine={handleSelectShrine}
         />
       </section>
@@ -390,7 +445,7 @@ export default function PilgrimageApp() {
       <aside className="info-side">
         <section className="tabbar" aria-label="주요 화면">
           <button className={activeTab === "map" ? "active" : ""} onClick={() => setActiveTab("map")}>소개</button>
-          <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>코스</button>
+          <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>추천코스</button>
           <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>기록</button>
           <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>인증</button>
         </section>
@@ -399,8 +454,6 @@ export default function PilgrimageApp() {
           <section className="screen">
             <ShrineDetail
               shrine={focusedShrine}
-              selected={selectedIds.includes(focusedShrine.id)}
-              onToggle={() => toggleSelected(focusedShrine.id)}
               onVerify={() => {
                 setVerifyShrineId(focusedShrine.id);
                 setActiveTab("verify");
@@ -462,50 +515,60 @@ export default function PilgrimageApp() {
 
         {activeTab === "route" ? (
           <section className="screen">
-          <div className="metric-grid">
-            <div>
-              <span>선택 성지</span>
-              <strong>{selectedShrines.length}곳</strong>
-            </div>
-            <div>
-              <span>예상 거리</span>
-              <strong>{routeDistance.toFixed(1)}km</strong>
-            </div>
-            <div>
-              <span>예상 시간</span>
-              <strong>{estimatedDriveMinutes(routeDistance)}분</strong>
-            </div>
-          </div>
+            <section className="insight-card">
+              <div className="panel-heading">
+                <strong>추천코스</strong>
+                <span>{recommendedCourses.length}개</span>
+              </div>
+              <p className="course-guide">
+                추천코스는 사용자가 직접 선택하는 경로가 아니라 지역, 신앙 주제, 이동 난이도를 기준으로 미리 구성한 순례 일정입니다.
+                지금은 대표 코스를 코드에 넣어 보여주고, 이후 엑셀이나 관리자 화면에서 코스를 관리하는 구조로 확장하면 됩니다.
+              </p>
+            </section>
 
-          <div className="route-actions">
-            <button className="primary-action" disabled={route.length < 2} onClick={() => setShowRouteOnMap(true)}>
-              코스보기
-            </button>
-            <button className="secondary-action" disabled={selectedIds.length === 0} onClick={resetRoute}>
-              코스 리셋
-            </button>
-          </div>
-
-          {route.length < 2 ? (
-            <div className="empty-state">지도 탭에서 성지를 2곳 이상 선택하면 좌표 기반 추천 코스가 생성됩니다.</div>
-          ) : (
-            <ol className="route-list">
-              {route.map((shrine, index) => {
-                const previous = index === 0 ? position : route[index - 1];
-                const segment = previous ? distanceKm(previous, shrine) : 0;
+            <div className="course-list">
+              {recommendedCourses.map((course) => {
+                const courseShrines = resolveCourseShrines(course);
+                const isActive = activeCourseId === course.id;
                 return (
-                  <li key={shrine.id}>
-                    <span className="step">{index + 1}</span>
+                  <article key={course.id} className={isActive ? "course-card active" : "course-card"}>
                     <div>
-                      <strong>{shrine.name}</strong>
-                      <p>{shrine.diocese} · {shrine.category}</p>
-                      <small>{index === 0 && !position ? "출발지" : `${segment.toFixed(1)}km 이동`}</small>
+                      <span className="course-kicker">{course.theme}</span>
+                      <h3>{course.title}</h3>
+                      <p>{course.description}</p>
+                      <div className="course-meta">
+                        <span>{course.region}</span>
+                        <span>{course.duration}</span>
+                        <span>{courseShrines.length}곳</span>
+                      </div>
                     </div>
-                  </li>
+
+                    <ol className="route-list compact">
+                      {courseShrines.map((shrine, index) => (
+                        <li key={shrine.id}>
+                          <span className="step">{index + 1}</span>
+                          <div>
+                            <strong>{shrine.name}</strong>
+                            <p>{shrine.diocese} · {shrine.address}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+
+                    <div className="route-actions">
+                      <button className={isActive ? "primary-action" : "secondary-action"} onClick={() => setActiveCourseId(course.id)}>
+                        {isActive ? "지도 표시 중" : "지도에서 보기"}
+                      </button>
+                      {isActive ? (
+                        <button className="secondary-action" onClick={() => setActiveCourseId(undefined)}>
+                          전체 지도
+                        </button>
+                      ) : null}
+                    </div>
+                  </article>
                 );
               })}
-            </ol>
-          )}
+            </div>
           </section>
         ) : null}
 
@@ -824,7 +887,7 @@ function KakaoMapPanel({
       <div ref={containerRef} className="kakao-map" />
       {routeActive ? (
         <div className="route-map-badge">
-          <span>코스 표시 중</span>
+          <span>추천코스 표시 중</span>
           <button onClick={onClearRoute}>전체 지도</button>
         </div>
       ) : null}
@@ -837,13 +900,9 @@ function KakaoMapPanel({
 
 function ShrineDetail({
   shrine,
-  selected,
-  onToggle,
   onVerify
 }: {
   shrine: Shrine;
-  selected: boolean;
-  onToggle: () => void;
   onVerify: () => void;
 }) {
   return (
@@ -860,7 +919,6 @@ function ShrineDetail({
         <a href={`https://search.naver.com/search.naver?query=${encodeURIComponent(`${shrine.name} 블로그`)}`} target="_blank" rel="noreferrer">
           블로그 후기
         </a>
-        <button onClick={onToggle}>{selected ? "선택 해제" : "코스 선택"}</button>
         <button onClick={onVerify}>나도 인증하기</button>
       </div>
     </article>
