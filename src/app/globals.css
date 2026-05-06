@@ -323,6 +323,171 @@ h3 {
   min-height: 0;
 }
 
+.course-dashboard {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 430px;
+  gap: 14px;
+  min-height: 0;
+}
+
+.course-map-workspace,
+.records-workspace {
+  min-width: 0;
+  min-height: 0;
+}
+
+.course-map-workspace {
+  display: grid;
+}
+
+.records-workspace {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 14px;
+  overflow: hidden;
+}
+
+.course-dashboard .course-map-card {
+  height: auto;
+  min-height: 0;
+}
+
+.course-map-shell {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+}
+
+.course-map-shell .map-panel {
+  height: 100%;
+  min-height: 0;
+}
+
+.course-map-overlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 5;
+  display: grid;
+  gap: 10px;
+  width: min(320px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  overflow: auto;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 8px;
+  padding: 13px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--soft-shadow), var(--emboss);
+  backdrop-filter: blur(18px);
+}
+
+.course-map-overlay > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.course-map-overlay strong {
+  font-size: 15px;
+}
+
+.course-map-overlay span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 680;
+}
+
+.course-filter-list {
+  display: grid;
+  gap: 7px;
+}
+
+.course-filter-list button {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  border-radius: 8px;
+  padding: 0 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(244, 246, 248, 0.94));
+  color: var(--accent-strong);
+  cursor: pointer;
+  font-weight: 760;
+  text-align: left;
+  box-shadow: var(--emboss);
+}
+
+.course-filter-list button.active {
+  border-color: rgba(100, 112, 125, 0.34);
+  background: linear-gradient(180deg, #b7c0cb, var(--accent-pressed));
+  color: #ffffff;
+}
+
+.course-filter-list i {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.58),
+    0 1px 2px rgba(15, 23, 42, 0.18);
+}
+
+.records-panel {
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(250, 251, 252, 0.92));
+  box-shadow: var(--soft-shadow), var(--emboss);
+}
+
+.record-mode-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.record-mode-tabs button {
+  min-height: 38px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(244, 246, 248, 0.94));
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 760;
+  box-shadow: var(--emboss);
+}
+
+.record-mode-tabs button.active {
+  border-color: rgba(100, 112, 125, 0.34);
+  background: linear-gradient(180deg, #b7c0cb, var(--accent-pressed));
+  color: #ffffff;
+}
+
+.records-panel .insight-card {
+  height: calc(100% - 63px);
+  overflow-y: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.panel-heading.sub {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.stat-list button.active {
+  border-color: rgba(100, 112, 125, 0.34);
+  background: linear-gradient(180deg, rgba(244, 247, 250, 0.98), rgba(235, 239, 244, 0.96));
+}
+
 .site-credit {
   grid-column: 1 / -1;
   padding: 4px 0 0;
@@ -1497,8 +1662,17 @@ textarea {
 
   .home-grid,
   .hero-panel,
-  .map-page {
+  .map-page,
+  .course-dashboard {
     grid-template-columns: 1fr;
+  }
+
+  .course-map-card {
+    min-height: 520px;
+  }
+
+  .records-workspace {
+    overflow: visible;
   }
 
   .course-list.featured {

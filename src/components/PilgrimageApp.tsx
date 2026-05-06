@@ -92,6 +92,15 @@ type RecommendedCourse = {
   description: string;
   shrineIds: string[];
 };
+type CourseRoute = {
+  id: string;
+  title: string;
+  color: string;
+  shrines: Shrine[];
+};
+type RecordViewMode = "all" | "byShrine";
+
+const courseColors = ["#7c8794", "#b7791f", "#b85c55", "#4f7fc4", "#6f7f5f"];
 
 const recommendedCourses: RecommendedCourse[] = [
   {
@@ -190,6 +199,17 @@ function resolveCourseShrines(course: RecommendedCourse) {
     .filter((shrine): shrine is Shrine => Boolean(shrine));
 }
 
+function uniqueShrines(items: Shrine[]) {
+  const seen = new Set<string>();
+  return items.filter((shrine) => {
+    if (seen.has(shrine.id)) {
+      return false;
+    }
+    seen.add(shrine.id);
+    return true;
+  });
+}
+
 export default function PilgrimageApp() {
   const [activeTab, setActiveTab] = useState<"route" | "map" | "records" | "verify">("route");
   const [selectedCategories, setSelectedCategories] = useState<ShrineCategory[]>(CATEGORY_FILTERS);
@@ -209,6 +229,8 @@ export default function PilgrimageApp() {
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
   const [activeCourseId, setActiveCourseId] = useState<string | undefined>();
+  const [recordViewMode, setRecordViewMode] = useState<RecordViewMode>("all");
+  const [selectedRecordShrineId, setSelectedRecordShrineId] = useState<string | undefined>();
 
   useEffect(() => {
     setVisits(loadVisitRecords());
@@ -233,9 +255,20 @@ export default function PilgrimageApp() {
   const courseMapActive = activeCourseShrines.length > 1;
   const visibleMapShrines = courseMapActive ? activeCourseShrines : filteredShrines;
   const visibleRouteShrines = courseMapActive ? activeCourseShrines : EMPTY_ROUTE_SHRINES;
-  const recentVisits = [...visits]
-    .sort((a, b) => new Date(b.visitedAt ?? b.createdAt).getTime() - new Date(a.visitedAt ?? a.createdAt).getTime())
-    .slice(0, 4);
+  const allRecentVisits = [...visits]
+    .sort((a, b) => new Date(b.visitedAt ?? b.createdAt).getTime() - new Date(a.visitedAt ?? a.createdAt).getTime());
+  const courseRoutes = useMemo(
+    () =>
+      recommendedCourses.map((course, index) => ({
+        id: course.id,
+        title: course.title,
+        color: courseColors[index % courseColors.length],
+        shrines: resolveCourseShrines(course)
+      })),
+    []
+  );
+  const shownCourseRoutes = activeCourseId ? courseRoutes.filter((course) => course.id === activeCourseId) : courseRoutes;
+  const courseMapShrines = uniqueShrines(shownCourseRoutes.flatMap((course) => course.shrines));
   const focusedShrine = shrines.find((shrine) => shrine.id === focusedShrineId) ?? shrines[0];
   const verifyShrine = shrines.find((shrine) => shrine.id === verifyShrineId) ?? shrines[0];
   const verifyDistanceMeters = position ? Math.round(distanceKm(position, verifyShrine) * 1000) : undefined;
@@ -260,6 +293,11 @@ export default function PilgrimageApp() {
     }))
     .filter((item) => item.count > 0)
     .sort((a, b) => b.count - a.count || a.shrine.name.localeCompare(b.shrine.name, "ko"));
+  const topShrineRecordStats = shrineRecordStats.slice(0, 5);
+  const selectedRecordShrine = shrines.find((shrine) => shrine.id === selectedRecordShrineId) ?? topShrineRecordStats[0]?.shrine;
+  const selectedShrineRecords = selectedRecordShrine
+    ? allRecentVisits.filter((visit) => visit.shrineId === selectedRecordShrine.id)
+    : [];
   const sortedShrineList = useMemo(() => {
     return [...shrines].sort((a, b) => {
       const direction = shrineSortDirection === "asc" ? 1 : -1;
@@ -278,15 +316,6 @@ export default function PilgrimageApp() {
     setIntroVisitPage(1);
     setActiveTab("map");
   }, []);
-
-  function selectCourse(course: RecommendedCourse) {
-    const courseShrines = resolveCourseShrines(course);
-    setActiveCourseId(course.id);
-    if (courseShrines[0]) {
-      setFocusedShrineId(courseShrines[0].id);
-      setVerifyShrineId(courseShrines[0].id);
-    }
-  }
 
   function toggleCategory(category: ShrineCategory) {
     setActiveCourseId(undefined);
@@ -541,173 +570,169 @@ export default function PilgrimageApp() {
       ) : null}
 
       {activeTab === "route" ? (
-        <section className="home-screen">
-          <section className="hero-panel">
-            <div>
-              <span className="course-kicker">추천코스 중심 서비스</span>
-              <h2>어디부터 갈지 고민될 때, 코스에서 시작하세요.</h2>
-              <p>
-                전국 성지를 한꺼번에 보여주기보다 실제 순례자가 고르기 쉬운 지역별 코스를 먼저 제안합니다.
-                코스를 선택하면 지도에서 순서와 위치를 바로 확인할 수 있습니다.
-              </p>
-            </div>
-            <div className="hero-metrics">
-              <div>
-                <span>성지 데이터</span>
-                <strong>{shrines.length}곳</strong>
-              </div>
-              <div>
-                <span>추천코스</span>
-                <strong>{recommendedCourses.length}개</strong>
-              </div>
-              <div>
-                <span>전체 인증</span>
-                <strong>{visits.length}건</strong>
-              </div>
-            </div>
-          </section>
-
-          <section className="home-grid">
-            <div className="course-board">
-              <div className="section-title">
-                <div>
-                  <strong>추천코스</strong>
-                  <span>지역과 주제별로 골라 시작하는 순례</span>
-                </div>
-                <button className="secondary-action" onClick={() => setActiveTab("map")}>성지지도 열기</button>
-              </div>
-
-              <div className="course-list featured">
-                {recommendedCourses.map((course) => {
-                  const courseShrines = resolveCourseShrines(course);
-                  const isActive = activeCourseId === course.id;
-                  return (
-                    <article key={course.id} className={isActive ? "course-card active" : "course-card"}>
-                      <div>
-                        <span className="course-kicker">{course.theme}</span>
-                        <h3>{course.title}</h3>
-                        <p>{course.description}</p>
-                        <div className="course-meta">
-                          <span>{course.region}</span>
-                          <span>{course.duration}</span>
-                          <span>{courseShrines.length}곳</span>
-                        </div>
-                      </div>
-
-                      <ol className="route-list compact">
-                        {courseShrines.slice(0, 4).map((shrine, index) => (
-                          <li key={shrine.id}>
-                            <span className="step">{index + 1}</span>
-                            <div>
-                              <strong>{shrine.name}</strong>
-                              <p>{shrine.diocese}</p>
-                            </div>
-                          </li>
-                        ))}
-                      </ol>
-
-                      <div className="route-actions">
-                        <button className={isActive ? "primary-action" : "secondary-action"} onClick={() => selectCourse(course)}>
-                          {isActive ? "지도 표시 중" : "코스 지도 보기"}
-                        </button>
-                        <button
-                          className="secondary-action"
-                          onClick={() => {
-                            selectCourse(course);
-                            setActiveTab("verify");
-                          }}
-                        >
-                          인증하기
-                        </button>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </div>
-
-            <aside className="activity-panel">
-              <section className="metric-grid">
-                <div>
-                  <span>GPS 인증</span>
-                  <strong>{verifiedVisitCount}건</strong>
-                </div>
-                <div>
-                  <span>인증된 성지</span>
-                  <strong>{visitedShrineCount}곳</strong>
-                </div>
-                <div>
-                  <span>최근 기록</span>
-                  <strong>{recentVisits.length}건</strong>
-                </div>
-              </section>
-
-              <section className="insight-card">
-                <div className="panel-heading">
-                  <strong>최근 인증</strong>
-                  <span>{recentVisits.length}건</span>
-                </div>
-                {recentVisits.length === 0 ? (
-                  <div className="empty-state compact">아직 인증 기록이 없습니다. 첫 순례 기록을 남겨보세요.</div>
-                ) : (
-                  <div className="visit-table">
-                    {recentVisits.map((visit) => {
-                      const shrine = shrines.find((item) => item.id === visit.shrineId);
-                      return (
-                        <article key={visit.id} className="visit-row">
-                          {visit.imageDataUrl ? (
-                            <button
-                              className="visit-photo-button"
-                              onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${shrine?.name ?? "성지"} 인증 사진` })}
-                              aria-label={`${shrine?.name ?? "성지"} 인증 사진 크게 보기`}
-                            >
-                              <img src={visit.imageDataUrl} alt="" />
-                            </button>
-                          ) : (
-                            <div className="visit-photo-placeholder">사진 없음</div>
-                          )}
-                          <div>
-                            <div>
-                              <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
-                            </div>
-                            <p>{visit.comment}</p>
-                            <small>{shrine?.name ?? "성지"} · {visit.nickname}{visit.verified ? " · GPS 인증" : ""}</small>
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </div>
-                )}
-              </section>
-            </aside>
-          </section>
-
-          <section className="course-map-section">
-            <div className="section-title">
-              <div>
-                <strong>{activeCourse ? activeCourse.title : "코스 지도"}</strong>
-                <span>{activeCourse ? `${activeCourse.region} · ${activeCourse.duration}` : "추천코스를 선택하면 지도에서 경로를 확인할 수 있습니다."}</span>
-              </div>
-              {activeCourse ? <button className="secondary-action" onClick={() => setActiveCourseId(undefined)}>지도 비우기</button> : null}
-            </div>
+        <section className="course-dashboard">
+          <section className="course-map-workspace">
             <div className="course-map-card">
-              {activeCourse ? (
+              <div className="course-map-shell">
                 <KakaoMapPanel
-                  shrines={activeCourseShrines}
-                  routeShrines={activeCourseShrines}
-                  routeActive={courseMapActive}
+                  shrines={courseMapShrines}
+                  routeShrines={EMPTY_ROUTE_SHRINES}
+                  routeActive={Boolean(activeCourseId)}
+                  courseRoutes={shownCourseRoutes}
                   focusedShrineId={focusedShrineId}
                   onClearRoute={() => setActiveCourseId(undefined)}
                   onSelectShrine={handleSelectShrine}
                 />
-              ) : (
-                <div className="map-placeholder">
-                  <strong>추천코스를 선택하세요</strong>
-                  <span>선택한 코스의 성지와 이동 순서가 지도에 표시됩니다.</span>
+                <div className="course-map-overlay">
+                  <div>
+                    <strong>추천코스 지도</strong>
+                    <span>{activeCourse ? activeCourse.title : "전체 코스 표시 중"}</span>
+                  </div>
+                  <div className="course-filter-list">
+                    <button className={!activeCourseId ? "active" : ""} onClick={() => setActiveCourseId(undefined)}>
+                      <i style={{ backgroundColor: "#9aa3af" }} />
+                      전체 코스
+                    </button>
+                    {courseRoutes.map((course) => (
+                      <button
+                        key={course.id}
+                        className={activeCourseId === course.id ? "active" : ""}
+                        onClick={() => setActiveCourseId(course.id)}
+                      >
+                        <i style={{ backgroundColor: course.color }} />
+                        {course.title}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           </section>
+
+          <aside className="records-workspace">
+            <section className="metric-grid">
+              <div>
+                <span>전체 인증</span>
+                <strong>{visits.length}건</strong>
+              </div>
+              <div>
+                <span>GPS 인증</span>
+                <strong>{verifiedVisitCount}건</strong>
+              </div>
+              <div>
+                <span>인증 성지</span>
+                <strong>{visitedShrineCount}곳</strong>
+              </div>
+            </section>
+
+            <section className="records-panel">
+              <div className="record-mode-tabs">
+                <button className={recordViewMode === "all" ? "active" : ""} onClick={() => setRecordViewMode("all")}>
+                  전체 인증보기
+                </button>
+                <button className={recordViewMode === "byShrine" ? "active" : ""} onClick={() => setRecordViewMode("byShrine")}>
+                  성지별 모아보기
+                </button>
+              </div>
+
+              {recordViewMode === "all" ? (
+                <section className="insight-card">
+                  <div className="panel-heading">
+                    <strong>전체 인증</strong>
+                    <span>최신순</span>
+                  </div>
+                  {allRecentVisits.length === 0 ? (
+                    <div className="empty-state compact">아직 인증 기록이 없습니다. 첫 순례 기록을 남겨보세요.</div>
+                  ) : (
+                    <div className="visit-table">
+                      {allRecentVisits.map((visit) => {
+                        const shrine = shrines.find((item) => item.id === visit.shrineId);
+                        return (
+                          <article key={visit.id} className="visit-row">
+                            {visit.imageDataUrl ? (
+                              <button
+                                className="visit-photo-button"
+                                onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${shrine?.name ?? "성지"} 인증 사진` })}
+                                aria-label={`${shrine?.name ?? "성지"} 인증 사진 크게 보기`}
+                              >
+                                <img src={visit.imageDataUrl} alt="" />
+                              </button>
+                            ) : (
+                              <div className="visit-photo-placeholder">사진 없음</div>
+                            )}
+                            <div>
+                              <div>
+                                <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
+                              </div>
+                              <p>{visit.comment}</p>
+                              <small>{shrine?.name ?? "성지"} · {visit.nickname}{visit.verified ? " · GPS 인증" : ""}</small>
+                            </div>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  )}
+                </section>
+              ) : (
+                <section className="insight-card">
+                  <div className="panel-heading">
+                    <strong>성지별 인증 TOP 5</strong>
+                    <span>{topShrineRecordStats.length}곳</span>
+                  </div>
+                  {topShrineRecordStats.length === 0 ? (
+                    <div className="empty-state compact">아직 성지별로 모아볼 인증 기록이 없습니다.</div>
+                  ) : (
+                    <>
+                      <div className="stat-list">
+                        {topShrineRecordStats.map(({ shrine, count, verifiedCount }) => (
+                          <button
+                            key={shrine.id}
+                            className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
+                            onClick={() => setSelectedRecordShrineId(shrine.id)}
+                          >
+                            <span>
+                              <strong>{shrine.name}</strong>
+                              <small>{shrine.region} · GPS {verifiedCount}건</small>
+                            </span>
+                            <b>{count}건</b>
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="panel-heading sub">
+                        <strong>{selectedRecordShrine?.name ?? "성지"} 인증</strong>
+                        <span>{selectedShrineRecords.length}건</span>
+                      </div>
+                      <div className="visit-table">
+                        {selectedShrineRecords.map((visit) => (
+                          <article key={visit.id} className="visit-row">
+                            {visit.imageDataUrl ? (
+                              <button
+                                className="visit-photo-button"
+                                onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${selectedRecordShrine?.name ?? "성지"} 인증 사진` })}
+                                aria-label={`${selectedRecordShrine?.name ?? "성지"} 인증 사진 크게 보기`}
+                              >
+                                <img src={visit.imageDataUrl} alt="" />
+                              </button>
+                            ) : (
+                              <div className="visit-photo-placeholder">사진 없음</div>
+                            )}
+                            <div>
+                              <div>
+                                <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
+                              </div>
+                              <p>{visit.comment}</p>
+                              <small>{visit.nickname}{visit.verified ? " · GPS 인증" : ""}</small>
+                            </div>
+                          </article>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </section>
+              )}
+            </section>
+          </aside>
         </section>
       ) : null}
 
@@ -873,6 +898,7 @@ function KakaoMapPanel({
   shrines: mapShrines,
   routeShrines,
   routeActive,
+  courseRoutes = [],
   focusedShrineId,
   onClearRoute,
   onSelectShrine
@@ -880,6 +906,7 @@ function KakaoMapPanel({
   shrines: Shrine[];
   routeShrines: Shrine[];
   routeActive: boolean;
+  courseRoutes?: CourseRoute[];
   focusedShrineId: string;
   onClearRoute: () => void;
   onSelectShrine: (shrine: Shrine) => void;
@@ -888,7 +915,7 @@ function KakaoMapPanel({
   const mapRef = useRef<KakaoMap | null>(null);
   const markersRef = useRef<KakaoMarker[]>([]);
   const infoWindowsRef = useRef<KakaoInfoWindow[]>([]);
-  const polylineRef = useRef<KakaoPolyline | null>(null);
+  const polylineRefs = useRef<KakaoPolyline[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "missing-key" | "error">("loading");
 
   useEffect(() => {
@@ -949,10 +976,10 @@ function KakaoMapPanel({
 
     markersRef.current.forEach((marker) => marker.setMap(null));
     infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
-    polylineRef.current?.setMap(null);
+    polylineRefs.current.forEach((polyline) => polyline.setMap(null));
     markersRef.current = [];
     infoWindowsRef.current = [];
-    polylineRef.current = null;
+    polylineRefs.current = [];
 
     const bounds = new kakaoMaps.LatLngBounds();
     const markerImages = CATEGORY_FILTERS.reduce((images, category) => {
@@ -988,7 +1015,7 @@ function KakaoMapPanel({
 
     if (routeShrines.length > 1) {
       const routePath = routeShrines.map((shrine) => new kakaoMaps.LatLng(shrine.lat, shrine.lng));
-      polylineRef.current = new kakaoMaps.Polyline({
+      const polyline = new kakaoMaps.Polyline({
         map,
         path: routePath,
         strokeColor: "#7c8794",
@@ -996,7 +1023,25 @@ function KakaoMapPanel({
         strokeStyle: "solid",
         strokeWeight: 5
       });
+      polylineRefs.current.push(polyline);
     }
+
+    courseRoutes.forEach((course) => {
+      if (course.shrines.length < 2) {
+        return;
+      }
+
+      const routePath = course.shrines.map((shrine) => new kakaoMaps.LatLng(shrine.lat, shrine.lng));
+      const polyline = new kakaoMaps.Polyline({
+        map,
+        path: routePath,
+        strokeColor: course.color,
+        strokeOpacity: 0.86,
+        strokeStyle: "solid",
+        strokeWeight: 5
+      });
+      polylineRefs.current.push(polyline);
+    });
 
     if (mapShrines.length > 1) {
       map.setBounds(bounds);
@@ -1005,9 +1050,9 @@ function KakaoMapPanel({
     return () => {
       markersRef.current.forEach((marker) => marker.setMap(null));
       infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
-      polylineRef.current?.setMap(null);
+      polylineRefs.current.forEach((polyline) => polyline.setMap(null));
     };
-  }, [mapShrines, onSelectShrine, routeShrines, status]);
+  }, [courseRoutes, mapShrines, onSelectShrine, routeShrines, status]);
 
   useEffect(() => {
     if (status !== "ready" || !mapRef.current || !window.kakao?.maps) {
