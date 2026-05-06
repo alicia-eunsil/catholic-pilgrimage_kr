@@ -423,6 +423,11 @@ export default function PilgrimageApp() {
             </button>
             {CATEGORY_FILTERS.map((item) => (
               <button key={item} className={selectedCategories.includes(item) ? "selected" : ""} onClick={() => toggleCategory(item)}>
+                <span
+                  className="category-filter-dot"
+                  style={{ backgroundColor: markerColors[item].fill, borderColor: markerColors[item].stroke }}
+                  aria-hidden="true"
+                />
                 {item}
               </button>
             ))}
