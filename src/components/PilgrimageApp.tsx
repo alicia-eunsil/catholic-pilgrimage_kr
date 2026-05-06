@@ -191,7 +191,7 @@ function resolveCourseShrines(course: RecommendedCourse) {
 }
 
 export default function PilgrimageApp() {
-  const [activeTab, setActiveTab] = useState<"map" | "route" | "verify" | "records">("map");
+  const [activeTab, setActiveTab] = useState<"route" | "map" | "records" | "verify">("route");
   const [selectedCategories, setSelectedCategories] = useState<ShrineCategory[]>(CATEGORY_FILTERS);
   const [searchInput, setSearchInput] = useState("");
   const [query, setQuery] = useState("");
@@ -233,6 +233,9 @@ export default function PilgrimageApp() {
   const courseMapActive = activeCourseShrines.length > 1;
   const visibleMapShrines = courseMapActive ? activeCourseShrines : filteredShrines;
   const visibleRouteShrines = courseMapActive ? activeCourseShrines : EMPTY_ROUTE_SHRINES;
+  const recentVisits = [...visits]
+    .sort((a, b) => new Date(b.visitedAt ?? b.createdAt).getTime() - new Date(a.visitedAt ?? a.createdAt).getTime())
+    .slice(0, 4);
   const focusedShrine = shrines.find((shrine) => shrine.id === focusedShrineId) ?? shrines[0];
   const verifyShrine = shrines.find((shrine) => shrine.id === verifyShrineId) ?? shrines[0];
   const verifyDistanceMeters = position ? Math.round(distanceKm(position, verifyShrine) * 1000) : undefined;
@@ -275,6 +278,15 @@ export default function PilgrimageApp() {
     setIntroVisitPage(1);
     setActiveTab("map");
   }, []);
+
+  function selectCourse(course: RecommendedCourse) {
+    const courseShrines = resolveCourseShrines(course);
+    setActiveCourseId(course.id);
+    if (courseShrines[0]) {
+      setFocusedShrineId(courseShrines[0].id);
+      setVerifyShrineId(courseShrines[0].id);
+    }
+  }
 
   function toggleCategory(category: ShrineCategory) {
     setActiveCourseId(undefined);
@@ -384,6 +396,22 @@ export default function PilgrimageApp() {
 
   return (
     <main className="app-shell">
+      <header className="app-header">
+        <div>
+          <p className="eyebrow">Catholic Pilgrimage KR</p>
+          <h1>성지순례 코스를 고르고, 방문 인증을 남겨보세요.</h1>
+          <p>전국 성지를 지역과 주제별 추천코스로 탐색하고, 순례 기록을 사진과 소감으로 쌓아가는 서비스입니다.</p>
+        </div>
+        <section className="tabbar" aria-label="주요 화면">
+          <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>추천코스</button>
+          <button className={activeTab === "map" ? "active" : ""} onClick={() => setActiveTab("map")}>성지지도</button>
+          <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>인증기록</button>
+          <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>방문인증</button>
+        </section>
+      </header>
+
+      {activeTab === "map" ? (
+        <>
       <section className="map-side">
         <div className="map-toolbar">
           <div>
@@ -448,137 +476,243 @@ export default function PilgrimageApp() {
       </section>
 
       <aside className="info-side">
-        <section className="tabbar" aria-label="주요 화면">
-          <button className={activeTab === "map" ? "active" : ""} onClick={() => setActiveTab("map")}>소개</button>
-          <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>추천코스</button>
-          <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>기록</button>
-          <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>인증</button>
-        </section>
+        <section className="screen">
+          <ShrineDetail
+            shrine={focusedShrine}
+            onVerify={() => {
+              setVerifyShrineId(focusedShrine.id);
+              setActiveTab("verify");
+            }}
+          />
+          <section className="insight-card">
+            <div className="panel-heading">
+              <strong>인증 기록</strong>
+              <span>{focusedVisits.length}건 · GPS {focusedVerifiedVisitCount}건</span>
+            </div>
 
-        {activeTab === "map" ? (
-          <section className="screen">
-            <ShrineDetail
-              shrine={focusedShrine}
-              onVerify={() => {
-                setVerifyShrineId(focusedShrine.id);
-                setActiveTab("verify");
-              }}
-            />
-            <section className="insight-card">
-              <div className="panel-heading">
-                <strong>인증 기록</strong>
-                <span>{focusedVisits.length}건 · GPS {focusedVerifiedVisitCount}건</span>
-              </div>
-
-              {focusedVisits.length === 0 ? (
-                <div className="empty-state compact">아직 이 성지에 남긴 인증 기록이 없습니다.</div>
-              ) : (
-                <>
-                  <div className="visit-table">
-                    {pagedFocusedVisits.map((visit) => (
-                      <article key={visit.id} className="visit-row">
-                        {visit.imageDataUrl ? (
-                          <button
-                            className="visit-photo-button"
-                            onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${focusedShrine.name} 인증 사진` })}
-                            aria-label={`${focusedShrine.name} 인증 사진 크게 보기`}
-                          >
-                            <img src={visit.imageDataUrl} alt="" />
-                          </button>
-                        ) : (
-                          <div className="visit-photo-placeholder">사진 없음</div>
-                        )}
-                        <div>
-                          <div>
-                            <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
-                          </div>
-                          <p>{visit.comment}</p>
-                          <small>{visit.nickname}{visit.verified ? " · GPS 인증" : ""}</small>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-
-                  {introVisitPageCount > 1 ? (
-                    <nav className="pagination" aria-label="인증 기록 페이지">
-                      {Array.from({ length: introVisitPageCount }, (_, index) => index + 1).map((page) => (
+            {focusedVisits.length === 0 ? (
+              <div className="empty-state compact">아직 이 성지에 남긴 인증 기록이 없습니다.</div>
+            ) : (
+              <>
+                <div className="visit-table">
+                  {pagedFocusedVisits.map((visit) => (
+                    <article key={visit.id} className="visit-row">
+                      {visit.imageDataUrl ? (
                         <button
-                          key={page}
-                          className={page === introVisitPageSafe ? "active" : ""}
-                          onClick={() => setIntroVisitPage(page)}
+                          className="visit-photo-button"
+                          onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${focusedShrine.name} 인증 사진` })}
+                          aria-label={`${focusedShrine.name} 인증 사진 크게 보기`}
                         >
-                          {page}
+                          <img src={visit.imageDataUrl} alt="" />
                         </button>
-                      ))}
-                    </nav>
-                  ) : null}
-                </>
-              )}
-            </section>
-          </section>
-        ) : null}
-
-        {activeTab === "route" ? (
-          <section className="screen">
-            <section className="insight-card">
-              <div className="panel-heading">
-                <strong>추천코스</strong>
-                <span>{recommendedCourses.length}개</span>
-              </div>
-              <p className="course-guide">
-                추천코스는 사용자가 직접 선택하는 경로가 아니라 지역, 신앙 주제, 이동 난이도를 기준으로 미리 구성한 순례 일정입니다.
-                지금은 대표 코스를 코드에 넣어 보여주고, 이후 엑셀이나 관리자 화면에서 코스를 관리하는 구조로 확장하면 됩니다.
-              </p>
-            </section>
-
-            <div className="course-list">
-              {recommendedCourses.map((course) => {
-                const courseShrines = resolveCourseShrines(course);
-                const isActive = activeCourseId === course.id;
-                return (
-                  <article key={course.id} className={isActive ? "course-card active" : "course-card"}>
-                    <div>
-                      <span className="course-kicker">{course.theme}</span>
-                      <h3>{course.title}</h3>
-                      <p>{course.description}</p>
-                      <div className="course-meta">
-                        <span>{course.region}</span>
-                        <span>{course.duration}</span>
-                        <span>{courseShrines.length}곳</span>
+                      ) : (
+                        <div className="visit-photo-placeholder">사진 없음</div>
+                      )}
+                      <div>
+                        <div>
+                          <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
+                        </div>
+                        <p>{visit.comment}</p>
+                        <small>{visit.nickname}{visit.verified ? " · GPS 인증" : ""}</small>
                       </div>
-                    </div>
+                    </article>
+                  ))}
+                </div>
 
-                    <ol className="route-list compact">
-                      {courseShrines.map((shrine, index) => (
-                        <li key={shrine.id}>
-                          <span className="step">{index + 1}</span>
-                          <div>
-                            <strong>{shrine.name}</strong>
-                            <p>{shrine.diocese} · {shrine.address}</p>
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
-
-                    <div className="route-actions">
-                      <button className={isActive ? "primary-action" : "secondary-action"} onClick={() => setActiveCourseId(course.id)}>
-                        {isActive ? "지도 표시 중" : "지도에서 보기"}
+                {introVisitPageCount > 1 ? (
+                  <nav className="pagination" aria-label="인증 기록 페이지">
+                    {Array.from({ length: introVisitPageCount }, (_, index) => index + 1).map((page) => (
+                      <button
+                        key={page}
+                        className={page === introVisitPageSafe ? "active" : ""}
+                        onClick={() => setIntroVisitPage(page)}
+                      >
+                        {page}
                       </button>
-                      {isActive ? (
-                        <button className="secondary-action" onClick={() => setActiveCourseId(undefined)}>
-                          전체 지도
-                        </button>
-                      ) : null}
-                    </div>
-                  </article>
-                );
-              })}
+                    ))}
+                  </nav>
+                ) : null}
+              </>
+            )}
+          </section>
+        </section>
+      </aside>
+        </>
+      ) : null}
+
+      {activeTab === "route" ? (
+        <section className="home-screen">
+          <section className="hero-panel">
+            <div>
+              <span className="course-kicker">추천코스 중심 서비스</span>
+              <h2>어디부터 갈지 고민될 때, 코스에서 시작하세요.</h2>
+              <p>
+                전국 성지를 한꺼번에 보여주기보다 실제 순례자가 고르기 쉬운 지역별 코스를 먼저 제안합니다.
+                코스를 선택하면 지도에서 순서와 위치를 바로 확인할 수 있습니다.
+              </p>
+            </div>
+            <div className="hero-metrics">
+              <div>
+                <span>성지 데이터</span>
+                <strong>{shrines.length}곳</strong>
+              </div>
+              <div>
+                <span>추천코스</span>
+                <strong>{recommendedCourses.length}개</strong>
+              </div>
+              <div>
+                <span>전체 인증</span>
+                <strong>{visits.length}건</strong>
+              </div>
             </div>
           </section>
-        ) : null}
 
-        {activeTab === "verify" ? (
-          <section className="screen">
+          <section className="home-grid">
+            <div className="course-board">
+              <div className="section-title">
+                <div>
+                  <strong>추천코스</strong>
+                  <span>지역과 주제별로 골라 시작하는 순례</span>
+                </div>
+                <button className="secondary-action" onClick={() => setActiveTab("map")}>성지지도 열기</button>
+              </div>
+
+              <div className="course-list featured">
+                {recommendedCourses.map((course) => {
+                  const courseShrines = resolveCourseShrines(course);
+                  const isActive = activeCourseId === course.id;
+                  return (
+                    <article key={course.id} className={isActive ? "course-card active" : "course-card"}>
+                      <div>
+                        <span className="course-kicker">{course.theme}</span>
+                        <h3>{course.title}</h3>
+                        <p>{course.description}</p>
+                        <div className="course-meta">
+                          <span>{course.region}</span>
+                          <span>{course.duration}</span>
+                          <span>{courseShrines.length}곳</span>
+                        </div>
+                      </div>
+
+                      <ol className="route-list compact">
+                        {courseShrines.slice(0, 4).map((shrine, index) => (
+                          <li key={shrine.id}>
+                            <span className="step">{index + 1}</span>
+                            <div>
+                              <strong>{shrine.name}</strong>
+                              <p>{shrine.diocese}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ol>
+
+                      <div className="route-actions">
+                        <button className={isActive ? "primary-action" : "secondary-action"} onClick={() => selectCourse(course)}>
+                          {isActive ? "지도 표시 중" : "코스 지도 보기"}
+                        </button>
+                        <button
+                          className="secondary-action"
+                          onClick={() => {
+                            selectCourse(course);
+                            setActiveTab("verify");
+                          }}
+                        >
+                          인증하기
+                        </button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+
+            <aside className="activity-panel">
+              <section className="metric-grid">
+                <div>
+                  <span>GPS 인증</span>
+                  <strong>{verifiedVisitCount}건</strong>
+                </div>
+                <div>
+                  <span>인증된 성지</span>
+                  <strong>{visitedShrineCount}곳</strong>
+                </div>
+                <div>
+                  <span>최근 기록</span>
+                  <strong>{recentVisits.length}건</strong>
+                </div>
+              </section>
+
+              <section className="insight-card">
+                <div className="panel-heading">
+                  <strong>최근 인증</strong>
+                  <span>{recentVisits.length}건</span>
+                </div>
+                {recentVisits.length === 0 ? (
+                  <div className="empty-state compact">아직 인증 기록이 없습니다. 첫 순례 기록을 남겨보세요.</div>
+                ) : (
+                  <div className="visit-table">
+                    {recentVisits.map((visit) => {
+                      const shrine = shrines.find((item) => item.id === visit.shrineId);
+                      return (
+                        <article key={visit.id} className="visit-row">
+                          {visit.imageDataUrl ? (
+                            <button
+                              className="visit-photo-button"
+                              onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${shrine?.name ?? "성지"} 인증 사진` })}
+                              aria-label={`${shrine?.name ?? "성지"} 인증 사진 크게 보기`}
+                            >
+                              <img src={visit.imageDataUrl} alt="" />
+                            </button>
+                          ) : (
+                            <div className="visit-photo-placeholder">사진 없음</div>
+                          )}
+                          <div>
+                            <div>
+                              <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
+                            </div>
+                            <p>{visit.comment}</p>
+                            <small>{shrine?.name ?? "성지"} · {visit.nickname}{visit.verified ? " · GPS 인증" : ""}</small>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
+              </section>
+            </aside>
+          </section>
+
+          <section className="course-map-section">
+            <div className="section-title">
+              <div>
+                <strong>{activeCourse ? activeCourse.title : "코스 지도"}</strong>
+                <span>{activeCourse ? `${activeCourse.region} · ${activeCourse.duration}` : "추천코스를 선택하면 지도에서 경로를 확인할 수 있습니다."}</span>
+              </div>
+              {activeCourse ? <button className="secondary-action" onClick={() => setActiveCourseId(undefined)}>지도 비우기</button> : null}
+            </div>
+            <div className="course-map-card">
+              {activeCourse ? (
+                <KakaoMapPanel
+                  shrines={activeCourseShrines}
+                  routeShrines={activeCourseShrines}
+                  routeActive={courseMapActive}
+                  focusedShrineId={focusedShrineId}
+                  onClearRoute={() => setActiveCourseId(undefined)}
+                  onSelectShrine={handleSelectShrine}
+                />
+              ) : (
+                <div className="map-placeholder">
+                  <strong>추천코스를 선택하세요</strong>
+                  <span>선택한 코스의 성지와 이동 순서가 지도에 표시됩니다.</span>
+                </div>
+              )}
+            </div>
+          </section>
+        </section>
+      ) : null}
+
+      {activeTab === "verify" ? (
+        <section className="content-screen narrow">
           <div className="form-card">
             <label>
               방문 성지
@@ -619,56 +753,55 @@ export default function PilgrimageApp() {
 
             <button className="primary-action" onClick={submitVisit}>방문 기록 남기기</button>
           </div>
-          </section>
-        ) : null}
+        </section>
+      ) : null}
 
-        {activeTab === "records" ? (
-          <section className="screen">
-            <div className="metric-grid">
-              <div>
-                <span>전체 인증</span>
-                <strong>{visits.length}건</strong>
-              </div>
-              <div>
-                <span>GPS 인증</span>
-                <strong>{verifiedVisitCount}건</strong>
-              </div>
-              <div>
-                <span>인증된 성지</span>
-                <strong>{visitedShrineCount}곳</strong>
-              </div>
+      {activeTab === "records" ? (
+        <section className="content-screen">
+          <div className="metric-grid">
+            <div>
+              <span>전체 인증</span>
+              <strong>{visits.length}건</strong>
             </div>
+            <div>
+              <span>GPS 인증</span>
+              <strong>{verifiedVisitCount}건</strong>
+            </div>
+            <div>
+              <span>인증된 성지</span>
+              <strong>{visitedShrineCount}곳</strong>
+            </div>
+          </div>
 
-            <section className="insight-card">
-              <div className="panel-heading">
-                <strong>성지별 인증 통계</strong>
-                <span>{shrineRecordStats.length}곳</span>
+          <section className="insight-card">
+            <div className="panel-heading">
+              <strong>성지별 인증 통계</strong>
+              <span>{shrineRecordStats.length}곳</span>
+            </div>
+            {shrineRecordStats.length === 0 ? (
+              <div className="empty-state compact">아직 집계할 인증 기록이 없습니다.</div>
+            ) : (
+              <div className="stat-list">
+                {shrineRecordStats.map(({ shrine, count, verifiedCount }) => (
+                  <button
+                    key={shrine.id}
+                    onClick={() => {
+                      setActiveCourseId(undefined);
+                      handleSelectShrine(shrine);
+                    }}
+                  >
+                    <span>
+                      <strong>{shrine.name}</strong>
+                      <small>{shrine.region} · GPS {verifiedCount}건</small>
+                    </span>
+                    <b>{count}건</b>
+                  </button>
+                ))}
               </div>
-              {shrineRecordStats.length === 0 ? (
-                <div className="empty-state compact">아직 집계할 인증 기록이 없습니다.</div>
-              ) : (
-                <div className="stat-list">
-                  {shrineRecordStats.map(({ shrine, count, verifiedCount }) => (
-                    <button
-                      key={shrine.id}
-                      onClick={() => {
-                        setActiveCourseId(undefined);
-                        handleSelectShrine(shrine);
-                      }}
-                    >
-                      <span>
-                        <strong>{shrine.name}</strong>
-                        <small>{shrine.region} · GPS {verifiedCount}건</small>
-                      </span>
-                      <b>{count}건</b>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </section>
+            )}
           </section>
-        ) : null}
-      </aside>
+        </section>
+      ) : null}
 
       {expandedImage ? (
         <div className="image-modal" role="dialog" aria-modal="true" onClick={() => setExpandedImage(undefined)}>
