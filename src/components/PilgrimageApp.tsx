@@ -28,7 +28,14 @@ declare global {
         load: (callback: () => void) => void;
         LatLng: new (lat: number, lng: number) => KakaoLatLng;
         Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMap;
-        Marker: new (options: { position: KakaoLatLng; map?: KakaoMap }) => KakaoMarker;
+        Marker: new (options: { image?: KakaoMarkerImage; position: KakaoLatLng; map?: KakaoMap }) => KakaoMarker;
+        MarkerImage: new (
+          src: string,
+          size: KakaoSize,
+          options?: { offset?: KakaoPoint }
+        ) => KakaoMarkerImage;
+        Point: new (x: number, y: number) => KakaoPoint;
+        Size: new (width: number, height: number) => KakaoSize;
         InfoWindow: new (options: { content: string }) => KakaoInfoWindow;
         Polyline: new (options: {
           path: KakaoLatLng[];
@@ -55,6 +62,9 @@ type KakaoMap = {
 type KakaoMarker = {
   setMap: (map: KakaoMap | null) => void;
 };
+type KakaoMarkerImage = object;
+type KakaoPoint = object;
+type KakaoSize = object;
 type KakaoPolyline = {
   setMap: (map: KakaoMap | null) => void;
 };
@@ -66,6 +76,11 @@ type KakaoLatLngBounds = {
   extend: (latLng: KakaoLatLng) => void;
 };
 const EMPTY_ROUTE_SHRINES: Shrine[] = [];
+const markerColors: Record<ShrineCategory, { fill: string; stroke: string }> = {
+  성지: { fill: "#d9a441", stroke: "#9f6b00" },
+  순교사적지: { fill: "#d45b4f", stroke: "#b42318" },
+  순례지: { fill: "#5d8edc", stroke: "#175cd3" }
+};
 type ShrineSortKey = "diocese" | "category" | "name" | "address";
 type SortDirection = "asc" | "desc";
 
@@ -85,6 +100,18 @@ function formatDateTime(value: string) {
     hour: "2-digit",
     minute: "2-digit"
   });
+}
+
+function markerSvgDataUrl(category: ShrineCategory) {
+  const color = markerColors[category];
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="42" viewBox="0 0 34 42">
+      <path d="M17 41C13.2 35.7 4 25.6 4 16.6C4 9.1 9.8 3 17 3s13 6.1 13 13.6c0 9-9.2 19.1-13 24.4Z" fill="${color.fill}" stroke="${color.stroke}" stroke-width="2"/>
+      <circle cx="17" cy="16.5" r="6.2" fill="#fff" fill-opacity=".96"/>
+      <path d="M17 10.4v12.2M11.8 15.2h10.4" stroke="${color.stroke}" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  `;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
 export default function PilgrimageApp() {
@@ -725,12 +752,21 @@ function KakaoMapPanel({
     polylineRef.current = null;
 
     const bounds = new kakaoMaps.LatLngBounds();
+    const markerImages = CATEGORY_FILTERS.reduce((images, category) => {
+      images[category] = new kakaoMaps.MarkerImage(
+        markerSvgDataUrl(category),
+        new kakaoMaps.Size(34, 42),
+        { offset: new kakaoMaps.Point(17, 42) }
+      );
+      return images;
+    }, {} as Record<ShrineCategory, KakaoMarkerImage>);
 
     mapShrines.forEach((shrine) => {
       const position = new kakaoMaps.LatLng(shrine.lat, shrine.lng);
       bounds.extend(position);
 
       const marker = new kakaoMaps.Marker({
+        image: markerImages[shrine.category],
         map,
         position
       });
