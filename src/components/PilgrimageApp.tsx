@@ -428,8 +428,8 @@ export default function PilgrimageApp() {
       <header className="app-header">
         <div>
           <p className="eyebrow">Catholic Pilgrimage KR</p>
-          <h1>성지순례 코스를 고르고, 방문 인증을 남겨보세요.</h1>
-          <p>전국 성지를 지역과 주제별 추천코스로 탐색하고, 순례 기록을 사진과 소감으로 쌓아가는 서비스입니다.</p>
+          <h1>성지를 잇고, 순례를 남기다.</h1>
+          <p>전국 성지 코스를 살펴보고 방문의 기록을 쌓아보세요.</p>
         </div>
         <section className="tabbar" aria-label="주요 화면">
           <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>추천코스</button>
