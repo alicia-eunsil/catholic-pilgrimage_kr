@@ -647,7 +647,7 @@ export default function PilgrimageApp() {
                     <button
                       key={shrine.id}
                       onClick={() => {
-                        setShowRouteOnMap(false);
+                        setActiveCourseId(undefined);
                         handleSelectShrine(shrine);
                       }}
                     >
@@ -708,7 +708,7 @@ export default function PilgrimageApp() {
                     <tr
                       key={shrine.id}
                       onClick={() => {
-                        setShowRouteOnMap(false);
+                        setActiveCourseId(undefined);
                         handleSelectShrine(shrine);
                         setShowShrineList(false);
                       }}
