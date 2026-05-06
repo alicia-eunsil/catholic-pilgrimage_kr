@@ -431,12 +431,12 @@ export default function PilgrimageApp() {
           <h1>성지를 잇고, 순례를 남기다.</h1>
           <p>전국 성지 코스를 살펴보고 방문의 기록을 쌓아보세요.</p>
         </div>
-        <section className="tabbar" aria-label="주요 화면">
+        <nav className="app-nav" aria-label="주요 화면">
           <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>추천코스</button>
           <button className={activeTab === "map" ? "active" : ""} onClick={() => setActiveTab("map")}>성지지도</button>
           <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>인증기록</button>
           <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>방문인증</button>
-        </section>
+        </nav>
       </header>
 
       {activeTab === "map" ? (
