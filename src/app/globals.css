@@ -323,6 +323,15 @@ h3 {
   min-height: 0;
 }
 
+.site-credit {
+  grid-column: 1 / -1;
+  padding: 4px 0 0;
+  color: var(--subtle);
+  font-size: 12px;
+  font-weight: 650;
+  text-align: center;
+}
+
 .map-toolbar {
   display: flex;
   align-items: center;

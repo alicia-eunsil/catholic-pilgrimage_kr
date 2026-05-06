@@ -863,6 +863,8 @@ export default function PilgrimageApp() {
           </section>
         </div>
       ) : null}
+
+      <footer className="site-credit">-created by alicia-</footer>
     </main>
   );
 }
