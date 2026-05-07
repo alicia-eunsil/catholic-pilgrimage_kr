@@ -383,7 +383,7 @@ h3 {
 .records-workspace {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: 14px;
+  gap: 10px;
   overflow: hidden;
 }
 
@@ -1539,17 +1539,17 @@ textarea {
 
 .metric-grid div {
   display: grid;
-  min-height: 88px;
+  min-height: 64px;
   align-content: center;
   justify-items: center;
-  padding: 13px;
+  padding: 10px 8px;
   text-align: center;
 }
 
 .metric-grid span,
 .progress-card span {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 720;
@@ -1558,7 +1558,7 @@ textarea {
 .metric-grid strong,
 .progress-card strong {
   font-variant-numeric: tabular-nums;
-  font-size: 24px;
+  font-size: 21px;
   font-weight: 760;
   line-height: 1;
 }
