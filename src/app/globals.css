@@ -555,6 +555,23 @@ h3 {
   color: #313946;
 }
 
+.record-shrine-picker {
+  display: grid;
+  gap: 6px;
+}
+
+.record-shrine-picker span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.record-shrine-picker select {
+  height: 38px;
+  font-size: 13px;
+  font-weight: 720;
+}
+
 .panel-heading.sub {
   margin-top: 12px;
   padding-top: 12px;

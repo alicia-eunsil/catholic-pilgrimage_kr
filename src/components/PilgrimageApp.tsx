@@ -355,6 +355,7 @@ export default function PilgrimageApp() {
   const selectedShrineRecords = selectedRecordShrine
     ? allRecentVisits.filter((visit) => visit.shrineId === selectedRecordShrine.id)
     : [];
+  const recordShrineOptions = useMemo(() => [...shrines].sort((a, b) => a.name.localeCompare(b.name, "ko")), []);
   const sortedShrineList = useMemo(() => {
     return [...shrines].sort((a, b) => {
       const direction = shrineSortDirection === "asc" ? 1 : -1;
@@ -759,6 +760,20 @@ export default function PilgrimageApp() {
                           </button>
                         ))}
                       </div>
+
+                      <label className="record-shrine-picker">
+                        <span>전체 성지 선택</span>
+                        <select
+                          value={selectedRecordShrine?.id ?? ""}
+                          onChange={(event) => setSelectedRecordShrineId(event.target.value)}
+                        >
+                          {recordShrineOptions.map((shrine) => (
+                            <option key={shrine.id} value={shrine.id}>
+                              {shrine.name}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
 
                       <div className="panel-heading sub">
                         <strong>{selectedRecordShrine?.name ?? "성지"} 인증</strong>
