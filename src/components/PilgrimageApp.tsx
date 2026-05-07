@@ -1168,7 +1168,6 @@ function ShrineDetail({
           {shrine.category}
         </span>
         <h2>{shrine.name}</h2>
-        <p>{shrine.description}</p>
         <small>{shrine.diocese} · {shrine.address}</small>
       </div>
       <div className="detail-actions">
