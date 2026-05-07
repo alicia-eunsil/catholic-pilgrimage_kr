@@ -181,6 +181,42 @@ function formatDateTime(value: string) {
   });
 }
 
+function AnimatedMetric({ value, suffix }: { value: number; suffix: string }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      setDisplayValue(value);
+      return;
+    }
+
+    const duration = 720;
+    const startTime = performance.now();
+    const startValue = 0;
+
+    function tick(now: number) {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplayValue(Math.round(startValue + (value - startValue) * eased));
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      }
+    }
+
+    const frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [value]);
+
+  return (
+    <strong>
+      {displayValue}
+      {suffix}
+    </strong>
+  );
+}
+
 function markerSvgDataUrl(category: ShrineCategory) {
   const color = markerColors[category];
   const svg = `
@@ -613,15 +649,15 @@ export default function PilgrimageApp() {
             <section className="metric-grid">
               <div>
                 <span>전체 인증</span>
-                <strong>{visits.length}건</strong>
+                <AnimatedMetric value={visits.length} suffix="건" />
               </div>
               <div>
                 <span>GPS 인증</span>
-                <strong>{verifiedVisitCount}건</strong>
+                <AnimatedMetric value={verifiedVisitCount} suffix="건" />
               </div>
               <div>
                 <span>인증 성지</span>
-                <strong>{visitedShrineCount}곳</strong>
+                <AnimatedMetric value={visitedShrineCount} suffix="곳" />
               </div>
             </section>
 
@@ -786,15 +822,15 @@ export default function PilgrimageApp() {
           <div className="metric-grid">
             <div>
               <span>전체 인증</span>
-              <strong>{visits.length}건</strong>
+              <AnimatedMetric value={visits.length} suffix="건" />
             </div>
             <div>
               <span>GPS 인증</span>
-              <strong>{verifiedVisitCount}건</strong>
+              <AnimatedMetric value={verifiedVisitCount} suffix="건" />
             </div>
             <div>
               <span>인증된 성지</span>
-              <strong>{visitedShrineCount}곳</strong>
+              <AnimatedMetric value={visitedShrineCount} suffix="곳" />
             </div>
           </div>
 

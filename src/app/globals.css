@@ -1450,8 +1450,12 @@ textarea {
 }
 
 .metric-grid div {
+  display: grid;
   min-height: 88px;
+  align-content: center;
+  justify-items: center;
   padding: 13px;
+  text-align: center;
 }
 
 .metric-grid span,
@@ -1465,8 +1469,10 @@ textarea {
 
 .metric-grid strong,
 .progress-card strong {
+  font-variant-numeric: tabular-nums;
   font-size: 24px;
   font-weight: 760;
+  line-height: 1;
 }
 
 .empty-state {
