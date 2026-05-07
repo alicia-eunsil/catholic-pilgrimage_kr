@@ -1,21 +1,21 @@
 :root {
   color-scheme: light;
-  --bg: #f8f4ea;
-  --panel: rgba(255, 255, 255, 0.9);
+  --bg: #f6f7fb;
+  --panel: #ffffff;
   --surface: #ffffff;
-  --surface-soft: #fbf7ef;
+  --surface-soft: #f8fafc;
   --ink: #141414;
-  --muted: #64605a;
-  --subtle: #a29b91;
-  --line: rgba(36, 30, 24, 0.1);
-  --line-strong: rgba(36, 30, 24, 0.16);
+  --muted: #667085;
+  --subtle: #98a2b3;
+  --line: #e6e8ef;
+  --line-strong: #d6dae5;
   --accent: #3157d5;
   --accent-strong: #1d3ea8;
   --accent-pressed: #2648bd;
   --blue: #3157d5;
-  --shadow: 0 18px 48px rgba(42, 32, 20, 0.12);
-  --soft-shadow: 0 10px 28px rgba(42, 32, 20, 0.08);
-  --emboss: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(36, 30, 24, 0.045);
+  --shadow: 0 12px 32px rgba(16, 24, 40, 0.08);
+  --soft-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+  --emboss: none;
   --button-font-size: 13px;
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Arial, sans-serif;
 }
@@ -31,7 +31,7 @@ body {
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, #fffaf0 0%, #f6efe2 44%, #eaf0ff 100%);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font);
   overflow: hidden;
@@ -111,13 +111,12 @@ h3 {
   grid-template-columns: minmax(230px, 0.8fr) minmax(360px, 1fr);
   align-items: center;
   gap: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-top: 3px solid var(--accent);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
   border-radius: 10px;
   padding: 7px 14px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 241, 0.82));
-  box-shadow: var(--shadow), var(--emboss);
-  backdrop-filter: blur(22px);
+  background: var(--surface);
+  box-shadow: var(--soft-shadow);
 }
 
 .app-header .eyebrow {
@@ -158,22 +157,22 @@ h3 {
   padding: 4px;
   border-top: 0;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.56);
-  box-shadow: var(--emboss);
+  background: #f1f4fb;
+  box-shadow: none;
 }
 
 .app-nav button {
   position: relative;
   min-height: 32px;
   padding: 0 10px;
-  border: 1px solid rgba(24, 24, 27, 0.08);
+  border: 1px solid transparent;
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(251, 247, 239, 0.82));
+  background: transparent;
   color: var(--muted);
   cursor: pointer;
   font-size: 12px;
   font-weight: 780;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.72);
+  box-shadow: none;
 }
 
 .app-nav button:hover {
@@ -183,21 +182,18 @@ h3 {
 
 .app-nav button.active {
   border-color: rgba(49, 87, 213, 0.42);
-  background: linear-gradient(180deg, #4668e4, var(--accent-pressed));
+  background: var(--accent);
   color: #ffffff;
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.28),
-    0 10px 24px rgba(49, 87, 213, 0.22);
+  box-shadow: 0 8px 18px rgba(49, 87, 213, 0.2);
 }
 
 .map-side,
 .info-side {
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
-  box-shadow: var(--shadow), var(--emboss);
-  backdrop-filter: blur(22px);
+  box-shadow: var(--shadow);
 }
 
 .map-side {
@@ -250,10 +246,10 @@ h3 {
 .course-map-section,
 .course-board,
 .activity-panel {
-  border: 1px solid rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 250, 241, 0.88));
-  box-shadow: var(--soft-shadow), var(--emboss);
+  background: var(--surface);
+  box-shadow: var(--soft-shadow);
 }
 
 .hero-panel {
@@ -467,21 +463,34 @@ h3 {
   min-height: 36px;
   align-items: center;
   gap: 8px;
-  border: 1px solid rgba(24, 24, 27, 0.09);
+  border: 1px solid var(--line);
   border-radius: 8px;
   padding: 0 10px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(251, 247, 239, 0.94));
+  background: var(--surface);
   color: var(--accent-strong);
   cursor: pointer;
   font-weight: 760;
   text-align: left;
-  box-shadow: var(--emboss);
+  box-shadow: none;
 }
 
 .course-filter-list button.active {
-  border-color: rgba(49, 87, 213, 0.3);
-  background: linear-gradient(180deg, #4668e4, var(--accent-pressed));
-  color: #ffffff;
+  border-color: rgba(49, 87, 213, 0.35);
+  background: #eef3ff;
+  color: var(--accent-strong);
+}
+
+.course-filter-list button.active::after {
+  width: 7px;
+  height: 7px;
+  margin-left: auto;
+  border-radius: 999px;
+  background: var(--accent);
+  content: "";
+}
+
+.course-filter-list button.active i {
+  box-shadow: none;
 }
 
 .course-filter-list i {
@@ -497,10 +506,10 @@ h3 {
 .records-panel {
   min-height: 0;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 250, 241, 0.9));
-  box-shadow: var(--soft-shadow), var(--emboss);
+  background: var(--surface);
+  box-shadow: var(--soft-shadow);
 }
 
 .record-mode-tabs {
@@ -509,25 +518,26 @@ h3 {
   gap: 6px;
   padding: 8px;
   border-bottom: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.62);
+  background: #f8fafc;
 }
 
 .record-mode-tabs button {
   min-height: 34px;
-  border: 1px solid rgba(24, 24, 27, 0.09);
+  border: 1px solid transparent;
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(251, 247, 239, 0.94));
+  background: transparent;
   color: var(--muted);
   cursor: pointer;
   font-size: 12px;
   font-weight: 760;
-  box-shadow: var(--emboss);
+  box-shadow: none;
 }
 
 .record-mode-tabs button.active {
-  border-color: rgba(49, 87, 213, 0.3);
-  background: linear-gradient(180deg, #4668e4, var(--accent-pressed));
-  color: #ffffff;
+  border-color: rgba(49, 87, 213, 0.2);
+  background: #ffffff;
+  color: var(--accent-strong);
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
 }
 
 .records-panel .insight-card {
@@ -572,7 +582,7 @@ h3 {
 
 .record-sort-tabs button.active {
   border-color: rgba(49, 87, 213, 0.22);
-  background: linear-gradient(180deg, #ffffff, #edf1ff);
+  background: #eef3ff;
   color: var(--accent-strong);
 }
 
@@ -600,8 +610,8 @@ h3 {
 }
 
 .stat-list button.active {
-  border-color: rgba(49, 87, 213, 0.26);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(231, 240, 237, 0.96));
+  border-color: rgba(49, 87, 213, 0.28);
+  background: #eef3ff;
 }
 
 .site-credit {
@@ -618,8 +628,8 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 24px 26px 16px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.72));
+  padding: 20px 24px 14px;
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
 }
 
@@ -640,11 +650,11 @@ h3 {
 .shrine-row button {
   border: 1px solid rgba(49, 87, 213, 0.2);
   border-radius: 8px;
-  background: linear-gradient(180deg, #4668e4, var(--accent-pressed));
+  background: var(--accent);
   color: white;
   cursor: pointer;
   font-weight: 720;
-  box-shadow: 0 10px 20px rgba(49, 87, 213, 0.16), var(--emboss);
+  box-shadow: 0 8px 16px rgba(49, 87, 213, 0.18);
 }
 
 .location-button,
@@ -662,7 +672,7 @@ h3 {
   display: grid;
   gap: 10px;
   padding: 14px 26px 16px;
-  background: rgba(255, 255, 255, 0.58);
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
 }
 
@@ -677,11 +687,11 @@ select,
 textarea,
 .form-card input {
   width: 100%;
-  border: 1px solid rgba(24, 24, 27, 0.11);
+  border: 1px solid var(--line-strong);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--surface);
   color: var(--ink);
-  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05), inset 0 -1px 0 rgba(255, 255, 255, 0.78);
+  box-shadow: none;
   outline: none;
 }
 
@@ -707,10 +717,10 @@ select,
   place-items: center;
   border: 1px solid rgba(49, 87, 213, 0.2);
   border-radius: 8px;
-  background: linear-gradient(180deg, #4668e4, var(--accent-pressed));
+  background: var(--accent);
   color: white;
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(49, 87, 213, 0.16), var(--emboss);
+  box-shadow: 0 8px 16px rgba(49, 87, 213, 0.18);
 }
 
 .reset-button {
@@ -741,13 +751,13 @@ textarea {
 }
 
 .chips button {
-  border: 1px solid rgba(17, 24, 39, 0.1);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(251, 247, 239, 0.92));
+  background: var(--surface);
   color: var(--muted);
   cursor: pointer;
   font-weight: 720;
-  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.04), var(--emboss);
+  box-shadow: none;
 }
 
 .chips button {
@@ -771,12 +781,9 @@ textarea {
 
 .chips button.selected {
   border-color: rgba(49, 87, 213, 0.3);
-  background: linear-gradient(180deg, #4668e4, var(--accent-pressed));
+  background: var(--accent);
   color: #ffffff;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -2px 0 rgba(15, 23, 42, 0.10),
-    0 8px 16px rgba(49, 87, 213, 0.18);
+  box-shadow: 0 8px 16px rgba(49, 87, 213, 0.18);
 }
 
 .chips button:hover,
@@ -784,13 +791,13 @@ textarea {
 .stat-list button:hover,
 .detail-actions a:hover {
   border-color: rgba(49, 87, 213, 0.22);
-  background: linear-gradient(180deg, #ffffff, #edf1ff);
+  background: #eef3ff;
   color: var(--accent-strong);
-  box-shadow: 0 8px 18px rgba(49, 87, 213, 0.14), var(--emboss);
+  box-shadow: none;
 }
 
 .chips button.selected:hover {
-  background: linear-gradient(180deg, #5271ee, #1f3fae);
+  background: var(--accent-pressed);
   color: #ffffff;
 }
 
@@ -1012,10 +1019,10 @@ textarea {
 .filter-card,
 .metric-grid div,
 .route-list li {
-  border: 1px solid rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(255, 250, 241, 0.9));
-  box-shadow: var(--soft-shadow), var(--emboss);
+  background: var(--surface);
+  box-shadow: var(--soft-shadow);
 }
 
 .detail-card {
@@ -1142,7 +1149,7 @@ textarea {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #9aa3af, #cfd6df);
+  background: var(--accent);
 }
 
 .visit-gallery {
@@ -1262,23 +1269,20 @@ textarea {
 .pagination button {
   min-width: 32px;
   height: 32px;
-  border: 1px solid rgba(17, 24, 39, 0.1);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(251, 247, 239, 0.92));
+  background: var(--surface);
   color: var(--muted);
   cursor: pointer;
   font-weight: 780;
-  box-shadow: var(--emboss);
+  box-shadow: none;
 }
 
 .pagination button.active {
   border-color: rgba(49, 87, 213, 0.3);
-  background: linear-gradient(180deg, #4668e4, var(--accent-pressed));
+  background: var(--accent);
   color: #ffffff;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -2px 0 rgba(15, 23, 42, 0.10),
-    0 8px 16px rgba(49, 87, 213, 0.16);
+  box-shadow: 0 8px 16px rgba(49, 87, 213, 0.16);
 }
 
 .image-modal {
@@ -1446,13 +1450,13 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  border: 1px solid rgba(17, 24, 39, 0.1);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(251, 247, 239, 0.92));
+  background: var(--surface);
   color: var(--ink);
   cursor: pointer;
   font-weight: 720;
-  box-shadow: var(--emboss);
+  box-shadow: none;
 }
 
 .popular-list span,
@@ -1682,10 +1686,10 @@ textarea {
   height: 34px;
   place-items: center;
   border-radius: 50%;
-  background: linear-gradient(180deg, #4668e4, var(--accent-pressed));
+  background: var(--accent);
   color: white;
   font-weight: 800;
-  box-shadow: 0 8px 16px rgba(49, 87, 213, 0.16), var(--emboss);
+  box-shadow: 0 8px 16px rgba(49, 87, 213, 0.16);
 }
 
 .route-list.compact {
