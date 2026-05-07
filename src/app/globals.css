@@ -108,56 +108,55 @@ h3 {
 .app-header {
   grid-column: 1 / -1;
   display: grid;
-  gap: 8px;
+  grid-template-columns: minmax(230px, 0.8fr) minmax(360px, 1fr);
+  align-items: center;
+  gap: 14px;
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-top: 3px solid var(--accent);
   border-radius: 10px;
-  padding: 10px 18px 10px;
+  padding: 7px 14px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 241, 0.82));
   box-shadow: var(--shadow), var(--emboss);
   backdrop-filter: blur(22px);
 }
 
 .app-header .eyebrow {
-  margin-bottom: 3px;
+  margin-bottom: 2px;
+  font-size: 11px;
 }
 
 .app-header h1 {
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.12;
 }
 
 .app-header p:not(.eyebrow) {
-  max-width: 760px;
-  margin: 5px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.35;
+  display: none;
 }
 
 .app-nav {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
-  gap: 7px;
-  margin-top: 6px;
-  padding: 6px;
-  border-top: 1px solid var(--line);
-  border-radius: 10px;
+  gap: 6px;
+  margin-top: 0;
+  padding: 4px;
+  border-top: 0;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.56);
   box-shadow: var(--emboss);
 }
 
 .app-nav button {
   position: relative;
-  min-height: 36px;
-  padding: 0 14px;
+  min-height: 32px;
+  padding: 0 10px;
   border: 1px solid rgba(24, 24, 27, 0.08);
   border-radius: 8px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(251, 247, 239, 0.82));
   color: var(--muted);
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 780;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.72);
 }
@@ -1817,8 +1816,8 @@ textarea {
 
   .app-header {
     grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 18px 16px;
+    gap: 7px;
+    padding: 7px 12px;
   }
 
   .home-grid,
@@ -1901,11 +1900,11 @@ textarea {
 
   .app-nav {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    gap: 6px;
   }
 
   .app-nav button {
     min-width: 0;
-    min-height: 42px;
+    min-height: 34px;
   }
 }
