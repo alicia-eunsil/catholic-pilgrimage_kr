@@ -501,9 +501,6 @@ export default function PilgrimageApp() {
         <>
       <section className="map-side">
         <div className="filters">
-          <button className="list-button" onClick={() => setShowShrineList(true)}>
-            성지목록보기
-          </button>
           <div className="search-row">
             <input
               value={searchInput}
@@ -557,6 +554,11 @@ export default function PilgrimageApp() {
 
       <aside className="info-side">
         <section className="screen">
+          <div className="detail-topbar">
+            <button className="list-button subtle-list-button" onClick={() => setShowShrineList(true)}>
+              성지목록보기
+            </button>
+          </div>
           <ShrineDetail
             shrine={focusedShrine}
             onVerify={() => {
