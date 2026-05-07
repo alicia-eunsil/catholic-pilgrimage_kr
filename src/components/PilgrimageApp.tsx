@@ -500,17 +500,10 @@ export default function PilgrimageApp() {
       {activeTab === "map" ? (
         <>
       <section className="map-side">
-        <div className="map-toolbar">
-          <div>
-            <p className="eyebrow">한국 천주교 성지순례</p>
-            <h1>성지순례 지도</h1>
-          </div>
+        <div className="filters">
           <button className="list-button" onClick={() => setShowShrineList(true)}>
             성지목록보기
           </button>
-        </div>
-
-        <div className="filters">
           <div className="search-row">
             <input
               value={searchInput}

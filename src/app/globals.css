@@ -676,6 +676,10 @@ h3 {
   border-bottom: 1px solid var(--line);
 }
 
+.filters > .list-button {
+  justify-self: end;
+}
+
 .search-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 44px 44px;
