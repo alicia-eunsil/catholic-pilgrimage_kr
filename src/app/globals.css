@@ -508,6 +508,8 @@ h3 {
 }
 
 .records-panel .insight-card {
+  display: flex;
+  flex-direction: column;
   height: calc(100% - 51px);
   overflow-y: auto;
   border: 0;
@@ -519,12 +521,21 @@ h3 {
 
 .record-sort-tabs {
   display: flex;
+  flex: 0 0 auto;
+  align-self: flex-end;
+  align-items: center;
   justify-content: flex-end;
   gap: 6px;
+  min-height: 30px;
 }
 
 .record-sort-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
   min-height: 30px;
+  height: 30px;
   padding: 0 10px;
   border: 1px solid rgba(17, 24, 39, 0.1);
   border-radius: 999px;
