@@ -125,13 +125,28 @@ h3 {
   font-size: 11px;
 }
 
+.app-header > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  min-width: 0;
+}
+
+.app-header .eyebrow {
+  flex: 0 0 100%;
+}
+
 .app-header h1 {
   font-size: 20px;
   line-height: 1.12;
 }
 
 .app-header p:not(.eyebrow) {
-  display: none;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
 }
 
 .app-nav {
