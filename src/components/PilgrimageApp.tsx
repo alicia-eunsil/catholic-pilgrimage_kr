@@ -101,7 +101,7 @@ type CourseRoute = {
 type RecordViewMode = "all" | "byShrine";
 type RecordSortMode = "latest" | "shrine";
 
-const courseColors = ["#2f6f68", "#b7791f", "#b85c55", "#4f7fc4", "#6f7f5f"];
+const courseColors = ["#2648bd", "#b7791f", "#b85c55", "#4f7fc4", "#6f7f5f"];
 
 const recommendedCourses: RecommendedCourse[] = [
   {
