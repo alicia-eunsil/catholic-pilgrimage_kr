@@ -99,6 +99,7 @@ type CourseRoute = {
   shrines: Shrine[];
 };
 type RecordViewMode = "all" | "byShrine";
+type RecordSortMode = "latest" | "shrine";
 
 const courseColors = ["#7c8794", "#b7791f", "#b85c55", "#4f7fc4", "#6f7f5f"];
 
@@ -266,6 +267,7 @@ export default function PilgrimageApp() {
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
   const [activeCourseId, setActiveCourseId] = useState<string | undefined>();
   const [recordViewMode, setRecordViewMode] = useState<RecordViewMode>("all");
+  const [recordSortMode, setRecordSortMode] = useState<RecordSortMode>("latest");
   const [selectedRecordShrineId, setSelectedRecordShrineId] = useState<string | undefined>();
 
   useEffect(() => {
@@ -291,8 +293,27 @@ export default function PilgrimageApp() {
   const courseMapActive = activeCourseShrines.length > 1;
   const visibleMapShrines = courseMapActive ? activeCourseShrines : filteredShrines;
   const visibleRouteShrines = courseMapActive ? activeCourseShrines : EMPTY_ROUTE_SHRINES;
-  const allRecentVisits = [...visits]
-    .sort((a, b) => new Date(b.visitedAt ?? b.createdAt).getTime() - new Date(a.visitedAt ?? a.createdAt).getTime());
+  const allRecentVisits = useMemo(
+    () =>
+      [...visits].sort(
+        (a, b) => new Date(b.visitedAt ?? b.createdAt).getTime() - new Date(a.visitedAt ?? a.createdAt).getTime()
+      ),
+    [visits]
+  );
+  const sortedAllVisits = useMemo(() => {
+    if (recordSortMode === "latest") {
+      return allRecentVisits;
+    }
+
+    return [...allRecentVisits].sort((a, b) => {
+      const shrineA = shrines.find((item) => item.id === a.shrineId);
+      const shrineB = shrines.find((item) => item.id === b.shrineId);
+      return (
+        (shrineA?.name ?? "성지").localeCompare(shrineB?.name ?? "성지", "ko") ||
+        new Date(b.visitedAt ?? b.createdAt).getTime() - new Date(a.visitedAt ?? a.createdAt).getTime()
+      );
+    });
+  }, [allRecentVisits, recordSortMode]);
   const courseRoutes = useMemo(
     () =>
       recommendedCourses.map((course, index) => ({
@@ -673,15 +694,19 @@ export default function PilgrimageApp() {
 
               {recordViewMode === "all" ? (
                 <section className="insight-card">
-                  <div className="panel-heading">
-                    <strong>전체 인증</strong>
-                    <span>최신순</span>
+                  <div className="record-sort-tabs" aria-label="인증 정렬">
+                    <button className={recordSortMode === "latest" ? "active" : ""} onClick={() => setRecordSortMode("latest")}>
+                      최신순
+                    </button>
+                    <button className={recordSortMode === "shrine" ? "active" : ""} onClick={() => setRecordSortMode("shrine")}>
+                      성지순
+                    </button>
                   </div>
                   {allRecentVisits.length === 0 ? (
                     <div className="empty-state compact">아직 인증 기록이 없습니다. 첫 순례 기록을 남겨보세요.</div>
                   ) : (
                     <div className="visit-table">
-                      {allRecentVisits.map((visit) => {
+                      {sortedAllVisits.map((visit) => {
                         const shrine = shrines.find((item) => item.id === visit.shrineId);
                         return (
                           <article key={visit.id} className="visit-row">
