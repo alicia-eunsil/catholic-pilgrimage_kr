@@ -14,6 +14,7 @@ const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
 const VERIFY_RADIUS_METERS = 500;
 const MAX_VISIT_PHOTO_BYTES = 500 * 1024;
 const MAX_VISIT_PHOTO_EDGE = 1280;
+const SUPPORTED_VISIT_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const KAKAO_MAP_SDK_ID = "kakao-map-sdk";
 const CATEGORY_FILTERS: ShrineCategory[] = ["성지", "순교사적지", "순례지"];
 const VISITS_PER_PAGE = 10;
@@ -555,8 +556,8 @@ export default function PilgrimageApp() {
       return;
     }
 
-    if (!file.type.startsWith("image/")) {
-      window.alert("이미지 파일만 등록할 수 있습니다.");
+    if (!SUPPORTED_VISIT_PHOTO_TYPES.includes(file.type)) {
+      window.alert("JPG, PNG, WebP 이미지만 등록할 수 있습니다. HEIC 사진은 아이폰 사진 설정에서 호환성 우선으로 촬영하거나 JPG로 변환해 주세요.");
       event.target.value = "";
       setVisitPhotoFile(undefined);
       return;
@@ -917,8 +918,8 @@ export default function PilgrimageApp() {
             </label>
 
             <label>
-              인증 사진 <span className="field-hint">(JPG, PNG, HEIC 등 이미지 파일 · 업로드 전 500KB 이하로 압축)</span>
-              <input key={photoInputKey} type="file" accept="image/*" onChange={handleVisitPhotoChange} />
+              인증 사진 <span className="field-hint">(JPG, PNG, WebP · 500KB 내외로 자동 압축)</span>
+              <input key={photoInputKey} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleVisitPhotoChange} />
             </label>
 
             {visitPhotoPreview ? (

@@ -1739,9 +1739,11 @@ textarea {
 }
 
 .field-hint {
+  display: block;
   color: var(--subtle);
   font-size: 12px;
   font-weight: 650;
+  line-height: 1.35;
 }
 
 .form-card input[type="file"] {
