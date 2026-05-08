@@ -1838,9 +1838,16 @@ textarea {
 }
 
 @media (max-width: 860px) {
+  body {
+    overflow: auto;
+  }
+
   .app-shell {
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: none;
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
     padding: 10px;
   }
 
@@ -1861,6 +1868,15 @@ textarea {
     min-height: 520px;
   }
 
+  .course-dashboard {
+    min-height: auto;
+  }
+
+  .course-map-workspace,
+  .course-map-shell {
+    min-height: 520px;
+  }
+
   .records-workspace {
     overflow: visible;
   }
@@ -1870,7 +1886,7 @@ textarea {
   }
 
   .map-side {
-    min-height: 0;
+    min-height: 620px;
   }
 
   .map-toolbar {
@@ -1892,15 +1908,22 @@ textarea {
   }
 
   .map-panel {
-    min-height: 0;
+    min-height: 420px;
   }
 
   .info-side {
     min-height: 0;
+    overflow: visible;
   }
 
   .screen {
     min-height: 0;
+    overflow: visible;
+  }
+
+  .content-screen,
+  .home-screen {
+    overflow: visible;
   }
 }
 
