@@ -14,7 +14,7 @@ const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
 const VERIFY_RADIUS_METERS = 500;
 const MAX_VISIT_PHOTO_BYTES = 500 * 1024;
 const MAX_VISIT_PHOTO_EDGE = 1280;
-const SUPPORTED_VISIT_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const SUPPORTED_VISIT_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
 const KAKAO_MAP_SDK_ID = "kakao-map-sdk";
 const CATEGORY_FILTERS: ShrineCategory[] = ["성지", "순교사적지", "순례지"];
 const VISITS_PER_PAGE = 10;
@@ -251,7 +251,8 @@ function uniqueShrines(items: Shrine[]) {
 }
 
 async function compressVisitPhoto(file: File) {
-  const image = await loadImage(file);
+  const browserReadableFile = isHeicFile(file) ? await convertHeicToJpeg(file) : file;
+  const image = await loadImage(browserReadableFile);
   const scale = Math.min(1, MAX_VISIT_PHOTO_EDGE / Math.max(image.naturalWidth, image.naturalHeight));
   const canvas = document.createElement("canvas");
   canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
@@ -272,6 +273,27 @@ async function compressVisitPhoto(file: File) {
   }
 
   throw new Error("이미지를 압축하지 못했습니다.");
+}
+
+function isHeicFile(file: File) {
+  const normalizedName = file.name.toLowerCase();
+  return file.type === "image/heic" || file.type === "image/heif" || normalizedName.endsWith(".heic") || normalizedName.endsWith(".heif");
+}
+
+async function convertHeicToJpeg(file: File) {
+  const { default: heic2any } = await import("heic2any");
+  const converted = await heic2any({
+    blob: file,
+    toType: "image/jpeg",
+    quality: 0.86
+  });
+  const blob = Array.isArray(converted) ? converted[0] : converted;
+
+  if (!blob) {
+    throw new Error("HEIC 사진을 변환하지 못했습니다.");
+  }
+
+  return new File([blob], file.name.replace(/\.(heic|heif)$/i, ".jpg"), { type: "image/jpeg" });
 }
 
 function loadImage(file: File) {
@@ -548,7 +570,7 @@ export default function PilgrimageApp() {
     );
   }
 
-  function handleVisitPhotoChange(event: ChangeEvent<HTMLInputElement>) {
+  async function handleVisitPhotoChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
 
     if (!file) {
@@ -556,14 +578,24 @@ export default function PilgrimageApp() {
       return;
     }
 
-    if (!SUPPORTED_VISIT_PHOTO_TYPES.includes(file.type)) {
-      window.alert("JPG, PNG, WebP 이미지만 등록할 수 있습니다. HEIC 사진은 아이폰 사진 설정에서 호환성 우선으로 촬영하거나 JPG로 변환해 주세요.");
+    if (!SUPPORTED_VISIT_PHOTO_TYPES.includes(file.type) && !isHeicFile(file)) {
+      window.alert("JPG, PNG, WebP, HEIC 이미지만 등록할 수 있습니다.");
       event.target.value = "";
       setVisitPhotoFile(undefined);
       return;
     }
 
-    setVisitPhotoFile(file);
+    try {
+      setVisitSaveStatus("saving");
+      setVisitSyncError("");
+      setVisitPhotoFile(isHeicFile(file) ? await convertHeicToJpeg(file) : file);
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : "사진 파일을 읽지 못했습니다.");
+      event.target.value = "";
+      setVisitPhotoFile(undefined);
+    } finally {
+      setVisitSaveStatus("idle");
+    }
   }
 
   function clearVisitPhoto() {
@@ -918,8 +950,8 @@ export default function PilgrimageApp() {
             </label>
 
             <label>
-              인증 사진 <span className="field-hint">(JPG, PNG, WebP · 500KB 내외로 자동 압축)</span>
-              <input key={photoInputKey} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleVisitPhotoChange} />
+              인증 사진 <span className="field-hint">(JPG, PNG, WebP, HEIC · 500KB 내외로 자동 변환/압축)</span>
+              <input key={photoInputKey} type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" onChange={handleVisitPhotoChange} />
             </label>
 
             {visitPhotoPreview ? (
