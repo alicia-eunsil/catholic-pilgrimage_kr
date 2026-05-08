@@ -9,7 +9,6 @@ export type Shrine = {
   region: string;
   lat: number;
   lng: number;
-  description: string;
 };
 
 export const shrines: Shrine[] = [
@@ -21,8 +20,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 칠곡군 왜관읍 가실1길 1",
     region: "경상북",
     lat: 35.9368166,
-    lng: 128.4049226,
-    description: "대구대교구 소속의 경상북 지역 순례지입니다."
+    lng: 128.4049226
   },
   {
     id: "가톨릭대학교-성신교정-순례지",
@@ -32,8 +30,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 창경궁로 296-12 (혜화동)",
     region: "서울",
     lat: 37.5849010,
-    lng: 127.0047707,
-    description: "서울대교구 소속의 서울 지역 순례지입니다."
+    lng: 127.0047707
   },
   {
     id: "가톨릭목포성지",
@@ -43,8 +40,7 @@ export const shrines: Shrine[] = [
     address: "전라남도 목포시 노송길 35",
     region: "전라남",
     lat: 34.7997099,
-    lng: 126.3858908,
-    description: "광주대교구 소속의 전라남 지역 순교사적지입니다."
+    lng: 126.3858908
   },
   {
     id: "가회동-성당-순례지",
@@ -54,8 +50,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 북촌로 57 (가회동)",
     region: "서울",
     lat: 37.5820335,
-    lng: 126.9846468,
-    description: "서울대교구 소속의 서울 지역 순례지입니다."
+    lng: 126.9846468
   },
   {
     id: "갈곡리-성당",
@@ -65,8 +60,7 @@ export const shrines: Shrine[] = [
     address: "경기도 파주시 법원읍 화합로466번길 25",
     region: "경기",
     lat: 37.8460687,
-    lng: 126.9151455,
-    description: "의정부교구 소속의 경기 지역 순교사적지입니다."
+    lng: 126.9151455
   },
   {
     id: "갈매못순교성지",
@@ -76,8 +70,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 보령시 오천면 오천해안로 610",
     region: "충청남",
     lat: 36.4282110,
-    lng: 126.5080190,
-    description: "대전교구 소속의 충청남 지역 천주교 성지입니다."
+    lng: 126.5080190
   },
   {
     id: "감곡-매괴-성모-순례지",
@@ -87,8 +80,7 @@ export const shrines: Shrine[] = [
     address: "충북 음성군 감곡면 성당길 10",
     region: "충북",
     lat: 37.1224445,
-    lng: 127.6413377,
-    description: "청주교구 소속의 충북 지역 순례지입니다."
+    lng: 127.6413377
   },
   {
     id: "갑곶-순교-성지",
@@ -98,8 +90,7 @@ export const shrines: Shrine[] = [
     address: "인천광역시 강화군 강화읍 해안동로1366번길 35",
     region: "인천",
     lat: 37.7340911,
-    lng: 126.5174380,
-    description: "인천교구 소속의 인천 지역 천주교 성지입니다."
+    lng: 126.5174380
   },
   {
     id: "용산-성직자-묘지",
@@ -109,8 +100,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 용산구 효창원로 15길 37",
     region: "서울",
     lat: 37.5367947,
-    lng: 126.9523044,
-    description: "서울교구 소속의 서울 지역 순례지입니다."
+    lng: 126.9523044
   },
   {
     id: "강릉대도호부-관아",
@@ -120,8 +110,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 강릉시 임영로131번길 6 (용강동)",
     region: "강원",
     lat: 37.7529472,
-    lng: 128.8919062,
-    description: "춘천교구 소속의 강원 지역 순례지입니다."
+    lng: 128.8919062
   },
   {
     id: "강원-감영",
@@ -131,8 +120,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 원주시 원일로 85 (일산동)",
     region: "강원",
     lat: 37.3479725,
-    lng: 127.9504152,
-    description: "원주교구 소속의 강원 지역 순교사적지입니다."
+    lng: 127.9504152
   },
   {
     id: "고창-개갑-순교성지",
@@ -142,8 +130,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 고창군 공음면 선운대로 91 (석교리 157-1)",
     region: "전북",
     lat: 35.3860453,
-    lng: 126.5042745,
-    description: "전주교구 소속의 전북 지역 순교사적지입니다."
+    lng: 126.5042745
   },
   {
     id: "겟세마니-피정의-집-신앙의-증인-사제-조선희-필립보",
@@ -153,8 +140,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 인제군 남면 빙어마을길 196",
     region: "강원",
     lat: 37.9987453,
-    lng: 128.0969047,
-    description: "춘천교구 소속의 강원 지역 순례지입니다."
+    lng: 128.0969047
   },
   {
     id: "경기감영-터-교회사적지",
@@ -164,8 +150,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 통일로 134 (평동)",
     region: "서울",
     lat: 37.5667350,
-    lng: 126.9663572,
-    description: "서울대교구 소속의 서울 지역 순교사적지입니다."
+    lng: 126.9663572
   },
   {
     id: "경상-감영과-옥-터",
@@ -175,8 +160,7 @@ export const shrines: Shrine[] = [
     address: "대구광역시 중구 서성로16길 77 (대안동)",
     region: "대구",
     lat: 35.8735030,
-    lng: 128.5920982,
-    description: "대구대교구 소속의 대구 지역 순교사적지입니다."
+    lng: 128.5920982
   },
   {
     id: "경주-관아와-옥-터",
@@ -186,8 +170,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 경주시 북문로55번길 24 (성건동)",
     region: "경상북",
     lat: 35.8523971,
-    lng: 129.2087861,
-    description: "대구대교구 소속의 경상북 지역 순교사적지입니다."
+    lng: 129.2087861
   },
   {
     id: "곡성성당-옥터",
@@ -197,8 +180,7 @@ export const shrines: Shrine[] = [
     address: "전라남도 곡성군 곡성읍 읍내11길 20",
     region: "전라남",
     lat: 35.2823674,
-    lng: 127.2929424,
-    description: "광주대교구 소속의 전라남 지역 순교사적지입니다."
+    lng: 127.2929424
   },
   {
     id: "곰실-공소-춘천교구의-요람",
@@ -208,8 +190,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 춘천시 동내면 동내로 220",
     region: "강원",
     lat: 37.8483919,
-    lng: 127.7750832,
-    description: "춘천교구 소속의 강원 지역 순례지입니다."
+    lng: 127.7750832
   },
   {
     id: "공세리성당",
@@ -219,8 +200,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 아산시 인주면 공세리성당길 10",
     region: "충청남",
     lat: 36.8819461,
-    lng: 126.9139785,
-    description: "대전교구 소속의 충청남 지역 천주교 성지입니다."
+    lng: 126.9139785
   },
   {
     id: "관덕정-순교-터",
@@ -230,8 +210,7 @@ export const shrines: Shrine[] = [
     address: "제주특별자치도 제주시 관덕로 19 (삼도이동) 가톨릭회관 3층",
     region: "제주",
     lat: 33.5133681,
-    lng: 126.5214745,
-    description: "제주교구 소속의 제주 지역 순례지입니다."
+    lng: 126.5214745
   },
   {
     id: "관덕정순교기념관",
@@ -241,8 +220,7 @@ export const shrines: Shrine[] = [
     address: "대구광역시 중구 관덕정길 11 (남산동)",
     region: "대구",
     lat: 35.8651387,
-    lng: 128.5911257,
-    description: "대구대교구 소속의 대구 지역 천주교 성지입니다."
+    lng: 128.5911257
   },
   {
     id: "한국-천주교-순교자-124위-시복-터-순례지",
@@ -252,8 +230,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 세종대로 175 (세종로) 광화문 광장 북측",
     region: "서울",
     lat: 37.5718479,
-    lng: 126.9761683,
-    description: "서울대교구 소속의 서울 지역 순례지입니다."
+    lng: 126.9761683
   },
   {
     id: "광희문-성지-순교성지",
@@ -263,8 +240,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 중구 광희동2가 105-32",
     region: "서울",
     lat: 37.5643793,
-    lng: 127.0099713,
-    description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
+    lng: 127.0099713
   },
   {
     id: "복자-정찬문-안토니오-묘소",
@@ -274,8 +250,7 @@ export const shrines: Shrine[] = [
     address: "경상남도 진주시 사봉면 동부로1751번길 46-6",
     region: "경상남",
     lat: 35.1836642,
-    lng: 128.2636625,
-    description: "마산교구 소속의 경상남 지역 순교사적지입니다."
+    lng: 128.2636625
   },
   {
     id: "구룡공소",
@@ -285,8 +260,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 청도군 운문면 구룡마을길 361-5",
     region: "경상북",
     lat: 35.8309766,
-    lng: 128.9665743,
-    description: "대구대교구 소속의 경상북 지역 순례지입니다."
+    lng: 128.9665743
   },
   {
     id: "구산성지",
@@ -296,8 +270,7 @@ export const shrines: Shrine[] = [
     address: "경기도 하남시 미사강변북로 99 (망월동)",
     region: "경기",
     lat: 37.5723728,
-    lng: 127.1887810,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 127.1887810
   },
   {
     id: "금광리-공소",
@@ -307,8 +280,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 강릉시 구정면 금평로 514",
     region: "강원",
     lat: 37.6987010,
-    lng: 128.9147806,
-    description: "춘천교구 소속의 강원 지역 순례지입니다."
+    lng: 128.9147806
   },
   {
     id: "김기량-순교-기념관",
@@ -318,8 +290,7 @@ export const shrines: Shrine[] = [
     address: "제주특별자치도 제주시 조천읍 일주동로 1216",
     region: "제주",
     lat: 33.5369251,
-    lng: 126.6705310,
-    description: "제주교구 소속의 제주 지역 순교사적지입니다."
+    lng: 126.6705310
   },
   {
     id: "김범우-순교자-성지-성모-동굴-성당",
@@ -329,8 +300,7 @@ export const shrines: Shrine[] = [
     address: "경상남도 밀양시 삼랑진읍 사기점길 50-100",
     region: "경상남",
     lat: 35.4380196,
-    lng: 128.8346939,
-    description: "부산교구 소속의 경상남 지역 천주교 성지입니다."
+    lng: 128.8346939
   },
   {
     id: "김범우의-집-터-교회사적지",
@@ -340,8 +310,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 중구 을지로 66 (을지로2가) 외환은행 본점 앞",
     region: "서울",
     lat: 37.5651546,
-    lng: 126.9850107,
-    description: "서울대교구 소속의 서울 지역 순교사적지입니다."
+    lng: 126.9850107
   },
   {
     id: "김수환-추기경-사랑과-나눔공원",
@@ -351,8 +320,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 군위군 군위읍 군위금성로 270",
     region: "경상북",
     lat: 36.2324096,
-    lng: 128.5991687,
-    description: "대구대교구 소속의 경상북 지역 순례지입니다."
+    lng: 128.5991687
   },
   {
     id: "김제순교성지",
@@ -362,8 +330,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 김제시 신풍길 253-16 (요촌동)",
     region: "전북",
     lat: 35.7972647,
-    lng: 126.8893004,
-    description: "전주교구 소속의 전북 지역 순교사적지입니다."
+    lng: 126.8893004
   },
   {
     id: "김천황금성당",
@@ -373,8 +340,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 김천시 학사대길 64 (황금동)",
     region: "경상북",
     lat: 36.1162755,
-    lng: 128.1212908,
-    description: "대구대교구 소속의 경상북 지역 순례지입니다."
+    lng: 128.1212908
   },
   {
     id: "나바위성지",
@@ -384,8 +350,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 익산시 망성면 나바위1길 146",
     region: "전북",
     lat: 36.1390183,
-    lng: 126.9986719,
-    description: "전주교구 소속의 전북 지역 순교사적지입니다."
+    lng: 126.9986719
   },
   {
     id: "나주-순교자-기념성당",
@@ -395,8 +360,7 @@ export const shrines: Shrine[] = [
     address: "전라남도 나주시 박정길 3 (산정동)",
     region: "전라남",
     lat: 35.0361410,
-    lng: 126.7146839,
-    description: "광주대교구 소속의 전라남 지역 순교사적지입니다."
+    lng: 126.7146839
   },
   {
     id: "남방제성지",
@@ -406,8 +370,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 아산시 신창면 서부북로 763-42",
     region: "충청남",
     lat: 36.7988156,
-    lng: 126.9461046,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.9461046
   },
   {
     id: "남양성모성지",
@@ -417,8 +380,7 @@ export const shrines: Shrine[] = [
     address: "경기도 화성시 남양읍 남양성지로 112",
     region: "경기",
     lat: 37.2064312,
-    lng: 126.8168735,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 126.8168735
   },
   {
     id: "남한산성-순교성지",
@@ -428,8 +390,7 @@ export const shrines: Shrine[] = [
     address: "경기도 광주시 중부면 남한산성로 763-58",
     region: "경기",
     lat: 37.4772000,
-    lng: 127.1859074,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 127.1859074
   },
   {
     id: "노고산-성지-순교성지",
@@ -439,8 +400,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 마포구 백범로 35 (신수동) 서강대학교 가브리엘관 앞",
     region: "서울",
     lat: 37.5514650,
-    lng: 126.9429800,
-    description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
+    lng: 126.9429800
   },
   {
     id: "홍유한-고택지",
@@ -450,8 +410,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 영주시 단산면 구구로 239-6",
     region: "경상북",
     lat: 36.9074674,
-    lng: 128.6247407,
-    description: "안동교구 소속의 경상북 지역 순례지입니다."
+    lng: 128.6247407
   },
   {
     id: "청양다락골성지",
@@ -461,8 +420,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 청양군 화성면 다락골길 78-6",
     region: "충청남",
     lat: 36.4434634,
-    lng: 126.6924889,
-    description: "대전교구 소속의 충청남 지역 천주교 성지입니다."
+    lng: 126.6924889
   },
   {
     id: "단내성가정성지",
@@ -472,8 +430,7 @@ export const shrines: Shrine[] = [
     address: "경기도 이천시 호법면 이섭대천로155번길 38-13",
     region: "경기",
     lat: 37.2196890,
-    lng: 127.3947083,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 127.3947083
   },
   {
     id: "답동-주교좌-성당",
@@ -483,8 +440,7 @@ export const shrines: Shrine[] = [
     address: "인천광역시 중구 우현로50번길 2 (답동)",
     region: "인천",
     lat: 37.4715250,
-    lng: 126.6298560,
-    description: "인천교구 소속의 인천 지역 순례지입니다."
+    lng: 126.6298560
   },
   {
     id: "당고개-순교성지-순교성지",
@@ -494,8 +450,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 용산구 청파로 139-26 (신계동)",
     region: "서울",
     lat: 37.5355901,
-    lng: 126.9669630,
-    description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
+    lng: 126.9669630
   },
   {
     id: "대산성당-구한선-타대오-성지교구-순교복자-묘소",
@@ -505,8 +460,7 @@ export const shrines: Shrine[] = [
     address: "경상남도 함안군 대산면 대산중앙로 183",
     region: "경상남",
     lat: 35.3502762,
-    lng: 128.4304690,
-    description: "마산교구 소속의 경상남 지역 천주교 성지입니다."
+    lng: 128.4304690
   },
   {
     id: "대안리-공소",
@@ -516,8 +470,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 원주시 흥업면 승안동길 216",
     region: "강원",
     lat: 37.3081016,
-    lng: 127.8803854,
-    description: "원주교구 소속의 강원 지역 순례지입니다."
+    lng: 127.8803854
   },
   {
     id: "대정-성지-정난주-마리아의-묘",
@@ -527,8 +480,7 @@ export const shrines: Shrine[] = [
     address: "제주특별자치도 서귀포시 대정읍 추사로247번길 102",
     region: "제주",
     lat: 33.2535555,
-    lng: 126.2607716,
-    description: "제주교구 소속의 제주 지역 순례지입니다."
+    lng: 126.2607716
   },
   {
     id: "대흥봉수산순교성지",
@@ -538,8 +490,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 예산군 대흥면 의좋은형제길 25-14",
     region: "충청남",
     lat: 36.6061384,
-    lng: 126.7887798,
-    description: "대전교구 소속의 충청남 지역 천주교 성지입니다."
+    lng: 126.7887798
   },
   {
     id: "도앙골-성지",
@@ -549,8 +500,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 부여군 내산면 금지로 302",
     region: "충청남",
     lat: 36.2623634,
-    lng: 126.7339975,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.7339975
   },
   {
     id: "마원-성지",
@@ -560,8 +510,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 문경시 문경읍 오서길 73",
     region: "경상북",
     lat: 36.7237113,
-    lng: 128.1011553,
-    description: "안동교구 소속의 경상북 지역 천주교 성지입니다."
+    lng: 128.1011553
   },
   {
     id: "마재-성가정-성지",
@@ -571,8 +520,7 @@ export const shrines: Shrine[] = [
     address: "경기도 남양주시 조안면 다산로 698-44",
     region: "경기",
     lat: 37.5215893,
-    lng: 127.2960653,
-    description: "의정부교구 소속의 경기 지역 순교사적지입니다."
+    lng: 127.2960653
   },
   {
     id: "멍에목-성지",
@@ -582,8 +530,7 @@ export const shrines: Shrine[] = [
     address: "충청북도 보은군 속리산면 구병길 18",
     region: "충청북",
     lat: 36.4795580,
-    lng: 127.8724199,
-    description: "청주교구 소속의 충청북 지역 순교사적지입니다."
+    lng: 127.8724199
   },
   {
     id: "명동대성당-순교성지",
@@ -593,8 +540,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 중구 명동길 74 (명동2가)",
     region: "서울",
     lat: 37.5636759,
-    lng: 126.9867758,
-    description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
+    lng: 126.9867758
   },
   {
     id: "명례-성지",
@@ -604,8 +550,7 @@ export const shrines: Shrine[] = [
     address: "경상남도 밀양시 하남읍 명례안길 44-3",
     region: "경상남",
     lat: 35.3505719,
-    lng: 128.7653869,
-    description: "마산교구 소속의 경상남 지역 천주교 성지입니다."
+    lng: 128.7653869
   },
   {
     id: "성-남종삼-요한--순교자-남상교-아우구스티노-유택지",
@@ -615,8 +560,7 @@ export const shrines: Shrine[] = [
     address: "충청북도 제천시 봉양읍 제원로10길 15-7",
     region: "충청북",
     lat: 37.1867410,
-    lng: 128.1003120,
-    description: "원주교구 소속의 충청북 지역 순교사적지입니다."
+    lng: 128.1003120
   },
   {
     id: "묵호-순례-성당-순교자-라-파트리치오-patrick-reilly",
@@ -626,8 +570,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 동해시 발한로 161 (발한동)",
     region: "강원",
     lat: 37.5469499,
-    lng: 129.1038275,
-    description: "춘천교구 소속의 강원 지역 순교사적지입니다."
+    lng: 129.1038275
   },
   {
     id: "미리내성지",
@@ -637,8 +580,7 @@ export const shrines: Shrine[] = [
     address: "경기도 안성시 양성면 미리내성지로 420",
     region: "경기",
     lat: 37.1484308,
-    lng: 127.2591420,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 127.2591420
   },
   {
     id: "배나드리성지",
@@ -648,8 +590,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 예산군 삽교읍 용동리 270-23",
     region: "충청남",
     lat: 36.7111382,
-    lng: 126.7227782,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.7227782
   },
   {
     id: "배티-순교-성지",
@@ -659,8 +600,7 @@ export const shrines: Shrine[] = [
     address: "충청북도 진천군 백곡면 배티로 663-13",
     region: "충청북",
     lat: 36.9265969,
-    lng: 127.3279876,
-    description: "청주교구 소속의 충청북 지역 천주교 성지입니다."
+    lng: 127.3279876
   },
   {
     id: "복자-윤봉문-요셉-성지",
@@ -670,8 +610,7 @@ export const shrines: Shrine[] = [
     address: "경상남도 거제시 일운면 지세포3길 69-22",
     region: "경상남",
     lat: 34.8240380,
-    lng: 128.6959233,
-    description: "마산교구 소속의 경상남 지역 천주교 성지입니다."
+    lng: 128.6959233
   },
   {
     id: "복자성당",
@@ -681,8 +620,7 @@ export const shrines: Shrine[] = [
     address: "대구광역시 동구 송라로 22 (신천동)",
     region: "대구",
     lat: 35.8687642,
-    lng: 128.6213491,
-    description: "대구대교구 소속의 대구 지역 천주교 성지입니다."
+    lng: 128.6213491
   },
   {
     id: "비산날뫼성당",
@@ -692,8 +630,7 @@ export const shrines: Shrine[] = [
     address: "대구광역시 서구 북비산로67길 31 (비산동)",
     region: "대구",
     lat: 35.8833911,
-    lng: 128.5708109,
-    description: "대구대교구 소속의 대구 지역 순교사적지입니다."
+    lng: 128.5708109
   },
   {
     id: "산막골성지--작은재성지",
@@ -703,8 +640,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 서천군 판교면 금덕길81번길 117",
     region: "충청남",
     lat: 36.1601871,
-    lng: 126.7096938,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.7096938
   },
   {
     id: "살티-공소",
@@ -714,8 +650,7 @@ export const shrines: Shrine[] = [
     address: "울산광역시 울주군 상북면 덕현살티길 11",
     region: "울산",
     lat: 35.6110922,
-    lng: 129.0409160,
-    description: "부산교구 소속의 울산 지역 순례지입니다."
+    lng: 129.0409160
   },
   {
     id: "삼성산-성지-순교성지",
@@ -725,8 +660,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 관악구 호암로 454-16 (신림동)",
     region: "서울",
     lat: 37.4568520,
-    lng: 126.9291462,
-    description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
+    lng: 126.9291462
   },
   {
     id: "삽티-성지",
@@ -736,8 +670,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 부여군 홍산면 삽티로 489-6",
     region: "충청남",
     lat: 36.2562601,
-    lng: 126.7449912,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.7449912
   },
   {
     id: "상주-옥터",
@@ -747,8 +680,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 상주시 남문2길 89-15 (성동동)",
     region: "경상북",
     lat: 36.4139051,
-    lng: 128.1641786,
-    description: "안동교구 소속의 경상북 지역 순교사적지입니다."
+    lng: 128.1641786
   },
   {
     id: "신앙-고백비",
@@ -758,8 +690,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 상주시 청리면 삼괴3길 108",
     region: "경상북",
     lat: 36.3663103,
-    lng: 128.1177536,
-    description: "안동교구 소속의 경상북 지역 순례지입니다."
+    lng: 128.1177536
   },
   {
     id: "새남터-순교성지-순교성지",
@@ -769,8 +700,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 용산구 이촌로 80-8 (이촌동)",
     region: "서울",
     lat: 37.5251266,
-    lng: 126.9570717,
-    description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
+    lng: 126.9570717
   },
   {
     id: "새미-은총의-동산",
@@ -780,8 +710,7 @@ export const shrines: Shrine[] = [
     address: "제주특별자치도 제주시 한림읍 새미소길 15",
     region: "제주",
     lat: 33.3478286,
-    lng: 126.3242993,
-    description: "제주교구 소속의 제주 지역 순례지입니다."
+    lng: 126.3242993
   },
   {
     id: "새방골성당",
@@ -791,8 +720,7 @@ export const shrines: Shrine[] = [
     address: "대구광역시 서구 새방로27길 9 (상리동)",
     region: "대구",
     lat: 35.8681365,
-    lng: 128.5284964,
-    description: "대구대교구 소속의 대구 지역 순례지입니다."
+    lng: 128.5284964
   },
   {
     id: "서소문-밖-네거리-순교성지-순교성지",
@@ -802,8 +730,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 중구 칠패로 5 서소문성지 역사박물관",
     region: "서울",
     lat: 37.5605679,
-    lng: 126.9688672,
-    description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
+    lng: 126.9688672
   },
   {
     id: "원동-주교좌성당",
@@ -813,8 +740,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 원주시 원일로 27",
     region: "강원",
     lat: 37.3457020,
-    lng: 127.9526313,
-    description: "원주교구 소속의 강원 지역 순례지입니다."
+    lng: 127.9526313
   },
   {
     id: "서짓골-성지",
@@ -824,8 +750,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 보령시 미산면 보령호로 238",
     region: "충청남",
     lat: 36.2311152,
-    lng: 126.6583996,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.6583996
   },
   {
     id: "서천교순교터",
@@ -835,8 +760,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 전주시 완산구 전주천서로 189 서완산동1가 351-1 주변",
     region: "전북",
     lat: 35.8123801,
-    lng: 127.1407662,
-    description: "전주교구 소속의 전북 지역 순교사적지입니다."
+    lng: 127.1407662
   },
   {
     id: "왜고개성지순교성지",
@@ -846,8 +770,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 용산구 한강대로 40길 46",
     region: "서울",
     lat: 37.5299024,
-    lng: 126.9719253,
-    description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
+    lng: 126.9719253
   },
   {
     id: "성-남종삼-요한과-가족-순교자-묘소",
@@ -857,8 +780,7 @@ export const shrines: Shrine[] = [
     address: "경기도 양주시 장흥면 울대리 산 22-2 의령남씨 가족 묘소",
     region: "경기",
     lat: 37.7376901,
-    lng: 126.9955408,
-    description: "의정부교구 소속의 경기 지역 순교사적지입니다."
+    lng: 126.9955408
   },
   {
     id: "성-유스티노-신학교",
@@ -868,8 +790,7 @@ export const shrines: Shrine[] = [
     address: "대구광역시 중구 명륜로12길 47 (남산동)",
     region: "대구",
     lat: 35.8613362,
-    lng: 128.5875150,
-    description: "대구대교구 소속의 대구 지역 순례지입니다."
+    lng: 128.5875150
   },
   {
     id: "성거산성지",
@@ -879,8 +800,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 천안시 서북구 입장면 위례산길 394",
     region: "충청남",
     lat: 36.8767963,
-    lng: 127.2389926,
-    description: "대전교구 소속의 충청남 지역 천주교 성지입니다."
+    lng: 127.2389926
   },
   {
     id: "성내동-성당",
@@ -890,8 +810,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 삼척시 성당길 34-84",
     region: "강원",
     lat: 37.4435731,
-    lng: 129.1622490,
-    description: "원주교구 소속의 강원 지역 순교사적지입니다."
+    lng: 129.1622490
   },
   {
     id: "성모-순례지성모당",
@@ -901,8 +820,7 @@ export const shrines: Shrine[] = [
     address: "인천광역시 동구 박문로 1 (송림동)",
     region: "인천",
     lat: 37.4706891,
-    lng: 126.6518396,
-    description: "인천교구 소속의 인천 지역 순례지입니다."
+    lng: 126.6518396
   },
   {
     id: "성모당",
@@ -912,8 +830,7 @@ export const shrines: Shrine[] = [
     address: "대구광역시 중구 남산로4길 112 (남산동)",
     region: "대구",
     lat: 35.8598438,
-    lng: 128.5878842,
-    description: "대구대교구 소속의 대구 지역 순례지입니다."
+    lng: 128.5878842
   },
   {
     id: "배론-성지",
@@ -923,8 +840,7 @@ export const shrines: Shrine[] = [
     address: "충청북도 제천시 봉양읍 배론성지길 296",
     region: "충청북",
     lat: 37.1595281,
-    lng: 128.0838807,
-    description: "원주교구 소속의 충청북 지역 천주교 성지입니다."
+    lng: 128.0838807
   },
   {
     id: "성직자-묘지",
@@ -934,8 +850,7 @@ export const shrines: Shrine[] = [
     address: "대구광역시 중구 남산로4길 112 (남산동)",
     region: "대구",
     lat: 35.8598438,
-    lng: 128.5878842,
-    description: "대구대교구 소속의 대구 지역 순례지입니다."
+    lng: 128.5878842
   },
   {
     id: "성체-순례-성지",
@@ -945,8 +860,7 @@ export const shrines: Shrine[] = [
     address: "경기도 김포시 북변로 29-12 (북변동), 김포성당 내",
     region: "경기",
     lat: 37.6296433,
-    lng: 126.7082923,
-    description: "인천교구 소속의 경기 지역 순례지입니다."
+    lng: 126.7082923
   },
   {
     id: "소양로-순례-성당-순교자-고-안토니오-anthony-collier",
@@ -956,8 +870,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 춘천시 모수물길22번길 26 (소양로2가)",
     region: "강원",
     lat: 37.8878000,
-    lng: 127.7282897,
-    description: "춘천교구 소속의 강원 지역 순교사적지입니다."
+    lng: 127.7282897
   },
   {
     id: "손골성지",
@@ -967,8 +880,7 @@ export const shrines: Shrine[] = [
     address: "경기도 용인시 수지구 동천로437번길 67",
     region: "경기",
     lat: 37.3442395,
-    lng: 127.0524998,
-    description: "수원교구 소속의 경기 지역 순교사적지입니다."
+    lng: 127.0524998
   },
   {
     id: "솔뫼성지",
@@ -978,8 +890,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 당진시 우강면 솔뫼로 132",
     region: "충청남",
     lat: 36.8195254,
-    lng: 126.7865173,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.7865173
   },
   {
     id: "수리산성지",
@@ -989,8 +900,7 @@ export const shrines: Shrine[] = [
     address: "경기도 안양시 만안구 병목안로 408",
     region: "경기",
     lat: 37.3702390,
-    lng: 126.9053965,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 126.9053965
   },
   {
     id: "수리치골-성모성지",
@@ -1000,8 +910,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 공주시 신풍면 용수봉갑길 522",
     region: "충청남",
     lat: 36.5169574,
-    lng: 126.8971258,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.8971258
   },
   {
     id: "수영-장대-순교-성지",
@@ -1011,8 +920,7 @@ export const shrines: Shrine[] = [
     address: "부산광역시 수영구 광안동 546-4",
     region: "부산",
     lat: 35.1592763,
-    lng: 129.1073878,
-    description: "부산교구 소속의 부산 지역 천주교 성지입니다."
+    lng: 129.1073878
   },
   {
     id: "수원화성순교성지",
@@ -1022,8 +930,7 @@ export const shrines: Shrine[] = [
     address: "경기도 수원시 팔달구 정조로 842 (북수동)",
     region: "경기",
     lat: 37.2830667,
-    lng: 127.0166728,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 127.0166728
   },
   {
     id: "복자-박대식-빅토리노-묘",
@@ -1033,8 +940,7 @@ export const shrines: Shrine[] = [
     address: "경상남도 김해시 진례면 청천리 산 30",
     region: "경상남",
     lat: 35.2710261,
-    lng: 128.7410128,
-    description: "마산교구 소속의 경상남 지역 순교사적지입니다."
+    lng: 128.7410128
   },
   {
     id: "순교자-라-파트리치오patrick-reilly-신부-순교터",
@@ -1044,8 +950,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 강릉시 옥계면 낙풍리 산 16-2",
     region: "강원",
     lat: 37.6348281,
-    lng: 129.0223071,
-    description: "춘천교구 소속의 강원 지역 순교사적지입니다."
+    lng: 129.0223071
   },
   {
     id: "순교자의-딸-유섬이-묘",
@@ -1055,8 +960,7 @@ export const shrines: Shrine[] = [
     address: "경상남도 거제시 거제면 내간리 산53-2 (주차: 송곡1길 92)",
     region: "경상남",
     lat: 34.8497419,
-    lng: 128.5545268,
-    description: "마산교구 소속의 경상남 지역 순례지입니다."
+    lng: 128.5545268
   },
   {
     id: "신나무골-성지",
@@ -1066,8 +970,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 칠곡군 지천면 칠곡대로 2189-22",
     region: "경상북",
     lat: 35.9669238,
-    lng: 128.4620348,
-    description: "대구대교구 소속의 경상북 지역 천주교 성지입니다."
+    lng: 128.4620348
   },
   {
     id: "신리성지",
@@ -1077,8 +980,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 당진시 합덕읍 평야6로 135",
     region: "충청남",
     lat: 36.7626160,
-    lng: 126.7711052,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.7711052
   },
   {
     id: "신암리-성당",
@@ -1088,8 +990,7 @@ export const shrines: Shrine[] = [
     address: "경기도 양주시 남면 감악산로489번길 27-32",
     region: "경기",
     lat: 37.9039957,
-    lng: 126.9599001,
-    description: "의정부교구 소속의 경기 지역 순교사적지입니다."
+    lng: 126.9599001
   },
   {
     id: "양근성지",
@@ -1099,8 +1000,7 @@ export const shrines: Shrine[] = [
     address: "경기도 양평군 양평읍 물안개공원길 37",
     region: "경기",
     lat: 37.5000184,
-    lng: 127.4749961,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 127.4749961
   },
   {
     id: "양양-성지-순교자-이광재-디모테오",
@@ -1110,8 +1010,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 양양군 양양읍 군청길 17",
     region: "강원",
     lat: 38.0765643,
-    lng: 128.6207114,
-    description: "춘천교구 소속의 강원 지역 순교사적지입니다."
+    lng: 128.6207114
   },
   {
     id: "양주-순교성지",
@@ -1121,8 +1020,7 @@ export const shrines: Shrine[] = [
     address: "경기도 양주시 부흥로1399번길 62 (유양동)",
     region: "경기",
     lat: 37.7857833,
-    lng: 127.0322866,
-    description: "의정부교구 소속의 경기 지역 순교사적지입니다."
+    lng: 127.0322866
   },
   {
     id: "어농성지",
@@ -1132,8 +1030,7 @@ export const shrines: Shrine[] = [
     address: "경기도 이천시 모가면 어농로62번길 148",
     region: "경기",
     lat: 37.1903183,
-    lng: 127.4296057,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 127.4296057
   },
   {
     id: "언양-성당",
@@ -1143,8 +1040,7 @@ export const shrines: Shrine[] = [
     address: "울산광역시 울주군 언양읍 구교동1길 11",
     region: "울산",
     lat: 35.5698532,
-    lng: 129.1151358,
-    description: "부산교구 소속의 울산 지역 순례지입니다."
+    lng: 129.1151358
   },
   {
     id: "여사울성지",
@@ -1154,8 +1050,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 예산군 신암면 신종여사울길 22",
     region: "충청남",
     lat: 36.7566890,
-    lng: 126.8238805,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.8238805
   },
   {
     id: "여산-하늘의-문-성당",
@@ -1165,8 +1060,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 익산시 여산면 영전길 14",
     region: "전북",
     lat: 36.0601547,
-    lng: 127.0851410,
-    description: "전주교구 소속의 전북 지역 천주교 성지입니다."
+    lng: 127.0851410
   },
   {
     id: "여우목-성지",
@@ -1176,8 +1070,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 문경시 문경읍 중평리 96",
     region: "경상북",
     lat: 36.8000583,
-    lng: 128.2112718,
-    description: "안동교구 소속의 경상북 지역 순교사적지입니다."
+    lng: 128.2112718
   },
   {
     id: "연풍-순교-성지",
@@ -1187,8 +1080,7 @@ export const shrines: Shrine[] = [
     address: "충청북도 괴산군 연풍면 중앙로홍문2길 14",
     region: "충청북",
     lat: 36.7638739,
-    lng: 127.9938757,
-    description: "청주교구 소속의 충청북 지역 천주교 성지입니다."
+    lng: 127.9938757
   },
   {
     id: "영광순교자기념성당",
@@ -1198,8 +1090,7 @@ export const shrines: Shrine[] = [
     address: "전라남도 영광군 영광읍 중앙로2길 40",
     region: "전라남",
     lat: 35.2727211,
-    lng: 126.5140028,
-    description: "광주대교구 소속의 전라남 지역 순교사적지입니다."
+    lng: 126.5140028
   },
   {
     id: "오륜대-순교자-성지",
@@ -1209,8 +1100,7 @@ export const shrines: Shrine[] = [
     address: "부산광역시 금정구 오륜대로 106-1 오륜대 순교자 성지 사무실",
     region: "부산",
     lat: 35.2457017,
-    lng: 129.1009016,
-    description: "부산교구 소속의 부산 지역 천주교 성지입니다."
+    lng: 129.1009016
   },
   {
     id: "요당리성지",
@@ -1220,8 +1110,7 @@ export const shrines: Shrine[] = [
     address: "경기도 화성시 양감면 요당길 155",
     region: "경기",
     lat: 37.0682931,
-    lng: 126.9303254,
-    description: "수원교구 소속의 경기 지역 순교사적지입니다."
+    lng: 126.9303254
   },
   {
     id: "용산예수성심신학교-순례지",
@@ -1231,8 +1120,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 용산구 원효로19길 49 (원효로4가) 성심여자고등학교 내",
     region: "서울",
     lat: 37.5342094,
-    lng: 126.9545934,
-    description: "서울대교구 소속의 서울 지역 순례지입니다."
+    lng: 126.9545934
   },
   {
     id: "용소막-성당",
@@ -1242,8 +1130,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 원주시 신림면 구학산로 1857",
     region: "강원",
     lat: 37.2122029,
-    lng: 128.0871715,
-    description: "원주교구 소속의 강원 지역 순례지입니다."
+    lng: 128.0871715
   },
   {
     id: "용수-성지-성-김대건-신부-표착기념관",
@@ -1253,8 +1140,7 @@ export const shrines: Shrine[] = [
     address: "제주특별자치도 제주시 한경면 용수1길 108",
     region: "제주",
     lat: 33.3228626,
-    lng: 126.1677308,
-    description: "제주교구 소속의 제주 지역 순교사적지입니다."
+    lng: 126.1677308
   },
   {
     id: "우곡-성지",
@@ -1264,8 +1150,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 봉화군 봉성면 시거리길 397",
     region: "경상북",
     lat: 36.9468720,
-    lng: 128.8288940,
-    description: "안동교구 소속의 경상북 지역 순례지입니다."
+    lng: 128.8288940
   },
   {
     id: "우포도청-터-교회사적지",
@@ -1275,8 +1160,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 종로 6 (서린동)",
     region: "서울",
     lat: 37.5698416,
-    lng: 126.9780961,
-    description: "서울대교구 소속의 서울 지역 순교사적지입니다."
+    lng: 126.9780961
   },
   {
     id: "울산-병영-순교-성지",
@@ -1286,8 +1170,7 @@ export const shrines: Shrine[] = [
     address: "울산광역시 중구 외솔큰길 241",
     region: "울산",
     lat: 35.5710749,
-    lng: 129.3505242,
-    description: "부산교구 소속의 울산 지역 천주교 성지입니다."
+    lng: 129.3505242
   },
   {
     id: "원머리성지",
@@ -1297,8 +1180,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 당진시 신평면 한정리 233",
     region: "충청남",
     lat: 36.8994872,
-    lng: 126.7911934,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.7911934
   },
   {
     id: "은이골배마실성지",
@@ -1308,8 +1190,7 @@ export const shrines: Shrine[] = [
     address: "경기도 용인시 처인구 양지면 은이로 182",
     region: "경기",
     lat: 37.2159273,
-    lng: 127.2777687,
-    description: "수원교구 소속의 경기 지역 순교사적지입니다."
+    lng: 127.2777687
   },
   {
     id: "의금부-터-교회사적지",
@@ -1319,8 +1200,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 종로 6 (서린동)",
     region: "서울",
     lat: 37.5698416,
-    lng: 126.9780961,
-    description: "서울대교구 소속의 서울 지역 순교사적지입니다."
+    lng: 126.9780961
   },
   {
     id: "의정부-주교좌성당",
@@ -1330,8 +1210,7 @@ export const shrines: Shrine[] = [
     address: "경기도 의정부시 신흥로265번길 27",
     region: "경기",
     lat: 37.7397351,
-    lng: 127.0414397,
-    description: "의정부교구 소속의 경기 지역 순례지입니다."
+    lng: 127.0414397
   },
   {
     id: "이승훈-베드로-묘반주골",
@@ -1341,8 +1220,7 @@ export const shrines: Shrine[] = [
     address: "인천광역시 남동구 장수동 산 132-1",
     region: "인천",
     lat: 37.4553643,
-    lng: 126.7442344,
-    description: "인천교구 소속의 인천 지역 순교사적지입니다."
+    lng: 126.7442344
   },
   {
     id: "춘천교구-주교관과-교육원",
@@ -1352,8 +1230,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 춘천시 공지로 300",
     region: "강원",
     lat: 37.8679980,
-    lng: 127.7317841,
-    description: "춘천교구 소속의 강원 지역 순례지입니다."
+    lng: 127.7317841
   },
   {
     id: "일만위순교자현양동산",
@@ -1363,8 +1240,7 @@ export const shrines: Shrine[] = [
     address: "인천광역시 강화군 내가면 고비고개로741번길 107",
     region: "인천",
     lat: 37.7141869,
-    lng: 126.4140855,
-    description: "인천교구 소속의 인천 지역 순례지입니다."
+    lng: 126.4140855
   },
   {
     id: "임당동-순례-성당-순교자-심능석-스테파노",
@@ -1374,8 +1250,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 강릉시 임영로 148 (임당동)",
     region: "강원",
     lat: 37.7542322,
-    lng: 128.8924029,
-    description: "춘천교구 소속의 강원 지역 순례지입니다."
+    lng: 128.8924029
   },
   {
     id: "전동성당",
@@ -1385,8 +1260,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 전주시 완산구 태조로 51",
     region: "전북",
     lat: 35.8132038,
-    lng: 127.1495747,
-    description: "전주교구 소속의 전북 지역 천주교 성지입니다."
+    lng: 127.1495747
   },
   {
     id: "전옥서-터-교회사적지",
@@ -1396,8 +1270,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 청계천로 41 (서린동)",
     region: "서울",
     lat: 37.5696680,
-    lng: 126.9821793,
-    description: "서울대교구 소속의 서울 지역 순교사적지입니다."
+    lng: 126.9821793
   },
   {
     id: "전주숲정이성지",
@@ -1407,8 +1280,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 전주시 덕진구 공북로 19",
     region: "전북",
     lat: 35.8254568,
-    lng: 127.1334715,
-    description: "전주교구 소속의 전북 지역 순교사적지입니다."
+    lng: 127.1334715
   },
   {
     id: "전주옥터",
@@ -1418,8 +1290,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 전주시 완산구 현무1길 20 한국전통문화의전당 후문",
     region: "전북",
     lat: 35.8205463,
-    lng: 127.1482171,
-    description: "전주교구 소속의 전북 지역 순교사적지입니다."
+    lng: 127.1482171
   },
   {
     id: "절두산-순교성지-순교성지",
@@ -1429,8 +1300,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 마포구 토정로 6 (합정동)",
     region: "서울",
     lat: 37.5441354,
-    lng: 126.9117936,
-    description: "서울대교구 소속의 서울 지역 천주교 성지입니다."
+    lng: 126.9117936
   },
   {
     id: "제물진두-순교-성지",
@@ -1440,8 +1310,7 @@ export const shrines: Shrine[] = [
     address: "인천광역시 중구 제물량로 240 (항동)",
     region: "인천",
     lat: 37.4735584,
-    lng: 126.6185404,
-    description: "인천교구 소속의 인천 지역 천주교 성지입니다."
+    lng: 126.6185404
   },
   {
     id: "조씨-형제-순교자-묘",
@@ -1451,8 +1320,7 @@ export const shrines: Shrine[] = [
     address: "부산광역시 강서구 생곡길26번길 9-19",
     region: "부산",
     lat: 35.1298335,
-    lng: 128.8806134,
-    description: "부산교구 소속의 부산 지역 순교사적지입니다."
+    lng: 128.8806134
   },
   {
     id: "종로성당-순례지",
@@ -1462,8 +1330,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 동순라길 8 (인의동)",
     region: "서울",
     lat: 37.5712084,
-    lng: 126.9966477,
-    description: "서울대교구 소속의 서울 지역 순례지입니다."
+    lng: 126.9966477
   },
   {
     id: "좌포도청-터-교회사적지",
@@ -1473,8 +1340,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 돈화문로 28 (묘동) 종로3가역 9번출구, 치안센터 앞",
     region: "서울",
     lat: 37.5712444,
-    lng: 126.9923284,
-    description: "서울대교구 소속의 서울 지역 순교사적지입니다."
+    lng: 126.9923284
   },
   {
     id: "계산-주교좌성당",
@@ -1484,8 +1350,7 @@ export const shrines: Shrine[] = [
     address: "대구광역시 중구 서성로 10 (계산동2가)",
     region: "대구",
     lat: 35.8733228,
-    lng: 128.5870631,
-    description: "대구대교구 소속의 대구 지역 순례지입니다."
+    lng: 128.5870631
   },
   {
     id: "죽림굴-신앙-사적지",
@@ -1495,8 +1360,7 @@ export const shrines: Shrine[] = [
     address: "울산광역시 울주군 상북면 억새벌길 200-78",
     region: "울산",
     lat: 35.5432099,
-    lng: 129.0225060,
-    description: "부산교구 소속의 울산 지역 순교사적지입니다."
+    lng: 129.0225060
   },
   {
     id: "죽림동-순교-성지-625-순교자-묘역",
@@ -1506,8 +1370,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 춘천시 약사고개길 21 (성직자 묘역 내)",
     region: "강원",
     lat: 37.8766142,
-    lng: 127.7265650,
-    description: "춘천교구 소속의 강원 지역 천주교 성지입니다."
+    lng: 127.7265650
   },
   {
     id: "죽산성지",
@@ -1517,8 +1380,7 @@ export const shrines: Shrine[] = [
     address: "경기도 안성시 일죽면 종배길 115",
     region: "경기",
     lat: 37.0749705,
-    lng: 127.4494036,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 127.4494036
   },
   {
     id: "중림동-약현성당-순례지",
@@ -1528,8 +1390,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 중구 청파로 447-1 (중림동)",
     region: "서울",
     lat: 37.5591934,
-    lng: 126.9669801,
-    description: "서울대교구 소속의 서울 지역 순례지입니다."
+    lng: 126.9669801
   },
   {
     id: "지석리성지",
@@ -1539,8 +1400,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 부여군 충화면 지석리 368-1",
     region: "충청남",
     lat: 36.1869086,
-    lng: 126.8024631,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.8024631
   },
   {
     id: "진목정-성지",
@@ -1550,8 +1410,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 경주시 산내면 수의길 192",
     region: "경상북",
     lat: 35.7530509,
-    lng: 129.0760716,
-    description: "대구대교구 소속의 경상북 지역 순교사적지입니다."
+    lng: 129.0760716
   },
   {
     id: "진무영-순교-성지",
@@ -1561,8 +1420,7 @@ export const shrines: Shrine[] = [
     address: "인천광역시 강화군 강화읍 북문길 41",
     region: "인천",
     lat: 37.7505202,
-    lng: 126.4848222,
-    description: "인천교구 소속의 인천 지역 천주교 성지입니다."
+    lng: 126.4848222
   },
   {
     id: "진산성지",
@@ -1572,8 +1430,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 금산군 진산면 실학로 207",
     region: "충청남",
     lat: 36.1801323,
-    lng: 127.3534649,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 127.3534649
   },
   {
     id: "진안리-성지",
@@ -1583,8 +1440,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 문경시 문경읍 새재로 600",
     region: "경상북",
     lat: 36.7371456,
-    lng: 128.0907559,
-    description: "안동교구 소속의 경상북 지역 순교사적지입니다."
+    lng: 128.0907559
   },
   {
     id: "참회와-속죄의-성당",
@@ -1594,8 +1450,7 @@ export const shrines: Shrine[] = [
     address: "경기도 파주시 탄현면 성동로 111",
     region: "경기",
     lat: 37.7810658,
-    lng: 126.6950318,
-    description: "의정부교구 소속의 경기 지역 순교사적지입니다."
+    lng: 126.6950318
   },
   {
     id: "천진암성지",
@@ -1605,8 +1460,7 @@ export const shrines: Shrine[] = [
     address: "경기도 광주시 퇴촌면 천진암로 1203",
     region: "경기",
     lat: 37.4235731,
-    lng: 127.3883989,
-    description: "수원교구 소속의 경기 지역 천주교 성지입니다."
+    lng: 127.3883989
   },
   {
     id: "천호성지",
@@ -1616,8 +1470,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 완주군 비봉면 천호성지길 124",
     region: "전북",
     lat: 36.0381636,
-    lng: 127.1308572,
-    description: "전주교구 소속의 전북 지역 천주교 성지입니다."
+    lng: 127.1308572
   },
   {
     id: "청주-읍성-순교-성지",
@@ -1627,8 +1480,7 @@ export const shrines: Shrine[] = [
     address: "충청북도 청주시 상당구 대성로 41 서운동 성당",
     region: "충청북",
     lat: 36.6289606,
-    lng: 127.4927323,
-    description: "청주교구 소속의 충청북 지역 천주교 성지입니다."
+    lng: 127.4927323
   },
   {
     id: "초남이성지",
@@ -1638,8 +1490,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 완주군 이서면 초남신기길 122-1",
     region: "전북",
     lat: 35.8550821,
-    lng: 127.0225243,
-    description: "전주교구 소속의 전북 지역 순교사적지입니다."
+    lng: 127.0225243
   },
   {
     id: "초록바위순교터",
@@ -1649,8 +1500,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 전주시 완산구 전주천서로 123 동완산동 산 1-9",
     region: "전북",
     lat: 35.8106038,
-    lng: 127.1476989,
-    description: "전주교구 소속의 전북 지역 순교사적지입니다."
+    lng: 127.1476989
   },
   {
     id: "치명자산성지",
@@ -1660,8 +1510,7 @@ export const shrines: Shrine[] = [
     address: "전북특별자치도 전주시 완산구 바람쐬는길 120",
     region: "전북",
     lat: 35.8032201,
-    lng: 127.1676097,
-    description: "전주교구 소속의 전북 지역 천주교 성지입니다."
+    lng: 127.1676097
   },
   {
     id: "포천-순교-성지-복자-홍인-레오-순교터",
@@ -1671,8 +1520,7 @@ export const shrines: Shrine[] = [
     address: "경기도 포천시 군내면 호국로 1564",
     region: "경기",
     lat: 37.8931695,
-    lng: 127.2038781,
-    description: "춘천교구 소속의 경기 지역 순교사적지입니다."
+    lng: 127.2038781
   },
   {
     id: "풍수원-성당",
@@ -1682,8 +1530,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 횡성군 서원면 경강로유현1길 30",
     region: "강원",
     lat: 37.5290315,
-    lng: 127.8186823,
-    description: "원주교구 소속의 강원 지역 순교사적지입니다."
+    lng: 127.8186823
   },
   {
     id: "한국-순교자-103위-시성-터-순례지",
@@ -1693,8 +1540,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 영등포구 여의공원로 68 (여의도동)",
     region: "서울",
     lat: 37.5268088,
-    lng: 126.9222841,
-    description: "서울대교구 소속의 서울 지역 순례지입니다."
+    lng: 126.9222841
   },
   {
     id: "한국-천주교회-창립-터-교회사적지",
@@ -1704,8 +1550,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 청계천로 105 (관수동) 전태일 기념관 앞",
     region: "서울",
     lat: 37.5684665,
-    lng: 126.9893003,
-    description: "서울대교구 소속의 서울 지역 순교사적지입니다."
+    lng: 126.9893003
   },
   {
     id: "한티순교성지",
@@ -1715,8 +1560,7 @@ export const shrines: Shrine[] = [
     address: "경상북도 칠곡군 동명면 한티로1길 69",
     region: "경상북",
     lat: 36.0165761,
-    lng: 128.6304511,
-    description: "대구대교구 소속의 경상북 지역 천주교 성지입니다."
+    lng: 128.6304511
   },
   {
     id: "합덕성당",
@@ -1726,8 +1570,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 당진시 합덕읍 합덕성당2길 22",
     region: "충청남",
     lat: 36.7924739,
-    lng: 126.7858567,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.7858567
   },
   {
     id: "해미순교자국제성지",
@@ -1737,8 +1580,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 서산시 해미면 성지1로 13",
     region: "충청남",
     lat: 36.7128749,
-    lng: 126.5377472,
-    description: "대전교구 소속의 충청남 지역 천주교 성지입니다."
+    lng: 126.5377472
   },
   {
     id: "행정-공소-옹기마을-신앙촌",
@@ -1748,8 +1590,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 강릉시 연곡면 행정2길 14",
     region: "강원",
     lat: 37.8539357,
-    lng: 128.7889908,
-    description: "춘천교구 소속의 강원 지역 순례지입니다."
+    lng: 128.7889908
   },
   {
     id: "행주-성당",
@@ -1759,8 +1600,7 @@ export const shrines: Shrine[] = [
     address: "경기도 고양시 덕양구 행주산성로144번길 50",
     region: "경기",
     lat: 37.6022512,
-    lng: 126.8167904,
-    description: "의정부교구 소속의 경기 지역 순례지입니다."
+    lng: 126.8167904
   },
   {
     id: "형조-터-교회사적지",
@@ -1770,8 +1610,7 @@ export const shrines: Shrine[] = [
     address: "서울특별시 종로구 세종대로 175 (세종로)",
     region: "서울",
     lat: 37.5718479,
-    lng: 126.9761683,
-    description: "서울대교구 소속의 서울 지역 순교사적지입니다."
+    lng: 126.9761683
   },
   {
     id: "홍주순교성지",
@@ -1781,8 +1620,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 홍성군 홍성읍 조양로 108 (오관리)",
     region: "충청남",
     lat: 36.6024649,
-    lng: 126.6617891,
-    description: "대전교구 소속의 충청남 지역 천주교 성지입니다."
+    lng: 126.6617891
   },
   {
     id: "홍천-성당-등록문화재-162호",
@@ -1792,8 +1630,7 @@ export const shrines: Shrine[] = [
     address: "강원특별자치도 홍천군 홍천읍 마지기로 54",
     region: "강원",
     lat: 37.6949533,
-    lng: 127.8869569,
-    description: "춘천교구 소속의 강원 지역 순례지입니다."
+    lng: 127.8869569
   },
   {
     id: "화현-이벽-성지",
@@ -1803,8 +1640,7 @@ export const shrines: Shrine[] = [
     address: "경기도 포천시 화현면 화동로477번길 31",
     region: "경기",
     lat: 37.9080675,
-    lng: 127.3050713,
-    description: "춘천교구 소속의 경기 지역 순교사적지입니다."
+    lng: 127.3050713
   },
   {
     id: "황경한-묘소",
@@ -1814,8 +1650,7 @@ export const shrines: Shrine[] = [
     address: "제주특별자치도 제주시 추자면 신양리 산20-1",
     region: "제주",
     lat: 33.9490277,
-    lng: 126.3400628,
-    description: "제주교구 소속의 제주 지역 순례지입니다."
+    lng: 126.3400628
   },
   {
     id: "황무실성지",
@@ -1825,8 +1660,7 @@ export const shrines: Shrine[] = [
     address: "충청남도 당진시 합덕읍 석우리 1013",
     region: "충청남",
     lat: 36.7822579,
-    lng: 126.7376241,
-    description: "대전교구 소속의 충청남 지역 순교사적지입니다."
+    lng: 126.7376241
   },
   {
     id: "황사영-알렉시오-순교자-묘",
@@ -1836,8 +1670,7 @@ export const shrines: Shrine[] = [
     address: "경기도 양주시 장흥면 가마골로 270",
     region: "경기",
     lat: 37.7419229,
-    lng: 126.9767975,
-    description: "의정부교구 소속의 경기 지역 순교사적지입니다."
+    lng: 126.9767975
   },
   {
     id: "황사평-성지",
@@ -1847,8 +1680,7 @@ export const shrines: Shrine[] = [
     address: "제주특별자치도 제주시 기와5길 117-22",
     region: "제주",
     lat: 33.4904959,
-    lng: 126.5598772,
-    description: "제주교구 소속의 제주 지역 순례지입니다."
+    lng: 126.5598772
   },
   {
     id: "황새바위순교성지",
@@ -1858,9 +1690,6 @@ export const shrines: Shrine[] = [
     address: "충청남도 공주시 왕릉로 118",
     region: "충청남",
     lat: 36.4629464,
-    lng: 127.1193886,
-    description: "대전교구 소속의 충청남 지역 천주교 성지입니다."
+    lng: 127.1193886
   }
 ];
-
-export const categories: Array<"전체" | ShrineCategory> = ["전체", "성지", "순교사적지", "순례지"];

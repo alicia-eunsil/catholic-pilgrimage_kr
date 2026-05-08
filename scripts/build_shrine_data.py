@@ -1,11 +1,10 @@
 import csv
 from pathlib import Path
 
-from geocode_shrines import VALID_CATEGORIES, extract_region, read_input_rows, slugify
+from geocode_shrines import VALID_CATEGORIES, extract_region, slugify
 
 
 INPUT_PATH = Path("data/korean_catholic_holy_sites.geocoded.csv")
-EXCEL_PATH = "korean_catholic_holy_sites.xlsx"
 OUTPUT_PATH = Path("src/data/shrines.ts")
 
 
@@ -26,35 +25,6 @@ def normalize_id(raw_id, name, used_ids):
         index += 1
     used_ids.add(candidate)
     return candidate
-
-
-def description_for(row):
-    category = row["category"]
-    diocese = row["diocese"]
-    region = row["region"]
-    if category == "성지":
-        return f"{diocese} 소속의 {region} 지역 천주교 성지입니다."
-    if category == "순교사적지":
-        return f"{diocese} 소속의 {region} 지역 순교사적지입니다."
-    return f"{diocese} 소속의 {region} 지역 순례지입니다."
-
-
-def row_from_excel(row):
-    name = row.get("성지명", "").strip()
-    category = row.get("구분", "").strip()
-    diocese = row.get("소속교구", "").strip()
-    address = row.get("주소", "").strip()
-
-    return {
-        "id": "",
-        "name": name,
-        "category": category,
-        "diocese": diocese,
-        "address": address,
-        "region": extract_region(address),
-        "lat": "",
-        "lng": ""
-    }
 
 
 def clean_rows(rows):
@@ -83,7 +53,6 @@ def clean_rows(rows):
             "lat": float(lat),
             "lng": float(lng)
         }
-        shrine["description"] = description_for(shrine)
         cleaned.append(shrine)
 
     return cleaned
@@ -106,7 +75,6 @@ def write_ts(shrines):
         "  region: string;",
         "  lat: number;",
         "  lng: number;",
-        "  description: string;",
         "};",
         "",
         "export const shrines: Shrine[] = ["
@@ -122,8 +90,7 @@ def write_ts(shrines):
             f'    address: "{ts_string(shrine["address"])}",',
             f'    region: "{ts_string(shrine["region"])}",',
             f'    lat: {shrine["lat"]:.7f},',
-            f'    lng: {shrine["lng"]:.7f},',
-            f'    description: "{ts_string(shrine["description"])}"',
+            f'    lng: {shrine["lng"]:.7f}',
             "  },"
         ])
 
@@ -132,8 +99,6 @@ def write_ts(shrines):
 
     lines.extend([
         "];",
-        "",
-        'export const categories: Array<"전체" | ShrineCategory> = ["전체", "성지", "순교사적지", "순례지"];',
         ""
     ])
     OUTPUT_PATH.write_text("\n".join(lines), encoding="utf-8")

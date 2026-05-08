@@ -92,7 +92,6 @@ type RecommendedCourse = {
   theme: string;
   region: string;
   duration: string;
-  description: string;
   shrineIds: string[];
 };
 type CourseRoute = {
@@ -113,7 +112,6 @@ const recommendedCourses: RecommendedCourse[] = [
     theme: "도심 순교 성지",
     region: "서울",
     duration: "반나절-1일",
-    description: "대중교통으로 이동하기 좋은 서울 중심 순례 코스입니다. 처음 성지순례를 시작하는 사람에게 적합합니다.",
     shrineIds: [
       "명동대성당-순교성지",
       "서소문-밖-네거리-순교성지-순교성지",
@@ -129,7 +127,6 @@ const recommendedCourses: RecommendedCourse[] = [
     theme: "김대건 신부와 내포 교회",
     region: "충남 당진-서산",
     duration: "1일",
-    description: "솔뫼, 합덕, 신리, 해미를 잇는 대표 내포 순례 코스입니다. 자동차 이동 기준으로 구성했습니다.",
     shrineIds: ["솔뫼성지", "합덕성당", "신리성지", "해미순교자국제성지"]
   },
   {
@@ -138,7 +135,6 @@ const recommendedCourses: RecommendedCourse[] = [
     theme: "호남 순교 신앙",
     region: "전북 전주-완주-익산",
     duration: "1일-1박 2일",
-    description: "전주 도심 성지와 전북 주요 순교 성지를 함께 보는 코스입니다. 여유 있게 이동하는 일정에 맞습니다.",
     shrineIds: ["전동성당", "전주숲정이성지", "치명자산성지", "초남이성지", "천호성지"]
   },
   {
@@ -147,7 +143,6 @@ const recommendedCourses: RecommendedCourse[] = [
     theme: "제주 순교와 표착",
     region: "제주",
     duration: "1박 2일",
-    description: "제주의 순교 터와 김대건 신부 표착 기념지를 연결한 코스입니다. 제주 여행 일정과 함께 보기 좋습니다.",
     shrineIds: [
       "관덕정-순교-터",
       "황사평-성지",
@@ -162,7 +157,6 @@ const recommendedCourses: RecommendedCourse[] = [
     theme: "수도권 자동차 순례",
     region: "경기",
     duration: "1일-1박 2일",
-    description: "경기 남부와 광주권 성지를 묶은 코스입니다. 이동 거리가 있어 자동차 순례에 적합합니다.",
     shrineIds: ["남양성모성지", "미리내성지", "어농성지", "은이골배마실성지", "천진암성지"]
   }
 ];
