@@ -1738,6 +1738,12 @@ textarea {
   font-weight: 720;
 }
 
+.field-hint {
+  color: var(--subtle);
+  font-size: 12px;
+  font-weight: 650;
+}
+
 .form-card input[type="file"] {
   height: auto;
   padding: 10px;

@@ -917,7 +917,7 @@ export default function PilgrimageApp() {
             </label>
 
             <label>
-              인증 사진
+              인증 사진 <span className="field-hint">(JPG, PNG, HEIC 등 이미지 파일 · 업로드 전 500KB 이하로 압축)</span>
               <input key={photoInputKey} type="file" accept="image/*" onChange={handleVisitPhotoChange} />
             </label>
 
