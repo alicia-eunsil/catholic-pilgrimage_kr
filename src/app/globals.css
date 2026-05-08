@@ -1183,8 +1183,8 @@ textarea {
 
 .visit-row {
   display: grid;
-  grid-template-columns: 74px minmax(0, 1fr);
-  min-height: 74px;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 68px;
   overflow: hidden;
   border: 1px solid rgba(17, 24, 39, 0.08);
   border-radius: 8px;
@@ -1254,19 +1254,7 @@ textarea {
 }
 
 .records-panel .visit-row {
-  grid-template-columns: 58px minmax(0, 1fr);
   min-height: 58px;
-}
-
-.records-panel .visit-photo-button {
-  width: 58px;
-  min-height: 58px;
-}
-
-.records-panel .visit-row img,
-.records-panel .visit-photo-placeholder {
-  width: 58px;
-  height: 58px;
 }
 
 .records-panel .visit-row > div {

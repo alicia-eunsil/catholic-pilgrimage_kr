@@ -1,9 +1,9 @@
 "use client";
 
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { shrines, type Shrine, type ShrineCategory } from "@/data/shrines";
 import { distanceKm, type LatLng } from "@/lib/geo";
-import { loadVisitRecords, saveVisitRecords, type VisitRecord } from "@/lib/storage";
+import { saveVisitRecord, subscribeVisitRecords, type VisitRecord } from "@/lib/storage";
 
 const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
   성지: { color: "#9f6b00", bg: "#fff4cc" },
@@ -259,9 +259,7 @@ export default function PilgrimageApp() {
   const [verifyShrineId, setVerifyShrineId] = useState(shrines[0].id);
   const [nickname, setNickname] = useState("");
   const [comment, setComment] = useState("");
-  const [imageDataUrl, setImageDataUrl] = useState<string | undefined>();
   const [introVisitPage, setIntroVisitPage] = useState(1);
-  const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string } | undefined>();
   const [showShrineList, setShowShrineList] = useState(false);
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
@@ -269,9 +267,17 @@ export default function PilgrimageApp() {
   const [recordViewMode, setRecordViewMode] = useState<RecordViewMode>("all");
   const [recordSortMode, setRecordSortMode] = useState<RecordSortMode>("latest");
   const [selectedRecordShrineId, setSelectedRecordShrineId] = useState<string | undefined>();
+  const [visitSaveStatus, setVisitSaveStatus] = useState<"idle" | "saving">("idle");
+  const [visitSyncError, setVisitSyncError] = useState("");
 
   useEffect(() => {
-    setVisits(loadVisitRecords());
+    return subscribeVisitRecords(
+      (records) => {
+        setVisits(records);
+        setVisitSyncError("");
+      },
+      (message) => setVisitSyncError(`인증 기록을 불러오지 못했습니다. ${message}`)
+    );
   }, []);
 
   const filteredShrines = useMemo(() => {
@@ -437,19 +443,7 @@ export default function PilgrimageApp() {
     );
   }
 
-  function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) {
-      setImageDataUrl(undefined);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => setImageDataUrl(String(reader.result));
-    reader.readAsDataURL(file);
-  }
-
-  function submitVisit() {
+  async function submitVisit() {
     const trimmedNickname = nickname.trim();
     const trimmedComment = comment.trim();
 
@@ -459,26 +453,27 @@ export default function PilgrimageApp() {
     }
 
     const visitedAt = new Date().toISOString();
-    const nextVisit: VisitRecord = {
-      id: `${Date.now()}-${verifyShrineId}`,
-      shrineId: verifyShrineId,
-      nickname: trimmedNickname,
-      comment: trimmedComment,
-      imageDataUrl,
-      createdAt: visitedAt,
-      visitedAt,
-      userLat: position?.lat,
-      userLng: position?.lng,
-      distanceMeters: verifyDistanceMeters,
-      verified: Boolean(canVerify)
-    };
+    setVisitSaveStatus("saving");
+    setVisitSyncError("");
 
-    const nextVisits = [nextVisit, ...visits];
-    setVisits(nextVisits);
-    saveVisitRecords(nextVisits);
-    setComment("");
-    setImageDataUrl(undefined);
-    setActiveTab("records");
+    try {
+      await saveVisitRecord({
+        shrineId: verifyShrineId,
+        nickname: trimmedNickname,
+        comment: trimmedComment,
+        visitedAt,
+        userLat: position?.lat,
+        userLng: position?.lng,
+        distanceMeters: verifyDistanceMeters,
+        verified: Boolean(canVerify)
+      });
+      setComment("");
+      setActiveTab("records");
+    } catch (error) {
+      setVisitSyncError(error instanceof Error ? error.message : "방문 기록 저장 중 오류가 발생했습니다.");
+    } finally {
+      setVisitSaveStatus("idle");
+    }
   }
 
   return (
@@ -579,17 +574,6 @@ export default function PilgrimageApp() {
                 <div className="visit-table">
                   {pagedFocusedVisits.map((visit) => (
                     <article key={visit.id} className="visit-row">
-                      {visit.imageDataUrl ? (
-                        <button
-                          className="visit-photo-button"
-                          onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${focusedShrine.name} 인증 사진` })}
-                          aria-label={`${focusedShrine.name} 인증 사진 크게 보기`}
-                        >
-                          <img src={visit.imageDataUrl} alt="" />
-                        </button>
-                      ) : (
-                        <div className="visit-photo-placeholder">사진 없음</div>
-                      )}
                       <div>
                         <div>
                           <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
@@ -706,17 +690,6 @@ export default function PilgrimageApp() {
                         const shrine = shrines.find((item) => item.id === visit.shrineId);
                         return (
                           <article key={visit.id} className="visit-row">
-                            {visit.imageDataUrl ? (
-                              <button
-                                className="visit-photo-button"
-                                onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${shrine?.name ?? "성지"} 인증 사진` })}
-                                aria-label={`${shrine?.name ?? "성지"} 인증 사진 크게 보기`}
-                              >
-                                <img src={visit.imageDataUrl} alt="" />
-                              </button>
-                            ) : (
-                              <div className="visit-photo-placeholder">사진 없음</div>
-                            )}
                             <div>
                               <div>
                                 <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
@@ -777,17 +750,6 @@ export default function PilgrimageApp() {
                       <div className="visit-table">
                         {selectedShrineRecords.map((visit) => (
                           <article key={visit.id} className="visit-row">
-                            {visit.imageDataUrl ? (
-                              <button
-                                className="visit-photo-button"
-                                onClick={() => setExpandedImage({ src: visit.imageDataUrl!, alt: `${selectedRecordShrine?.name ?? "성지"} 인증 사진` })}
-                                aria-label={`${selectedRecordShrine?.name ?? "성지"} 인증 사진 크게 보기`}
-                              >
-                                <img src={visit.imageDataUrl} alt="" />
-                              </button>
-                            ) : (
-                              <div className="visit-photo-placeholder">사진 없음</div>
-                            )}
                             <div>
                               <div>
                                 <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
@@ -840,14 +802,11 @@ export default function PilgrimageApp() {
               <textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="오늘 순례에서 남기고 싶은 한마디" />
             </label>
 
-            <label>
-              인증 사진
-              <input type="file" accept="image/*" onChange={handleImageChange} />
-            </label>
+            {visitSyncError ? <p className="notice compact">{visitSyncError}</p> : null}
 
-            {imageDataUrl ? <img className="preview" src={imageDataUrl} alt="인증 사진 미리보기" /> : null}
-
-            <button className="primary-action" onClick={submitVisit}>방문 기록 남기기</button>
+            <button className="primary-action" onClick={submitVisit} disabled={visitSaveStatus === "saving"}>
+              {visitSaveStatus === "saving" ? "저장 중" : "방문 기록 남기기"}
+            </button>
           </div>
         </section>
       ) : null}
@@ -897,15 +856,6 @@ export default function PilgrimageApp() {
             )}
           </section>
         </section>
-      ) : null}
-
-      {expandedImage ? (
-        <div className="image-modal" role="dialog" aria-modal="true" onClick={() => setExpandedImage(undefined)}>
-          <button className="image-modal-close" onClick={() => setExpandedImage(undefined)} aria-label="사진 닫기">
-            닫기
-          </button>
-          <img src={expandedImage.src} alt={expandedImage.alt} onClick={(event) => event.stopPropagation()} />
-        </div>
       ) : null}
 
       {showShrineList ? (
