@@ -1026,7 +1026,6 @@ textarea {
 .shrine-row,
 .form-card,
 .progress-card,
-.record-card,
 .empty-state,
 .course-card,
 .insight-card,
@@ -1058,7 +1057,6 @@ textarea {
 .detail-card small,
 .shrine-row p,
 .route-list p,
-.record-card small,
 .progress-card p {
   color: var(--muted);
 }
@@ -1192,32 +1190,6 @@ textarea {
   box-shadow: var(--emboss);
 }
 
-.visit-photo-button {
-  display: block;
-  width: 74px;
-  min-height: 74px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: zoom-in;
-}
-
-.visit-row img,
-.visit-photo-placeholder {
-  width: 74px;
-  height: 74px;
-  object-fit: cover;
-}
-
-.visit-photo-placeholder {
-  display: grid;
-  place-items: center;
-  background: linear-gradient(180deg, #fffaf0, #efe7da);
-  color: var(--subtle);
-  font-size: 11px;
-  font-weight: 720;
-}
-
 .visit-row > div {
   display: grid;
   align-content: center;
@@ -1290,41 +1262,6 @@ textarea {
   background: var(--accent);
   color: #ffffff;
   box-shadow: 0 8px 16px rgba(49, 87, 213, 0.16);
-}
-
-.image-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: rgba(15, 23, 42, 0.64);
-  backdrop-filter: blur(18px);
-}
-
-.image-modal img {
-  max-width: min(100%, 980px);
-  max-height: 86dvh;
-  border: 1px solid rgba(255, 255, 255, 0.34);
-  border-radius: 8px;
-  object-fit: contain;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
-}
-
-.image-modal-close {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  min-width: 64px;
-  height: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.86);
-  color: var(--accent-strong);
-  cursor: pointer;
-  font-weight: 760;
-  box-shadow: var(--soft-shadow), var(--emboss);
 }
 
 .list-modal {
@@ -1751,15 +1688,6 @@ textarea {
   font-size: 13px;
 }
 
-.preview {
-  width: 100%;
-  max-height: 260px;
-  object-fit: cover;
-  border: 1px solid rgba(17, 24, 39, 0.1);
-  border-radius: 8px;
-  box-shadow: var(--soft-shadow);
-}
-
 .progress-card {
   padding: 16px;
 }
@@ -1778,49 +1706,6 @@ textarea {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, #9aa3af, #cfd6df);
-}
-
-.record-card {
-  overflow: hidden;
-}
-
-.record-card img {
-  display: block;
-  width: 100%;
-  max-height: 260px;
-  object-fit: cover;
-}
-
-.photo-placeholder {
-  display: grid;
-  min-height: 120px;
-  place-items: center;
-  background: linear-gradient(180deg, #fffaf0, #efe7da);
-  color: var(--subtle);
-  font-size: 13px;
-  font-weight: 720;
-}
-
-.record-card div {
-  padding: 14px;
-}
-
-.compact-record {
-  display: grid;
-  grid-template-columns: 92px minmax(0, 1fr);
-  min-height: 112px;
-}
-
-.compact-record img,
-.compact-record .photo-placeholder {
-  width: 100%;
-  height: 100%;
-  min-height: 112px;
-  object-fit: cover;
-}
-
-.compact-record div {
-  align-content: center;
 }
 
 .record-badge {

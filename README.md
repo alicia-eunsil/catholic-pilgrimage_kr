@@ -10,8 +10,8 @@
 - 네이버 블로그 후기 검색 링크
 - 여러 성지 선택 후 좌표 기반 최단 순서 추천
 - GPS 기준 500m 이내 방문 인증 판정
-- 로그인 없는 닉네임, 사진, 한줄소감 방문 기록
-- 브라우저 `localStorage` 기반 개인 기록 저장
+- 로그인 없는 닉네임, 한줄소감 방문 기록
+- Firebase Firestore 기반 공유 인증 기록 저장
 
 ## 데이터 입력
 
@@ -62,4 +62,4 @@ Vercel 프로젝트의 Environment Variables에도 같은 이름으로 등록해
 
 1. `data/korean_catholic_holy_sites.geocoded.csv`를 앱용 TypeScript/JSON 데이터로 자동 변환
 2. 네이버 블로그 검색 API 서버 라우트 추가
-3. 방문 기록을 서버에 저장할지 여부 재검토
+3. 네이버 블로그 검색 API 서버 라우트 고도화
