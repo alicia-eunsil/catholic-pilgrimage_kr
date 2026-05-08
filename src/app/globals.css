@@ -1865,6 +1865,7 @@ textarea {
   }
 
   .course-map-card {
+    overflow: visible;
     min-height: 520px;
   }
 
@@ -1875,6 +1876,41 @@ textarea {
   .course-map-workspace,
   .course-map-shell {
     min-height: 520px;
+  }
+
+  .course-map-shell {
+    display: grid;
+    grid-template-rows: 420px auto;
+    height: auto;
+  }
+
+  .course-map-shell .map-panel {
+    height: 420px;
+  }
+
+  .course-map-overlay {
+    position: static;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0 0 8px 8px;
+    background: var(--surface);
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .course-filter-list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .course-filter-list button {
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
 
   .records-workspace {
