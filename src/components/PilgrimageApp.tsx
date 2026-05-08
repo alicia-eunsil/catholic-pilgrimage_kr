@@ -332,7 +332,7 @@ function VisitRecordRow({
   shrineLabel?: string;
   onImageOpen: (url: string) => void;
 }) {
-  const meta = [shrineLabel, visit.nickname, visit.verified ? "GPS 인증" : ""].filter(Boolean).join(" · ");
+  const visitedAt = formatDateTime(visit.visitedAt ?? visit.createdAt);
 
   return (
     <article className={`visit-row ${visit.photoUrl ? "has-photo" : ""}`}>
@@ -342,13 +342,41 @@ function VisitRecordRow({
         </button>
       ) : null}
       <div>
-        <div>
-          <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
-        </div>
+        {shrineLabel ? <strong className="visit-row-title">{shrineLabel}</strong> : null}
+        <span className="visit-row-date">
+          {visitedAt}
+          {visit.verified ? " · GPS 인증" : ""}
+        </span>
         <p>{visit.comment}</p>
-        <small>{meta}</small>
+        <small>{visit.nickname}</small>
       </div>
     </article>
+  );
+}
+
+function RecordPagination({
+  label,
+  page,
+  pageCount,
+  onPageChange
+}: {
+  label: string;
+  page: number;
+  pageCount: number;
+  onPageChange: (page: number) => void;
+}) {
+  if (pageCount <= 1) {
+    return null;
+  }
+
+  return (
+    <nav className="pagination" aria-label={label}>
+      {Array.from({ length: pageCount }, (_, index) => index + 1).map((item) => (
+        <button key={item} className={item === page ? "active" : ""} onClick={() => onPageChange(item)}>
+          {item}
+        </button>
+      ))}
+    </nav>
   );
 }
 
@@ -376,6 +404,8 @@ export default function PilgrimageApp() {
   const [recordViewMode, setRecordViewMode] = useState<RecordViewMode>("all");
   const [recordSortMode, setRecordSortMode] = useState<RecordSortMode>("latest");
   const [selectedRecordShrineId, setSelectedRecordShrineId] = useState<string | undefined>();
+  const [allRecordPage, setAllRecordPage] = useState(1);
+  const [selectedShrineRecordPage, setSelectedShrineRecordPage] = useState(1);
   const [visitSaveStatus, setVisitSaveStatus] = useState<"idle" | "saving">("idle");
   const [visitSyncError, setVisitSyncError] = useState("");
 
@@ -441,6 +471,12 @@ export default function PilgrimageApp() {
       );
     });
   }, [allRecentVisits, recordSortMode]);
+  const allRecordPageCount = Math.max(1, Math.ceil(sortedAllVisits.length / VISITS_PER_PAGE));
+  const allRecordPageSafe = Math.min(allRecordPage, allRecordPageCount);
+  const pagedAllVisits = sortedAllVisits.slice(
+    (allRecordPageSafe - 1) * VISITS_PER_PAGE,
+    allRecordPageSafe * VISITS_PER_PAGE
+  );
   const courseRoutes = useMemo(
     () =>
       recommendedCourses.map((course, index) => ({
@@ -482,6 +518,12 @@ export default function PilgrimageApp() {
   const selectedShrineRecords = selectedRecordShrine
     ? allRecentVisits.filter((visit) => visit.shrineId === selectedRecordShrine.id)
     : [];
+  const selectedShrineRecordPageCount = Math.max(1, Math.ceil(selectedShrineRecords.length / VISITS_PER_PAGE));
+  const selectedShrineRecordPageSafe = Math.min(selectedShrineRecordPage, selectedShrineRecordPageCount);
+  const pagedSelectedShrineRecords = selectedShrineRecords.slice(
+    (selectedShrineRecordPageSafe - 1) * VISITS_PER_PAGE,
+    selectedShrineRecordPageSafe * VISITS_PER_PAGE
+  );
   const recordShrineOptions = useMemo(() => [...shrines].sort((a, b) => a.name.localeCompare(b.name, "ko")), []);
   const sortedShrineList = useMemo(() => {
     return [...shrines].sort((a, b) => {
@@ -738,17 +780,12 @@ export default function PilgrimageApp() {
                 </div>
 
                 {introVisitPageCount > 1 ? (
-                  <nav className="pagination" aria-label="인증 기록 페이지">
-                    {Array.from({ length: introVisitPageCount }, (_, index) => index + 1).map((page) => (
-                      <button
-                        key={page}
-                        className={page === introVisitPageSafe ? "active" : ""}
-                        onClick={() => setIntroVisitPage(page)}
-                      >
-                        {page}
-                      </button>
-                    ))}
-                  </nav>
+                  <RecordPagination
+                    label="인증 기록 페이지"
+                    page={introVisitPageSafe}
+                    pageCount={introVisitPageCount}
+                    onPageChange={setIntroVisitPage}
+                  />
                 ) : null}
               </>
             )}
@@ -816,10 +853,22 @@ export default function PilgrimageApp() {
 
             <section className="records-panel">
               <div className="record-mode-tabs">
-                <button className={recordViewMode === "all" ? "active" : ""} onClick={() => setRecordViewMode("all")}>
+                <button
+                  className={recordViewMode === "all" ? "active" : ""}
+                  onClick={() => {
+                    setRecordViewMode("all");
+                    setAllRecordPage(1);
+                  }}
+                >
                   전체 인증보기
                 </button>
-                <button className={recordViewMode === "byShrine" ? "active" : ""} onClick={() => setRecordViewMode("byShrine")}>
+                <button
+                  className={recordViewMode === "byShrine" ? "active" : ""}
+                  onClick={() => {
+                    setRecordViewMode("byShrine");
+                    setSelectedShrineRecordPage(1);
+                  }}
+                >
                   성지별 모아보기
                 </button>
               </div>
@@ -827,29 +876,49 @@ export default function PilgrimageApp() {
               {recordViewMode === "all" ? (
                 <section className="insight-card">
                   <div className="record-sort-tabs" aria-label="인증 정렬">
-                    <button className={recordSortMode === "latest" ? "active" : ""} onClick={() => setRecordSortMode("latest")}>
+                    <button
+                      className={recordSortMode === "latest" ? "active" : ""}
+                      onClick={() => {
+                        setRecordSortMode("latest");
+                        setAllRecordPage(1);
+                      }}
+                    >
                       최신순
                     </button>
-                    <button className={recordSortMode === "shrine" ? "active" : ""} onClick={() => setRecordSortMode("shrine")}>
+                    <button
+                      className={recordSortMode === "shrine" ? "active" : ""}
+                      onClick={() => {
+                        setRecordSortMode("shrine");
+                        setAllRecordPage(1);
+                      }}
+                    >
                       성지순
                     </button>
                   </div>
                   {allRecentVisits.length === 0 ? (
                     <div className="empty-state compact">아직 인증 기록이 없습니다. 첫 순례 기록을 남겨보세요.</div>
                   ) : (
-                    <div className="visit-table">
-                      {sortedAllVisits.map((visit) => {
-                        const shrine = shrines.find((item) => item.id === visit.shrineId);
-                        return (
-                          <VisitRecordRow
-                            key={visit.id}
-                            visit={visit}
-                            shrineLabel={shrine?.name ?? "성지"}
-                            onImageOpen={setExpandedImage}
-                          />
-                        );
-                      })}
-                    </div>
+                    <>
+                      <div className="visit-table">
+                        {pagedAllVisits.map((visit) => {
+                          const shrine = shrines.find((item) => item.id === visit.shrineId);
+                          return (
+                            <VisitRecordRow
+                              key={visit.id}
+                              visit={visit}
+                              shrineLabel={shrine?.name ?? "성지"}
+                              onImageOpen={setExpandedImage}
+                            />
+                          );
+                        })}
+                      </div>
+                      <RecordPagination
+                        label="전체 인증 페이지"
+                        page={allRecordPageSafe}
+                        pageCount={allRecordPageCount}
+                        onPageChange={setAllRecordPage}
+                      />
+                    </>
                   )}
                 </section>
               ) : (
@@ -867,7 +936,10 @@ export default function PilgrimageApp() {
                           <button
                             key={shrine.id}
                             className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
-                            onClick={() => setSelectedRecordShrineId(shrine.id)}
+                            onClick={() => {
+                              setSelectedRecordShrineId(shrine.id);
+                              setSelectedShrineRecordPage(1);
+                            }}
                           >
                             <span>
                               <strong>{shrine.name}</strong>
@@ -882,7 +954,10 @@ export default function PilgrimageApp() {
                         <span>전체 성지 선택</span>
                         <select
                           value={selectedRecordShrine?.id ?? ""}
-                          onChange={(event) => setSelectedRecordShrineId(event.target.value)}
+                          onChange={(event) => {
+                            setSelectedRecordShrineId(event.target.value);
+                            setSelectedShrineRecordPage(1);
+                          }}
                         >
                           {recordShrineOptions.map((shrine) => (
                             <option key={shrine.id} value={shrine.id}>
@@ -897,10 +972,16 @@ export default function PilgrimageApp() {
                         <span>{selectedShrineRecords.length}건</span>
                       </div>
                       <div className="visit-table">
-                        {selectedShrineRecords.map((visit) => (
+                        {pagedSelectedShrineRecords.map((visit) => (
                           <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
                         ))}
                       </div>
+                      <RecordPagination
+                        label={`${selectedRecordShrine?.name ?? "성지"} 인증 페이지`}
+                        page={selectedShrineRecordPageSafe}
+                        pageCount={selectedShrineRecordPageCount}
+                        onPageChange={setSelectedShrineRecordPage}
+                      />
                     </>
                   )}
                 </section>

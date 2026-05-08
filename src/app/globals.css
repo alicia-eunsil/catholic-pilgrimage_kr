@@ -1007,18 +1007,22 @@ textarea {
 .visit-row > div {
   display: grid;
   align-content: center;
-  gap: 5px;
+  gap: 4px;
   min-width: 0;
   padding: 9px 10px;
 }
 
-.visit-row > div > div {
-  display: flex;
-  justify-content: flex-end;
-  min-width: 0;
+.visit-row-title {
+  overflow: hidden;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.visit-row span,
+.visit-row-date,
 .visit-row small {
   color: var(--muted);
   font-size: 11px;
@@ -1040,23 +1044,23 @@ textarea {
 }
 
 .records-panel .visit-row {
-  min-height: 58px;
+  min-height: 72px;
 }
 
 .records-panel .visit-row.has-photo {
-  grid-template-columns: 58px minmax(0, 1fr);
-  min-height: 58px;
+  grid-template-columns: 64px minmax(0, 1fr);
+  min-height: 72px;
 }
 
 .records-panel .visit-photo-button {
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 72px;
   min-height: 0;
 }
 
 .records-panel .visit-photo-button img {
-  height: 58px;
-  min-height: 58px;
+  height: 72px;
+  min-height: 72px;
 }
 
 .records-panel .visit-row > div {
