@@ -922,7 +922,7 @@ export default function PilgrimageApp() {
             <label>
               방문 성지
               <select value={verifyShrineId} onChange={(event) => setVerifyShrineId(event.target.value)}>
-                {shrines.map((shrine) => (
+                {recordShrineOptions.map((shrine) => (
                   <option key={shrine.id} value={shrine.id}>{shrine.name}</option>
                 ))}
               </select>
