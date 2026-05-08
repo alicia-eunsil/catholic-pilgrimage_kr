@@ -179,6 +179,13 @@ function formatDateTime(value: string) {
   });
 }
 
+function formatShortDate(value: string) {
+  return new Date(value).toLocaleDateString("ko-KR", {
+    month: "2-digit",
+    day: "2-digit"
+  });
+}
+
 function AnimatedMetric({ value, suffix }: { value: number; suffix: string }) {
   const [displayValue, setDisplayValue] = useState(0);
 
@@ -509,14 +516,55 @@ export default function PilgrimageApp() {
   const visitedShrineCount = new Set(visits.map((visit) => visit.shrineId)).size;
   const verifiedVisitCount = visits.filter((visit) => visit.verified).length;
   const shrineRecordStats = shrines
-    .map((shrine) => ({
-      shrine,
-      count: visits.filter((visit) => visit.shrineId === shrine.id).length,
-      verifiedCount: visits.filter((visit) => visit.shrineId === shrine.id && visit.verified).length
-    }))
+    .map((shrine) => {
+      const shrineVisits = allRecentVisits.filter((visit) => visit.shrineId === shrine.id);
+      const latestVisit = shrineVisits[0];
+
+      return {
+        shrine,
+        count: shrineVisits.length,
+        verifiedCount: shrineVisits.filter((visit) => visit.verified).length,
+        latestVisit,
+        latestTime: latestVisit ? new Date(latestVisit.visitedAt ?? latestVisit.createdAt).getTime() : 0
+      };
+    })
     .filter((item) => item.count > 0)
     .sort((a, b) => b.count - a.count || a.shrine.name.localeCompare(b.shrine.name, "ko"));
   const topShrineRecordStats = shrineRecordStats.slice(0, 5);
+  const recentThreshold = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const recentShrineRecordStats = shrineRecordStats
+    .map((item) => ({
+      ...item,
+      recentCount: allRecentVisits.filter(
+        (visit) =>
+          visit.shrineId === item.shrine.id &&
+          new Date(visit.visitedAt ?? visit.createdAt).getTime() >= recentThreshold
+      ).length
+    }))
+    .filter((item) => item.recentCount > 0)
+    .sort((a, b) => b.recentCount - a.recentCount || b.latestTime - a.latestTime)
+    .slice(0, 3);
+  const trendingShrineRecordStats =
+    recentShrineRecordStats.length > 0
+      ? recentShrineRecordStats
+      : shrineRecordStats
+          .slice()
+          .sort((a, b) => b.latestTime - a.latestTime)
+          .slice(0, 3)
+          .map((item) => ({ ...item, recentCount: 0 }));
+  const dioceseRecordStats = Array.from(new Set(shrines.map((shrine) => shrine.diocese)))
+    .map((diocese) => {
+      const items = shrineRecordStats.filter((item) => item.shrine.diocese === diocese);
+      const count = items.reduce((sum, item) => sum + item.count, 0);
+      const verifiedCount = items.reduce((sum, item) => sum + item.verifiedCount, 0);
+      const topShrine = items.slice().sort((a, b) => b.count - a.count || a.shrine.name.localeCompare(b.shrine.name, "ko"))[0]?.shrine;
+
+      return { diocese, count, verifiedCount, topShrine };
+    })
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count || a.diocese.localeCompare(b.diocese, "ko"))
+    .slice(0, 5);
+  const maxDioceseRecordCount = Math.max(...dioceseRecordStats.map((item) => item.count), 1);
   const selectedRecordShrine = shrines.find((shrine) => shrine.id === selectedRecordShrineId) ?? topShrineRecordStats[0]?.shrine;
   const selectedShrineRecords = selectedRecordShrine
     ? allRecentVisits.filter((visit) => visit.shrineId === selectedRecordShrine.id)
@@ -934,24 +982,77 @@ export default function PilgrimageApp() {
                     <div className="empty-state compact">아직 성지별로 모아볼 인증 기록이 없습니다.</div>
                   ) : (
                     <>
-                      <div className="stat-list">
-                        {topShrineRecordStats.map(({ shrine, count, verifiedCount }) => (
+                      <div className="popular-shrine-list">
+                        {topShrineRecordStats.map(({ shrine, count, verifiedCount, latestVisit }, index) => (
                           <button
                             key={shrine.id}
-                            className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
+                            className={`popular-shrine-card ${selectedRecordShrine?.id === shrine.id ? "active" : ""}`}
                             onClick={() => {
                               setSelectedRecordShrineId(shrine.id);
                               setSelectedShrineRecordPage(1);
                             }}
                           >
-                            <span>
-                              <strong>{shrine.name}</strong>
-                              <small>{shrine.region} · GPS {verifiedCount}건</small>
+                            <span className="rank-number">{index + 1}</span>
+                            <span className="popular-shrine-body">
+                              <span className="popular-shrine-title">
+                                <strong>{shrine.name}</strong>
+                                <b>{count}건</b>
+                              </span>
+                              <small>
+                                최근 {latestVisit ? formatShortDate(latestVisit.visitedAt ?? latestVisit.createdAt) : "-"} · GPS {verifiedCount}건
+                              </small>
+                              <em>{latestVisit?.comment ?? "아직 남겨진 소감이 없습니다."}</em>
                             </span>
-                            <b>{count}건</b>
                           </button>
                         ))}
                       </div>
+
+                      <section className="record-mini-section">
+                        <div className="panel-heading sub compact">
+                          <strong>최근 뜨는 성지</strong>
+                          <span>{recentShrineRecordStats.length > 0 ? "최근 7일" : "최근 인증순"}</span>
+                        </div>
+                        <div className="trend-grid">
+                          {trendingShrineRecordStats.map(({ shrine, recentCount, latestVisit }) => (
+                            <button
+                              key={shrine.id}
+                              className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
+                              onClick={() => {
+                                setSelectedRecordShrineId(shrine.id);
+                                setSelectedShrineRecordPage(1);
+                              }}
+                            >
+                              <strong>{shrine.name}</strong>
+                              <span>
+                                {recentCount > 0
+                                  ? `최근 7일 ${recentCount}건`
+                                  : `최근 ${latestVisit ? formatShortDate(latestVisit.visitedAt ?? latestVisit.createdAt) : "-"}`}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      </section>
+
+                      <section className="record-mini-section">
+                        <div className="panel-heading sub compact">
+                          <strong>교구별 인증 현황</strong>
+                          <span>{dioceseRecordStats.length}개 교구</span>
+                        </div>
+                        <div className="diocese-bars">
+                          {dioceseRecordStats.map(({ diocese, count, verifiedCount, topShrine }) => (
+                            <div key={diocese} className="diocese-bar-row">
+                              <div>
+                                <strong>{diocese}</strong>
+                                <span>{topShrine ? `대표 ${topShrine.name}` : `GPS ${verifiedCount}건`}</span>
+                              </div>
+                              <div className="diocese-bar-track" aria-hidden="true">
+                                <i style={{ width: `${Math.max(8, (count / maxDioceseRecordCount) * 100)}%` }} />
+                              </div>
+                              <b>{count}건</b>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
 
                       <label className="record-shrine-picker">
                         <span>전체 성지 선택</span>

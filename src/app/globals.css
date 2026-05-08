@@ -477,9 +477,195 @@ h3 {
   border-top: 1px solid var(--line);
 }
 
+.panel-heading.sub.compact {
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
 .stat-list button.active {
   border-color: rgba(79, 102, 141, 0.28);
   background: #eef3ff;
+}
+
+.popular-shrine-list {
+  display: grid;
+  gap: 8px;
+}
+
+.popular-shrine-card {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  min-height: 78px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  box-shadow: none;
+}
+
+.popular-shrine-card.active {
+  border-color: rgba(79, 102, 141, 0.3);
+  background: #eef3ff;
+}
+
+.rank-number {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(79, 102, 141, 0.1);
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.popular-shrine-body {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.popular-shrine-title {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.popular-shrine-title strong {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 820;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popular-shrine-title b {
+  color: var(--accent-strong);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.popular-shrine-body small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.popular-shrine-body em {
+  overflow: hidden;
+  color: #374151;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 650;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-mini-section {
+  display: grid;
+  gap: 8px;
+}
+
+.trend-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.trend-grid button {
+  display: grid;
+  gap: 4px;
+  min-height: 58px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.trend-grid button.active {
+  border-color: rgba(79, 102, 141, 0.3);
+  background: #eef3ff;
+}
+
+.trend-grid strong {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 820;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trend-grid span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.diocese-bars {
+  display: grid;
+  gap: 8px;
+}
+
+.diocese-bar-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 1fr) minmax(82px, 1.2fr) auto;
+  align-items: center;
+  gap: 9px;
+}
+
+.diocese-bar-row > div:first-child {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.diocese-bar-row strong {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 820;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diocese-bar-row span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 680;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diocese-bar-row b {
+  color: var(--accent-strong);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.diocese-bar-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5eaf2;
+}
+
+.diocese-bar-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(79, 102, 141, 0.56), rgba(79, 102, 141, 0.9));
 }
 
 .site-credit {
@@ -1538,6 +1724,14 @@ textarea {
 
   .records-workspace {
     overflow: visible;
+  }
+
+  .trend-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .diocese-bar-row {
+    grid-template-columns: minmax(0, 1fr) minmax(82px, 1fr) auto;
   }
 
   .map-side {
