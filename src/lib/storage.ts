@@ -93,9 +93,26 @@ export async function saveVisitRecord(record: NewVisitRecord) {
     await signInAnonymously(firebaseAuth);
   }
 
-  await addDoc(visitsCollection(), {
-    ...record,
+  const payload: Record<string, unknown> = {
+    shrineId: record.shrineId,
+    nickname: record.nickname,
+    comment: record.comment,
+    verified: record.verified,
     createdAt: serverTimestamp(),
     visitedAt: record.visitedAt ? Timestamp.fromDate(new Date(record.visitedAt)) : serverTimestamp()
-  });
+  };
+
+  if (typeof record.userLat === "number") {
+    payload.userLat = record.userLat;
+  }
+
+  if (typeof record.userLng === "number") {
+    payload.userLng = record.userLng;
+  }
+
+  if (typeof record.distanceMeters === "number") {
+    payload.distanceMeters = record.distanceMeters;
+  }
+
+  await addDoc(visitsCollection(), payload);
 }
