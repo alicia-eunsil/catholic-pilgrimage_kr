@@ -50,10 +50,16 @@ Vercel에는 GitHub 저장소를 연결해서 배포하면 됩니다.
 
 ## 환경변수
 
-카카오맵 표시에는 아래 환경변수가 필요합니다.
+카카오맵과 Firebase 저장에는 아래 환경변수가 필요합니다.
 
 ```bash
 NEXT_PUBLIC_KAKAO_MAP_KEY="카카오_JavaScript_키"
+NEXT_PUBLIC_FIREBASE_API_KEY="Firebase_apiKey"
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="Firebase_authDomain"
+NEXT_PUBLIC_FIREBASE_PROJECT_ID="Firebase_projectId"
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID="Firebase_messagingSenderId"
+NEXT_PUBLIC_FIREBASE_APP_ID="Firebase_appId"
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET="Firebase_storageBucket"
 ```
 
 Vercel 프로젝트의 Environment Variables에도 같은 이름으로 등록해야 합니다.

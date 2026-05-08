@@ -12,7 +12,14 @@ import {
   type QueryDocumentSnapshot,
   type Unsubscribe
 } from "firebase/firestore";
-import { firebaseAuth, firebaseConfigError, firestoreDb } from "@/lib/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  firebaseAuth,
+  firebaseConfigError,
+  firebaseStorage,
+  firebaseStorageError,
+  firestoreDb
+} from "@/lib/firebase";
 
 export type VisitRecord = {
   id: string;
@@ -24,6 +31,7 @@ export type VisitRecord = {
   userLat?: number;
   userLng?: number;
   distanceMeters?: number;
+  photoUrl?: string;
   verified: boolean;
 };
 
@@ -62,6 +70,7 @@ function snapshotToVisit(doc: QueryDocumentSnapshot<DocumentData>): VisitRecord 
     userLat: typeof data.userLat === "number" ? data.userLat : undefined,
     userLng: typeof data.userLng === "number" ? data.userLng : undefined,
     distanceMeters: typeof data.distanceMeters === "number" ? data.distanceMeters : undefined,
+    photoUrl: typeof data.photoUrl === "string" ? data.photoUrl : undefined,
     verified: Boolean(data.verified)
   };
 }
@@ -85,13 +94,7 @@ export function subscribeVisitRecords(
 }
 
 export async function saveVisitRecord(record: NewVisitRecord) {
-  if (!firebaseAuth) {
-    throw new Error(firebaseConfigError || "Firebase 인증 설정을 확인해 주세요.");
-  }
-
-  if (!firebaseAuth.currentUser) {
-    await signInAnonymously(firebaseAuth);
-  }
+  await ensureAnonymousUser();
 
   const payload: Record<string, unknown> = {
     shrineId: record.shrineId,
@@ -114,5 +117,35 @@ export async function saveVisitRecord(record: NewVisitRecord) {
     payload.distanceMeters = record.distanceMeters;
   }
 
+  if (record.photoUrl) {
+    payload.photoUrl = record.photoUrl;
+  }
+
   await addDoc(visitsCollection(), payload);
+}
+
+export async function uploadVisitPhoto(file: Blob, shrineId: string) {
+  await ensureAnonymousUser();
+
+  if (!firebaseStorage) {
+    throw new Error(firebaseStorageError || "Firebase Storage 설정을 확인해 주세요.");
+  }
+
+  const fileId = typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const photoRef = ref(firebaseStorage, `visit-photos/${shrineId}/${fileId}.jpg`);
+
+  await uploadBytes(photoRef, file, { contentType: "image/jpeg" });
+  return getDownloadURL(photoRef);
+}
+
+async function ensureAnonymousUser() {
+  if (!firebaseAuth) {
+    throw new Error(firebaseConfigError || "Firebase 인증 설정을 확인해 주세요.");
+  }
+
+  if (!firebaseAuth.currentUser) {
+    await signInAnonymously(firebaseAuth);
+  }
 }

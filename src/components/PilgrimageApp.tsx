@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { shrines, type Shrine, type ShrineCategory } from "@/data/shrines";
 import { distanceKm, type LatLng } from "@/lib/geo";
-import { saveVisitRecord, subscribeVisitRecords, type VisitRecord } from "@/lib/storage";
+import { saveVisitRecord, subscribeVisitRecords, uploadVisitPhoto, type VisitRecord } from "@/lib/storage";
 
 const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
   성지: { color: "#9f6b00", bg: "#fff4cc" },
@@ -12,6 +12,8 @@ const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
 };
 
 const VERIFY_RADIUS_METERS = 500;
+const MAX_VISIT_PHOTO_BYTES = 500 * 1024;
+const MAX_VISIT_PHOTO_EDGE = 1280;
 const KAKAO_MAP_SDK_ID = "kakao-map-sdk";
 const CATEGORY_FILTERS: ShrineCategory[] = ["성지", "순교사적지", "순례지"];
 const VISITS_PER_PAGE = 10;
@@ -247,6 +249,92 @@ function uniqueShrines(items: Shrine[]) {
   });
 }
 
+async function compressVisitPhoto(file: File) {
+  const image = await loadImage(file);
+  const scale = Math.min(1, MAX_VISIT_PHOTO_EDGE / Math.max(image.naturalWidth, image.naturalHeight));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+
+  const context = canvas.getContext("2d");
+  if (!context) {
+    throw new Error("이미지를 처리하지 못했습니다.");
+  }
+
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  for (const quality of [0.82, 0.72, 0.62, 0.52, 0.44]) {
+    const blob = await canvasToBlob(canvas, quality);
+    if (blob.size <= MAX_VISIT_PHOTO_BYTES || quality === 0.44) {
+      return blob;
+    }
+  }
+
+  throw new Error("이미지를 압축하지 못했습니다.");
+}
+
+function loadImage(file: File) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("이미지 파일을 읽지 못했습니다."));
+    };
+    image.src = objectUrl;
+  });
+}
+
+function canvasToBlob(canvas: HTMLCanvasElement, quality: number) {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          resolve(blob);
+          return;
+        }
+        reject(new Error("이미지를 압축하지 못했습니다."));
+      },
+      "image/jpeg",
+      quality
+    );
+  });
+}
+
+function VisitRecordRow({
+  visit,
+  shrineLabel,
+  onImageOpen
+}: {
+  visit: VisitRecord;
+  shrineLabel?: string;
+  onImageOpen: (url: string) => void;
+}) {
+  const meta = [shrineLabel, visit.nickname, visit.verified ? "GPS 인증" : ""].filter(Boolean).join(" · ");
+
+  return (
+    <article className={`visit-row ${visit.photoUrl ? "has-photo" : ""}`}>
+      {visit.photoUrl ? (
+        <button className="visit-photo-button" type="button" onClick={() => onImageOpen(visit.photoUrl as string)}>
+          <img src={visit.photoUrl} alt={`${visit.nickname} 인증 사진`} loading="lazy" />
+        </button>
+      ) : null}
+      <div>
+        <div>
+          <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
+        </div>
+        <p>{visit.comment}</p>
+        <small>{meta}</small>
+      </div>
+    </article>
+  );
+}
+
 export default function PilgrimageApp() {
   const [activeTab, setActiveTab] = useState<"route" | "map" | "records" | "verify">("route");
   const [selectedCategories, setSelectedCategories] = useState<ShrineCategory[]>(CATEGORY_FILTERS);
@@ -259,6 +347,10 @@ export default function PilgrimageApp() {
   const [verifyShrineId, setVerifyShrineId] = useState(shrines[0].id);
   const [nickname, setNickname] = useState("");
   const [comment, setComment] = useState("");
+  const [visitPhotoFile, setVisitPhotoFile] = useState<File | undefined>();
+  const [visitPhotoPreview, setVisitPhotoPreview] = useState("");
+  const [photoInputKey, setPhotoInputKey] = useState(0);
+  const [expandedImage, setExpandedImage] = useState<string | undefined>();
   const [introVisitPage, setIntroVisitPage] = useState(1);
   const [showShrineList, setShowShrineList] = useState(false);
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
@@ -279,6 +371,18 @@ export default function PilgrimageApp() {
       (message) => setVisitSyncError(`인증 기록을 불러오지 못했습니다. ${message}`)
     );
   }, []);
+
+  useEffect(() => {
+    if (!visitPhotoFile) {
+      setVisitPhotoPreview("");
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(visitPhotoFile);
+    setVisitPhotoPreview(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [visitPhotoFile]);
 
   const filteredShrines = useMemo(() => {
     return shrines.filter((shrine) => {
@@ -443,6 +547,29 @@ export default function PilgrimageApp() {
     );
   }
 
+  function handleVisitPhotoChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      setVisitPhotoFile(undefined);
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      window.alert("이미지 파일만 등록할 수 있습니다.");
+      event.target.value = "";
+      setVisitPhotoFile(undefined);
+      return;
+    }
+
+    setVisitPhotoFile(file);
+  }
+
+  function clearVisitPhoto() {
+    setVisitPhotoFile(undefined);
+    setPhotoInputKey((current) => current + 1);
+  }
+
   async function submitVisit() {
     const trimmedNickname = nickname.trim();
     const trimmedComment = comment.trim();
@@ -457,6 +584,10 @@ export default function PilgrimageApp() {
     setVisitSyncError("");
 
     try {
+      const photoUrl = visitPhotoFile
+        ? await uploadVisitPhoto(await compressVisitPhoto(visitPhotoFile), verifyShrineId)
+        : undefined;
+
       await saveVisitRecord({
         shrineId: verifyShrineId,
         nickname: trimmedNickname,
@@ -465,9 +596,11 @@ export default function PilgrimageApp() {
         userLat: position?.lat,
         userLng: position?.lng,
         distanceMeters: verifyDistanceMeters,
+        photoUrl,
         verified: Boolean(canVerify)
       });
       setComment("");
+      clearVisitPhoto();
       setActiveTab("records");
     } catch (error) {
       setVisitSyncError(error instanceof Error ? error.message : "방문 기록 저장 중 오류가 발생했습니다.");
@@ -573,15 +706,7 @@ export default function PilgrimageApp() {
               <>
                 <div className="visit-table">
                   {pagedFocusedVisits.map((visit) => (
-                    <article key={visit.id} className="visit-row">
-                      <div>
-                        <div>
-                          <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
-                        </div>
-                        <p>{visit.comment}</p>
-                        <small>{visit.nickname}{visit.verified ? " · GPS 인증" : ""}</small>
-                      </div>
-                    </article>
+                    <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
                   ))}
                 </div>
 
@@ -689,15 +814,12 @@ export default function PilgrimageApp() {
                       {sortedAllVisits.map((visit) => {
                         const shrine = shrines.find((item) => item.id === visit.shrineId);
                         return (
-                          <article key={visit.id} className="visit-row">
-                            <div>
-                              <div>
-                                <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
-                              </div>
-                              <p>{visit.comment}</p>
-                              <small>{shrine?.name ?? "성지"} · {visit.nickname}{visit.verified ? " · GPS 인증" : ""}</small>
-                            </div>
-                          </article>
+                          <VisitRecordRow
+                            key={visit.id}
+                            visit={visit}
+                            shrineLabel={shrine?.name ?? "성지"}
+                            onImageOpen={setExpandedImage}
+                          />
                         );
                       })}
                     </div>
@@ -749,15 +871,7 @@ export default function PilgrimageApp() {
                       </div>
                       <div className="visit-table">
                         {selectedShrineRecords.map((visit) => (
-                          <article key={visit.id} className="visit-row">
-                            <div>
-                              <div>
-                                <span>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</span>
-                              </div>
-                              <p>{visit.comment}</p>
-                              <small>{visit.nickname}{visit.verified ? " · GPS 인증" : ""}</small>
-                            </div>
-                          </article>
+                          <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
                         ))}
                       </div>
                     </>
@@ -801,6 +915,20 @@ export default function PilgrimageApp() {
               한줄소감
               <textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="오늘 순례에서 남기고 싶은 한마디" />
             </label>
+
+            <label>
+              인증 사진
+              <input key={photoInputKey} type="file" accept="image/*" onChange={handleVisitPhotoChange} />
+            </label>
+
+            {visitPhotoPreview ? (
+              <div className="visit-photo-preview">
+                <img src={visitPhotoPreview} alt="선택한 인증 사진 미리보기" />
+                <button type="button" onClick={clearVisitPhoto}>
+                  사진 지우기
+                </button>
+              </div>
+            ) : null}
 
             {visitSyncError ? <p className="notice compact">{visitSyncError}</p> : null}
 
@@ -907,6 +1035,15 @@ export default function PilgrimageApp() {
               </table>
             </div>
           </section>
+        </div>
+      ) : null}
+
+      {expandedImage ? (
+        <div className="image-modal" role="dialog" aria-modal="true" aria-label="인증 사진 크게 보기" onClick={() => setExpandedImage(undefined)}>
+          <button className="image-modal-close" type="button" onClick={() => setExpandedImage(undefined)}>
+            닫기
+          </button>
+          <img src={expandedImage} alt="인증 사진 확대" onClick={(event) => event.stopPropagation()} />
         </div>
       ) : null}
 
