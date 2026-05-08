@@ -342,11 +342,11 @@ function VisitRecordRow({
         </button>
       ) : null}
       <div>
-        {shrineLabel ? <strong className="visit-row-title">{shrineLabel}</strong> : null}
-        <span className="visit-row-date">
+        <strong className="visit-row-title">
+          {shrineLabel ? `${shrineLabel} · ` : ""}
+          {visit.verified ? "GPS 인증 · " : ""}
           {visitedAt}
-          {visit.verified ? " · GPS 인증" : ""}
-        </span>
+        </strong>
         <p>{visit.comment}</p>
         <small>{visit.nickname}</small>
       </div>
