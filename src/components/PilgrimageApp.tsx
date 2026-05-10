@@ -418,6 +418,7 @@ export default function PilgrimageApp() {
   const [selectedShrineRecordPage, setSelectedShrineRecordPage] = useState(1);
   const [visitSaveStatus, setVisitSaveStatus] = useState<"idle" | "saving">("idle");
   const [visitSyncError, setVisitSyncError] = useState("");
+  const selectedRecordSectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     return subscribeVisitRecords(
@@ -636,6 +637,17 @@ export default function PilgrimageApp() {
       return "";
     }
     return shrineSortDirection === "asc" ? " ▲" : " ▼";
+  }
+
+  function selectRecordShrine(shrineId: string, shouldScroll = false) {
+    setSelectedRecordShrineId(shrineId);
+    setSelectedShrineRecordPage(1);
+
+    if (shouldScroll) {
+      window.setTimeout(() => {
+        selectedRecordSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 0);
+    }
   }
 
   function requestLocation() {
@@ -988,10 +1000,7 @@ export default function PilgrimageApp() {
                           <button
                             key={shrine.id}
                             className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
-                            onClick={() => {
-                              setSelectedRecordShrineId(shrine.id);
-                              setSelectedShrineRecordPage(1);
-                            }}
+                            onClick={() => selectRecordShrine(shrine.id, true)}
                           >
                             <span>
                               <strong>{shrine.name}</strong>
@@ -1010,10 +1019,7 @@ export default function PilgrimageApp() {
                         <label className="record-shrine-picker">
                           <select
                             value={selectedRecordShrine?.id ?? ""}
-                            onChange={(event) => {
-                              setSelectedRecordShrineId(event.target.value);
-                              setSelectedShrineRecordPage(1);
-                            }}
+                            onChange={(event) => selectRecordShrine(event.target.value)}
                           >
                             {recordShrineOptions.map((shrine) => (
                               <option key={shrine.id} value={shrine.id}>
@@ -1024,7 +1030,7 @@ export default function PilgrimageApp() {
                         </label>
                       </section>
 
-                      <div className="panel-heading sub">
+                      <div className="panel-heading sub" ref={selectedRecordSectionRef}>
                         <strong>{selectedRecordShrine?.name ?? "성지"} 인증</strong>
                         <span>{selectedShrineRecords.length}건</span>
                       </div>
@@ -1135,10 +1141,7 @@ export default function PilgrimageApp() {
                     <button
                       key={shrine.id}
                       className={`record-stat-card ${selectedRecordShrine?.id === shrine.id ? "active" : ""}`}
-                      onClick={() => {
-                        setSelectedRecordShrineId(shrine.id);
-                        setSelectedShrineRecordPage(1);
-                      }}
+                      onClick={() => selectRecordShrine(shrine.id, true)}
                     >
                       <strong>{shrine.name}</strong>
                       <span>{shrine.diocese}</span>
@@ -1157,10 +1160,7 @@ export default function PilgrimageApp() {
                       <button
                         key={shrine.id}
                         className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
-                        onClick={() => {
-                          setSelectedRecordShrineId(shrine.id);
-                          setSelectedShrineRecordPage(1);
-                        }}
+                        onClick={() => selectRecordShrine(shrine.id, true)}
                       >
                         <strong>{shrine.name}</strong>
                         <span>
@@ -1202,10 +1202,7 @@ export default function PilgrimageApp() {
                   <label className="record-shrine-picker">
                     <select
                       value={selectedRecordShrine?.id ?? ""}
-                      onChange={(event) => {
-                        setSelectedRecordShrineId(event.target.value);
-                        setSelectedShrineRecordPage(1);
-                      }}
+                      onChange={(event) => selectRecordShrine(event.target.value)}
                     >
                       {recordShrineOptions.map((shrine) => (
                         <option key={shrine.id} value={shrine.id}>
@@ -1216,7 +1213,7 @@ export default function PilgrimageApp() {
                   </label>
                 </section>
 
-                <div className="panel-heading sub">
+                <div className="panel-heading sub" ref={selectedRecordSectionRef}>
                   <strong>{selectedRecordShrine?.name ?? "성지"} 인증</strong>
                   <span>{selectedShrineRecords.length}건</span>
                 </div>
