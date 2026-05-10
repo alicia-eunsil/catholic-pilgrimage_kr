@@ -493,10 +493,10 @@ h3 {
 
 .popular-shrine-card {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  gap: 10px;
-  min-height: 58px;
-  padding: 10px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #ffffff;
@@ -513,8 +513,8 @@ h3 {
 
 .rank-number {
   display: grid;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   place-items: center;
   border-radius: 999px;
   background: rgba(79, 102, 141, 0.1);
@@ -525,13 +525,13 @@ h3 {
 
 .popular-shrine-body {
   display: grid;
-  gap: 4px;
   min-width: 0;
+  align-content: center;
 }
 
 .popular-shrine-title {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 8px;
   align-items: center;
 }
@@ -552,9 +552,12 @@ h3 {
 }
 
 .popular-shrine-body small {
+  overflow: hidden;
   color: var(--muted);
   font-size: 11px;
   font-weight: 720;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .record-mini-section {
@@ -1475,14 +1478,31 @@ textarea {
   padding: 10px 12px;
 }
 
+.compact-stat-list button {
+  min-height: 42px;
+  padding: 8px 10px;
+}
+
 .stat-list span {
   display: grid;
   gap: 3px;
 }
 
+.compact-stat-list span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .stat-list span strong {
   color: var(--ink);
   font-size: 14px;
+}
+
+.compact-stat-list span strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .stat-list small {

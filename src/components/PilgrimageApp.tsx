@@ -982,8 +982,8 @@ export default function PilgrimageApp() {
                     <div className="empty-state compact">아직 성지별로 모아볼 인증 기록이 없습니다.</div>
                   ) : (
                     <>
-                      <div className="stat-list">
-                        {topShrineRecordStats.map(({ shrine, count, verifiedCount }) => (
+                      <div className="stat-list compact-stat-list">
+                        {topShrineRecordStats.map(({ shrine, count }) => (
                           <button
                             key={shrine.id}
                             className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
@@ -994,7 +994,7 @@ export default function PilgrimageApp() {
                           >
                             <span>
                               <strong>{shrine.name}</strong>
-                              <small>{shrine.region} · GPS {verifiedCount}건</small>
+                              <small>{shrine.diocese}</small>
                             </span>
                             <b>{count}건</b>
                           </button>
@@ -1143,9 +1143,9 @@ export default function PilgrimageApp() {
                       <span className="popular-shrine-body">
                         <span className="popular-shrine-title">
                           <strong>{shrine.name}</strong>
+                          <small>{shrine.diocese}</small>
                           <b>{count}건</b>
                         </span>
-                        <small>{shrine.diocese}</small>
                       </span>
                     </button>
                   ))}
