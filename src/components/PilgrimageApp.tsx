@@ -531,6 +531,7 @@ export default function PilgrimageApp() {
     .filter((item) => item.count > 0)
     .sort((a, b) => b.count - a.count || a.shrine.name.localeCompare(b.shrine.name, "ko"));
   const topShrineRecordStats = shrineRecordStats.slice(0, 5);
+  const topShrineDashboardStats = shrineRecordStats.slice(0, 10);
   const recentThreshold = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const recentShrineRecordStats = shrineRecordStats
     .map((item) => ({
@@ -1123,30 +1124,25 @@ export default function PilgrimageApp() {
           <section className="insight-card">
             <div className="panel-heading">
               <strong>성지별 인증 통계</strong>
-              <span>{shrineRecordStats.length}곳</span>
+              <span>상위 {topShrineDashboardStats.length}곳</span>
             </div>
             {shrineRecordStats.length === 0 ? (
               <div className="empty-state compact">아직 집계할 인증 기록이 없습니다.</div>
             ) : (
               <>
-                <div className="popular-shrine-list">
-                  {topShrineRecordStats.map(({ shrine, count }, index) => (
+                <div className="record-stat-grid">
+                  {topShrineDashboardStats.map(({ shrine, count }) => (
                     <button
                       key={shrine.id}
-                      className={`popular-shrine-card ${selectedRecordShrine?.id === shrine.id ? "active" : ""}`}
+                      className={`record-stat-card ${selectedRecordShrine?.id === shrine.id ? "active" : ""}`}
                       onClick={() => {
                         setSelectedRecordShrineId(shrine.id);
                         setSelectedShrineRecordPage(1);
                       }}
                     >
-                      <span className="rank-number">{index + 1}</span>
-                      <span className="popular-shrine-body">
-                        <span className="popular-shrine-title">
-                          <strong>{shrine.name}</strong>
-                          <small>{shrine.diocese}</small>
-                          <b>{count}건</b>
-                        </span>
-                      </span>
+                      <strong>{shrine.name}</strong>
+                      <span>{shrine.diocese}</span>
+                      <b>{count}건</b>
                     </button>
                   ))}
                 </div>
