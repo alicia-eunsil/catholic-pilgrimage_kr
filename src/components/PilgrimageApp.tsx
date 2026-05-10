@@ -734,7 +734,7 @@ export default function PilgrimageApp() {
       <header className="app-header">
         <div>
           <p className="eyebrow">✝️ 한국 천주교 성지순례</p>
-          <h1>성지를 잇고, 순례를 남기다.</h1>
+          <h1>성지GO</h1>
           <p>전국 성지 코스를 살펴보고 방문기록을 쌓아보세요.</p>
         </div>
         <nav className="app-nav" aria-label="주요 화면">
