@@ -987,9 +987,11 @@ export default function PilgrimageApp() {
                 </section>
               ) : (
                 <section className="insight-card">
-                  <div className="panel-heading">
-                    <strong>성지별 인증 TOP 5</strong>
-                    <span>{topShrineRecordStats.length}곳</span>
+                  <div className="record-section-title">
+                    <div>
+                      <strong>TOP 5에서 선택</strong>
+                    </div>
+                    <span>빠른 선택</span>
                   </div>
                   {topShrineRecordStats.length === 0 ? (
                     <div className="empty-state compact">아직 성지별로 모아볼 인증 기록이 없습니다.</div>
@@ -1012,8 +1014,10 @@ export default function PilgrimageApp() {
                       </div>
 
                       <section className="record-pick-section">
-                        <div className="panel-heading sub compact">
-                          <strong>전체 성지 선택</strong>
+                        <div className="record-section-title compact">
+                          <div>
+                            <strong>전체 성지에서 선택</strong>
+                          </div>
                           <span>직접 선택</span>
                         </div>
                         <label className="record-shrine-picker">
