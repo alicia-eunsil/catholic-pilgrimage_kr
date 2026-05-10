@@ -1001,22 +1001,27 @@ export default function PilgrimageApp() {
                         ))}
                       </div>
 
-                      <label className="record-shrine-picker">
-                        <span>전체 성지 선택</span>
-                        <select
-                          value={selectedRecordShrine?.id ?? ""}
-                          onChange={(event) => {
-                            setSelectedRecordShrineId(event.target.value);
-                            setSelectedShrineRecordPage(1);
-                          }}
-                        >
-                          {recordShrineOptions.map((shrine) => (
-                            <option key={shrine.id} value={shrine.id}>
-                              {shrine.name}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                      <section className="record-pick-section">
+                        <div className="panel-heading sub compact">
+                          <strong>전체 성지 선택</strong>
+                          <span>직접 선택</span>
+                        </div>
+                        <label className="record-shrine-picker">
+                          <select
+                            value={selectedRecordShrine?.id ?? ""}
+                            onChange={(event) => {
+                              setSelectedRecordShrineId(event.target.value);
+                              setSelectedShrineRecordPage(1);
+                            }}
+                          >
+                            {recordShrineOptions.map((shrine) => (
+                              <option key={shrine.id} value={shrine.id}>
+                                {shrine.name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </section>
 
                       <div className="panel-heading sub">
                         <strong>{selectedRecordShrine?.name ?? "성지"} 인증</strong>
@@ -1193,22 +1198,27 @@ export default function PilgrimageApp() {
                   </div>
                 </section>
 
-                <label className="record-shrine-picker">
-                  <span>전체 성지 선택</span>
-                  <select
-                    value={selectedRecordShrine?.id ?? ""}
-                    onChange={(event) => {
-                      setSelectedRecordShrineId(event.target.value);
-                      setSelectedShrineRecordPage(1);
-                    }}
-                  >
-                    {recordShrineOptions.map((shrine) => (
-                      <option key={shrine.id} value={shrine.id}>
-                        {shrine.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <section className="record-pick-section">
+                  <div className="panel-heading sub compact">
+                    <strong>전체 성지 선택</strong>
+                    <span>직접 선택</span>
+                  </div>
+                  <label className="record-shrine-picker">
+                    <select
+                      value={selectedRecordShrine?.id ?? ""}
+                      onChange={(event) => {
+                        setSelectedRecordShrineId(event.target.value);
+                        setSelectedShrineRecordPage(1);
+                      }}
+                    >
+                      {recordShrineOptions.map((shrine) => (
+                        <option key={shrine.id} value={shrine.id}>
+                          {shrine.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </section>
 
                 <div className="panel-heading sub">
                   <strong>{selectedRecordShrine?.name ?? "성지"} 인증</strong>

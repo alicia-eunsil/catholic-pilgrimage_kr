@@ -459,16 +459,15 @@ h3 {
   gap: 6px;
 }
 
-.record-shrine-picker span {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 760;
-}
-
 .record-shrine-picker select {
   height: 38px;
   font-size: 13px;
   font-weight: 720;
+}
+
+.record-pick-section {
+  display: grid;
+  gap: 8px;
 }
 
 .panel-heading.sub {
