@@ -982,77 +982,24 @@ export default function PilgrimageApp() {
                     <div className="empty-state compact">아직 성지별로 모아볼 인증 기록이 없습니다.</div>
                   ) : (
                     <>
-                      <div className="popular-shrine-list">
-                        {topShrineRecordStats.map(({ shrine, count, verifiedCount, latestVisit }, index) => (
+                      <div className="stat-list">
+                        {topShrineRecordStats.map(({ shrine, count, verifiedCount }) => (
                           <button
                             key={shrine.id}
-                            className={`popular-shrine-card ${selectedRecordShrine?.id === shrine.id ? "active" : ""}`}
+                            className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
                             onClick={() => {
                               setSelectedRecordShrineId(shrine.id);
                               setSelectedShrineRecordPage(1);
                             }}
                           >
-                            <span className="rank-number">{index + 1}</span>
-                            <span className="popular-shrine-body">
-                              <span className="popular-shrine-title">
-                                <strong>{shrine.name}</strong>
-                                <b>{count}건</b>
-                              </span>
-                              <small>
-                                최근 {latestVisit ? formatShortDate(latestVisit.visitedAt ?? latestVisit.createdAt) : "-"} · GPS {verifiedCount}건
-                              </small>
-                              <em>{latestVisit?.comment ?? "아직 남겨진 소감이 없습니다."}</em>
+                            <span>
+                              <strong>{shrine.name}</strong>
+                              <small>{shrine.region} · GPS {verifiedCount}건</small>
                             </span>
+                            <b>{count}건</b>
                           </button>
                         ))}
                       </div>
-
-                      <section className="record-mini-section">
-                        <div className="panel-heading sub compact">
-                          <strong>최근 뜨는 성지</strong>
-                          <span>{recentShrineRecordStats.length > 0 ? "최근 7일" : "최근 인증순"}</span>
-                        </div>
-                        <div className="trend-grid">
-                          {trendingShrineRecordStats.map(({ shrine, recentCount, latestVisit }) => (
-                            <button
-                              key={shrine.id}
-                              className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
-                              onClick={() => {
-                                setSelectedRecordShrineId(shrine.id);
-                                setSelectedShrineRecordPage(1);
-                              }}
-                            >
-                              <strong>{shrine.name}</strong>
-                              <span>
-                                {recentCount > 0
-                                  ? `최근 7일 ${recentCount}건`
-                                  : `최근 ${latestVisit ? formatShortDate(latestVisit.visitedAt ?? latestVisit.createdAt) : "-"}`}
-                              </span>
-                            </button>
-                          ))}
-                        </div>
-                      </section>
-
-                      <section className="record-mini-section">
-                        <div className="panel-heading sub compact">
-                          <strong>교구별 인증 현황</strong>
-                          <span>{dioceseRecordStats.length}개 교구</span>
-                        </div>
-                        <div className="diocese-bars">
-                          {dioceseRecordStats.map(({ diocese, count, verifiedCount, topShrine }) => (
-                            <div key={diocese} className="diocese-bar-row">
-                              <div>
-                                <strong>{diocese}</strong>
-                                <span>{topShrine ? `대표 ${topShrine.name}` : `GPS ${verifiedCount}건`}</span>
-                              </div>
-                              <div className="diocese-bar-track" aria-hidden="true">
-                                <i style={{ width: `${Math.max(8, (count / maxDioceseRecordCount) * 100)}%` }} />
-                              </div>
-                              <b>{count}건</b>
-                            </div>
-                          ))}
-                        </div>
-                      </section>
 
                       <label className="record-shrine-picker">
                         <span>전체 성지 선택</span>
@@ -1176,23 +1123,112 @@ export default function PilgrimageApp() {
             {shrineRecordStats.length === 0 ? (
               <div className="empty-state compact">아직 집계할 인증 기록이 없습니다.</div>
             ) : (
-              <div className="stat-list">
-                {shrineRecordStats.map(({ shrine, count, verifiedCount }) => (
-                  <button
-                    key={shrine.id}
-                    onClick={() => {
-                      setActiveCourseId(undefined);
-                      handleSelectShrine(shrine);
+              <>
+                <div className="popular-shrine-list">
+                  {topShrineRecordStats.map(({ shrine, count, verifiedCount, latestVisit }, index) => (
+                    <button
+                      key={shrine.id}
+                      className={`popular-shrine-card ${selectedRecordShrine?.id === shrine.id ? "active" : ""}`}
+                      onClick={() => {
+                        setSelectedRecordShrineId(shrine.id);
+                        setSelectedShrineRecordPage(1);
+                      }}
+                    >
+                      <span className="rank-number">{index + 1}</span>
+                      <span className="popular-shrine-body">
+                        <span className="popular-shrine-title">
+                          <strong>{shrine.name}</strong>
+                          <b>{count}건</b>
+                        </span>
+                        <small>
+                          최근 {latestVisit ? formatShortDate(latestVisit.visitedAt ?? latestVisit.createdAt) : "-"} · GPS {verifiedCount}건
+                        </small>
+                        <em>{latestVisit?.comment ?? "아직 남겨진 소감이 없습니다."}</em>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <section className="record-mini-section">
+                  <div className="panel-heading sub compact">
+                    <strong>최근 뜨는 성지</strong>
+                    <span>{recentShrineRecordStats.length > 0 ? "최근 7일" : "최근 인증순"}</span>
+                  </div>
+                  <div className="trend-grid">
+                    {trendingShrineRecordStats.map(({ shrine, recentCount, latestVisit }) => (
+                      <button
+                        key={shrine.id}
+                        className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
+                        onClick={() => {
+                          setSelectedRecordShrineId(shrine.id);
+                          setSelectedShrineRecordPage(1);
+                        }}
+                      >
+                        <strong>{shrine.name}</strong>
+                        <span>
+                          {recentCount > 0
+                            ? `최근 7일 ${recentCount}건`
+                            : `최근 ${latestVisit ? formatShortDate(latestVisit.visitedAt ?? latestVisit.createdAt) : "-"}`}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="record-mini-section">
+                  <div className="panel-heading sub compact">
+                    <strong>교구별 인증 현황</strong>
+                    <span>{dioceseRecordStats.length}개 교구</span>
+                  </div>
+                  <div className="diocese-bars">
+                    {dioceseRecordStats.map(({ diocese, count, verifiedCount, topShrine }) => (
+                      <div key={diocese} className="diocese-bar-row">
+                        <div>
+                          <strong>{diocese}</strong>
+                          <span>{topShrine ? `대표 ${topShrine.name}` : `GPS ${verifiedCount}건`}</span>
+                        </div>
+                        <div className="diocese-bar-track" aria-hidden="true">
+                          <i style={{ width: `${Math.max(8, (count / maxDioceseRecordCount) * 100)}%` }} />
+                        </div>
+                        <b>{count}건</b>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <label className="record-shrine-picker">
+                  <span>전체 성지 선택</span>
+                  <select
+                    value={selectedRecordShrine?.id ?? ""}
+                    onChange={(event) => {
+                      setSelectedRecordShrineId(event.target.value);
+                      setSelectedShrineRecordPage(1);
                     }}
                   >
-                    <span>
-                      <strong>{shrine.name}</strong>
-                      <small>{shrine.region} · GPS {verifiedCount}건</small>
-                    </span>
-                    <b>{count}건</b>
-                  </button>
-                ))}
-              </div>
+                    {recordShrineOptions.map((shrine) => (
+                      <option key={shrine.id} value={shrine.id}>
+                        {shrine.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <div className="panel-heading sub">
+                  <strong>{selectedRecordShrine?.name ?? "성지"} 인증</strong>
+                  <span>{selectedShrineRecords.length}건</span>
+                </div>
+                <div className="visit-table">
+                  {pagedSelectedShrineRecords.map((visit) => (
+                    <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
+                  ))}
+                </div>
+                <RecordPagination
+                  label={`${selectedRecordShrine?.name ?? "성지"} 인증 페이지`}
+                  page={selectedShrineRecordPageSafe}
+                  pageCount={selectedShrineRecordPageCount}
+                  onPageChange={setSelectedShrineRecordPage}
+                />
+              </>
             )}
           </section>
         </section>
