@@ -614,9 +614,58 @@ h3 {
   text-align: right;
 }
 
+.record-section-title {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  padding-left: 12px;
+  border-left: 4px solid rgba(79, 102, 141, 0.72);
+}
+
+.record-section-title.compact {
+  margin-top: 12px;
+  padding-top: 2px;
+}
+
+.record-section-title > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.record-section-title strong {
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 860;
+  line-height: 1.15;
+}
+
+.record-section-title p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.record-section-title > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border: 1px solid rgba(79, 102, 141, 0.14);
+  border-radius: 999px;
+  background: rgba(79, 102, 141, 0.08);
+  color: var(--accent-strong);
+  font-size: 11px;
+  font-weight: 780;
+  white-space: nowrap;
+}
+
 .record-mini-section {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .trend-grid {
@@ -1798,6 +1847,11 @@ textarea {
 
   .record-stat-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .record-section-title {
+    grid-template-columns: 1fr;
+    gap: 7px;
   }
 
   .map-side {

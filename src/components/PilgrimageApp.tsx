@@ -1128,8 +1128,11 @@ export default function PilgrimageApp() {
           </div>
 
           <section className="insight-card">
-            <div className="panel-heading">
-              <strong>성지별 인증 통계</strong>
+            <div className="record-section-title">
+              <div>
+                <strong>성지별 인증 통계</strong>
+                <p>인증이 많이 남겨진 성지를 한눈에 확인합니다.</p>
+              </div>
               <span>상위 {topShrineDashboardStats.length}곳</span>
             </div>
             {shrineRecordStats.length === 0 ? (
@@ -1151,8 +1154,11 @@ export default function PilgrimageApp() {
                 </div>
 
                 <section className="record-mini-section">
-                  <div className="panel-heading sub compact">
-                    <strong>최근 뜨는 성지</strong>
+                  <div className="record-section-title compact">
+                    <div>
+                      <strong>최근 뜨는 성지</strong>
+                      <p>최근 인증이 이어지는 성지를 보여줍니다.</p>
+                    </div>
                     <span>{recentShrineRecordStats.length > 0 ? "최근 7일" : "최근 인증순"}</span>
                   </div>
                   <div className="trend-grid">
@@ -1174,8 +1180,11 @@ export default function PilgrimageApp() {
                 </section>
 
                 <section className="record-mini-section">
-                  <div className="panel-heading sub compact">
-                    <strong>교구별 인증 현황</strong>
+                  <div className="record-section-title compact">
+                    <div>
+                      <strong>교구별 인증 현황</strong>
+                      <p>교구별 인증 흐름을 비교합니다.</p>
+                    </div>
                     <span>{dioceseRecordStats.length}개 교구</span>
                   </div>
                   <div className="diocese-bars">
@@ -1195,8 +1204,11 @@ export default function PilgrimageApp() {
                 </section>
 
                 <section className="record-pick-section">
-                  <div className="panel-heading sub compact">
-                    <strong>전체 성지 선택</strong>
+                  <div className="record-section-title compact">
+                    <div>
+                      <strong>전체 성지 선택</strong>
+                      <p>원하는 성지를 골라 인증기록을 확인합니다.</p>
+                    </div>
                     <span>직접 선택</span>
                   </div>
                   <label className="record-shrine-picker">
