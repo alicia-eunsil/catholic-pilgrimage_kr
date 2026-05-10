@@ -1125,7 +1125,7 @@ export default function PilgrimageApp() {
             ) : (
               <>
                 <div className="popular-shrine-list">
-                  {topShrineRecordStats.map(({ shrine, count, verifiedCount, latestVisit }, index) => (
+                  {topShrineRecordStats.map(({ shrine, count }, index) => (
                     <button
                       key={shrine.id}
                       className={`popular-shrine-card ${selectedRecordShrine?.id === shrine.id ? "active" : ""}`}
@@ -1140,10 +1140,7 @@ export default function PilgrimageApp() {
                           <strong>{shrine.name}</strong>
                           <b>{count}건</b>
                         </span>
-                        <small>
-                          최근 {latestVisit ? formatShortDate(latestVisit.visitedAt ?? latestVisit.createdAt) : "-"} · GPS {verifiedCount}건
-                        </small>
-                        <em>{latestVisit?.comment ?? "아직 남겨진 소감이 없습니다."}</em>
+                        <small>{shrine.diocese}</small>
                       </span>
                     </button>
                   ))}
