@@ -1137,7 +1137,7 @@ export const shrines: Shrine[] = [
     name: "용수 성지",
     category: "순교사적지",
     diocese: "제주교구",
-    address: "제주특별자치도 제주시 한경면 용수1길 108",
+    address: "제주특별자치도 한경면 용수1길 108",
     region: "제주",
     lat: 33.3228626,
     lng: 126.1677308

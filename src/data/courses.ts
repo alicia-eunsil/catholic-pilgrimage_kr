@@ -22,9 +22,9 @@ export const recommendedCourses: RecommendedCourse[] = [
       "경기감영-터",
       "형조-터",
       "의금부-터",
-      "좌포도청-터",
-      "전옥서-터",
       "우포도청-터",
+      "전옥서-터",
+      "좌포도청-터",
     ]
   },
   {

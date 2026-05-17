@@ -513,13 +513,14 @@ export default function PilgrimageApp() {
     : undefined;
   const selectedShrineRecords = selectedRecordShrine
     ? allRecentVisits.filter((visit) => visit.shrineId === selectedRecordShrine.id)
-    : [];
+    : allRecentVisits;
   const selectedShrineRecordPageCount = Math.max(1, Math.ceil(selectedShrineRecords.length / VISITS_PER_PAGE));
   const selectedShrineRecordPageSafe = Math.min(selectedShrineRecordPage, selectedShrineRecordPageCount);
   const pagedSelectedShrineRecords = selectedShrineRecords.slice(
     (selectedShrineRecordPageSafe - 1) * VISITS_PER_PAGE,
     selectedShrineRecordPageSafe * VISITS_PER_PAGE
   );
+  const selectedRecordLabel = selectedRecordShrine?.name ?? "전체";
   const recordShrineOptions = useMemo(() => [...shrines].sort((a, b) => a.name.localeCompare(b.name, "ko")), []);
   const activeCourseShrineIds = useMemo(() => new Set(activeCourseShrines.map((shrine) => shrine.id)), [activeCourseShrines]);
   const activeCourseTotalDistance = useMemo(() => {
@@ -1136,26 +1137,26 @@ export default function PilgrimageApp() {
                   </label>
                 </section>
 
-                {selectedRecordShrine ? (
+                <div className="panel-heading sub" ref={selectedRecordSectionRef}>
+                  <strong>{selectedRecordLabel} 인증</strong>
+                  <span>{selectedShrineRecords.length}건</span>
+                </div>
+                {selectedShrineRecords.length === 0 ? (
+                  <div className="empty-state compact">아직 인증 기록이 없습니다.</div>
+                ) : (
                   <>
-                    <div className="panel-heading sub" ref={selectedRecordSectionRef}>
-                      <strong>{selectedRecordShrine.name} 인증</strong>
-                      <span>{selectedShrineRecords.length}건</span>
-                    </div>
                     <div className="visit-table">
                       {pagedSelectedShrineRecords.map((visit) => (
                         <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
                       ))}
                     </div>
                     <RecordPagination
-                      label={`${selectedRecordShrine.name} 인증 페이지`}
+                      label={`${selectedRecordLabel} 인증 페이지`}
                       page={selectedShrineRecordPageSafe}
                       pageCount={selectedShrineRecordPageCount}
                       onPageChange={setSelectedShrineRecordPage}
                     />
                   </>
-                ) : (
-                  <div className="empty-state compact">성지를 선택하면 해당 인증 기록을 볼 수 있습니다.</div>
                 )}
               </>
             )}
