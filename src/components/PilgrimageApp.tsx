@@ -805,7 +805,6 @@ export default function PilgrimageApp() {
                   <div className="course-map-overlay">
                     <div>
                       <strong>추천코스 지도</strong>
-                      <span>{activeCourse ? activeCourse.title : "전체 코스 표시 중"}</span>
                     </div>
                     <div className="course-filter-list">
                       <button className={!activeCourseId ? "active" : ""} onClick={() => setActiveCourseId(undefined)}>
