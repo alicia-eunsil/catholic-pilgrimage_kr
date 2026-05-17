@@ -3,13 +3,12 @@ from collections import OrderedDict
 from pathlib import Path
 
 from openpyxl import load_workbook
-from geocode_shrines import slugify
 
 
 WORKBOOK_PATH = Path("korean_catholic_holy_sites.xlsx")
+SHRINES_TS_PATH = Path("src/data/shrines.ts")
 OUTPUT_PATH = Path("src/data/courses.ts")
 COURSE_SHEET_NAME = "추천코스"
-SHRINE_SHEET_NAME = "성지목록"
 
 
 def normalize_text(value: str) -> str:
@@ -24,47 +23,21 @@ def ts_string(value: str) -> str:
     return value.replace("\\", "\\\\").replace('"', '\\"')
 
 
-def normalize_id(raw_id: str, name: str, used_ids: set[str]) -> str:
-    base = raw_id or slugify(name)
-    candidate = base
-    index = 2
-    while candidate in used_ids:
-        candidate = f"{base}-{index}"
-        index += 1
-    used_ids.add(candidate)
-    return candidate
+def read_shrine_mappings():
+    if not SHRINES_TS_PATH.exists():
+        raise SystemExit(f"{SHRINES_TS_PATH} 파일이 없습니다. 먼저 npm run build:shrines를 실행하세요.")
 
+    text = SHRINES_TS_PATH.read_text(encoding="utf-8")
+    pairs = re.findall(r'id: "([^"]+)",[\s\S]*?name: "([^"]+)"', text)
+    if not pairs:
+        raise SystemExit(f"{SHRINES_TS_PATH}에서 성지 데이터를 읽지 못했습니다.")
 
-def read_shrine_mappings(workbook):
-    if SHRINE_SHEET_NAME not in workbook.sheetnames:
-        raise SystemExit(f"{SHRINE_SHEET_NAME} 시트를 찾지 못했습니다.")
-
-    worksheet = workbook[SHRINE_SHEET_NAME]
-    rows = list(worksheet.iter_rows(values_only=True))
-    if not rows:
-        raise SystemExit(f"{SHRINE_SHEET_NAME} 시트가 비어 있습니다.")
-
-    header = rows[0]
-    index = {name: position for position, name in enumerate(header) if name is not None}
-    required = ["성지명"]
-    missing_columns = [name for name in required if name not in index]
-    if missing_columns:
-        raise SystemExit(f"{SHRINE_SHEET_NAME} 시트에 필수 컬럼이 없습니다: {', '.join(missing_columns)}")
-
-    ids = set()
-    exact_names = {}
+    ids = {shrine_id for shrine_id, _ in pairs}
+    exact_names = {name: shrine_id for shrine_id, name in pairs}
     normalized_ids = {}
     normalized_names = {}
-    used_ids = set()
 
-    for row in rows[1:]:
-        name = str(row[index["성지명"]] or "").strip()
-        if not name:
-            continue
-
-        shrine_id = normalize_id("", name, used_ids)
-        ids.add(shrine_id)
-        exact_names[name] = shrine_id
+    for shrine_id, name in pairs:
         normalized_ids.setdefault(normalize_text(shrine_id), []).append(shrine_id)
         normalized_names.setdefault(normalize_text(name), []).append(shrine_id)
 
@@ -112,7 +85,7 @@ def read_courses():
     if missing_columns:
         raise SystemExit(f"추천코스 시트에 필수 컬럼이 없습니다: {', '.join(missing_columns)}")
 
-    shrine_ids, exact_names, normalized_ids, normalized_names = read_shrine_mappings(workbook)
+    shrine_ids, exact_names, normalized_ids, normalized_names = read_shrine_mappings()
     grouped = OrderedDict()
 
     for row in rows[1:]:

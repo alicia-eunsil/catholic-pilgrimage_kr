@@ -143,8 +143,8 @@ export const shrines: Shrine[] = [
     lng: 128.0969047
   },
   {
-    id: "경기감영-터-교회사적지",
-    name: "경기감영 터 (교회사적지)",
+    id: "경기감영-터",
+    name: "경기감영 터",
     category: "순교사적지",
     diocese: "서울대교구",
     address: "서울특별시 종로구 통일로 134 (평동)",
@@ -233,8 +233,8 @@ export const shrines: Shrine[] = [
     lng: 126.9761683
   },
   {
-    id: "광희문-성지-순교성지",
-    name: "광희문 성지 (순교성지)",
+    id: "광희문-성지",
+    name: "광희문 성지",
     category: "성지",
     diocese: "서울대교구",
     address: "서울특별시 중구 광희동2가 105-32",
@@ -303,8 +303,8 @@ export const shrines: Shrine[] = [
     lng: 128.8346939
   },
   {
-    id: "김범우의-집-터-교회사적지",
-    name: "김범우의 집 터 (교회사적지)",
+    id: "김범우의-집-터",
+    name: "김범우의 집 터",
     category: "순교사적지",
     diocese: "서울대교구",
     address: "서울특별시 중구 을지로 66 (을지로2가) 외환은행 본점 앞",
@@ -393,8 +393,8 @@ export const shrines: Shrine[] = [
     lng: 127.1859074
   },
   {
-    id: "노고산-성지-순교성지",
-    name: "노고산 성지 (순교성지)",
+    id: "노고산-성지",
+    name: "노고산 성지",
     category: "성지",
     diocese: "서울대교구",
     address: "서울특별시 마포구 백범로 35 (신수동) 서강대학교 가브리엘관 앞",
@@ -443,8 +443,8 @@ export const shrines: Shrine[] = [
     lng: 126.6298560
   },
   {
-    id: "당고개-순교성지-순교성지",
-    name: "당고개 순교성지 (순교성지)",
+    id: "당고개-순교성지",
+    name: "당고개 순교성지",
     category: "성지",
     diocese: "서울대교구",
     address: "서울특별시 용산구 청파로 139-26 (신계동)",
@@ -453,8 +453,8 @@ export const shrines: Shrine[] = [
     lng: 126.9669630
   },
   {
-    id: "대산성당-구한선-타대오-성지교구-순교복자-묘소",
-    name: "대산성당 구한선 타대오 성지(교구 순교복자 묘소)",
+    id: "대산성당",
+    name: "대산성당",
     category: "성지",
     diocese: "마산교구",
     address: "경상남도 함안군 대산면 대산중앙로 183",
@@ -533,8 +533,8 @@ export const shrines: Shrine[] = [
     lng: 127.8724199
   },
   {
-    id: "명동대성당-순교성지",
-    name: "명동대성당 (순교성지)",
+    id: "명동대성당",
+    name: "명동대성당",
     category: "성지",
     diocese: "서울대교구",
     address: "서울특별시 중구 명동길 74 (명동2가)",
@@ -563,8 +563,8 @@ export const shrines: Shrine[] = [
     lng: 128.1003120
   },
   {
-    id: "묵호-순례-성당-순교자-라-파트리치오-patrick-reilly",
-    name: "묵호 순례 성당 (순교자 라 파트리치오 Patrick Reilly)",
+    id: "묵호-순례-성당",
+    name: "묵호 순례 성당",
     category: "순교사적지",
     diocese: "춘천교구",
     address: "강원특별자치도 동해시 발한로 161 (발한동)",
@@ -653,8 +653,8 @@ export const shrines: Shrine[] = [
     lng: 129.0409160
   },
   {
-    id: "삼성산-성지-순교성지",
-    name: "삼성산 성지 (순교성지)",
+    id: "삼성산-성지",
+    name: "삼성산 성지",
     category: "성지",
     diocese: "서울대교구",
     address: "서울특별시 관악구 호암로 454-16 (신림동)",
@@ -693,8 +693,8 @@ export const shrines: Shrine[] = [
     lng: 128.1177536
   },
   {
-    id: "새남터-순교성지-순교성지",
-    name: "새남터 순교성지 (순교성지)",
+    id: "새남터-순교성지",
+    name: "새남터 순교성지",
     category: "성지",
     diocese: "서울대교구",
     address: "서울특별시 용산구 이촌로 80-8 (이촌동)",
@@ -723,8 +723,8 @@ export const shrines: Shrine[] = [
     lng: 128.5284964
   },
   {
-    id: "서소문-밖-네거리-순교성지-순교성지",
-    name: "서소문 밖 네거리 순교성지 (순교성지)",
+    id: "서소문-밖-네거리-순교성지",
+    name: "서소문 밖 네거리 순교성지",
     category: "성지",
     diocese: "서울대교구",
     address: "서울특별시 중구 칠패로 5 서소문성지 역사박물관",
@@ -763,8 +763,8 @@ export const shrines: Shrine[] = [
     lng: 127.1407662
   },
   {
-    id: "왜고개성지순교성지",
-    name: "왜고개성지(순교성지)",
+    id: "왜고개성지",
+    name: "왜고개성지",
     category: "성지",
     diocese: "서울대교구",
     address: "서울특별시 용산구 한강대로 40길 46",
@@ -863,8 +863,8 @@ export const shrines: Shrine[] = [
     lng: 126.7082923
   },
   {
-    id: "소양로-순례-성당-순교자-고-안토니오-anthony-collier",
-    name: "소양로 순례 성당 (순교자 고 안토니오 Anthony Collier)",
+    id: "소양로-순례-성당",
+    name: "소양로 순례 성당",
     category: "순교사적지",
     diocese: "춘천교구",
     address: "강원특별자치도 춘천시 모수물길22번길 26 (소양로2가)",
@@ -943,8 +943,8 @@ export const shrines: Shrine[] = [
     lng: 128.7410128
   },
   {
-    id: "순교자-라-파트리치오patrick-reilly-신부-순교터",
-    name: "순교자 라 파트리치오(Patrick Reilly) 신부 순교터",
+    id: "순교자-라-파트리치오-신부-순교터",
+    name: "순교자 라 파트리치오 신부 순교터",
     category: "순교사적지",
     diocese: "춘천교구",
     address: "강원특별자치도 강릉시 옥계면 낙풍리 산 16-2",
@@ -1003,8 +1003,8 @@ export const shrines: Shrine[] = [
     lng: 127.4749961
   },
   {
-    id: "양양-성지-순교자-이광재-디모테오",
-    name: "양양 성지 (순교자 이광재 디모테오)",
+    id: "양양-성지",
+    name: "양양 성지",
     category: "순교사적지",
     diocese: "춘천교구",
     address: "강원특별자치도 양양군 양양읍 군청길 17",
@@ -1133,8 +1133,8 @@ export const shrines: Shrine[] = [
     lng: 128.0871715
   },
   {
-    id: "용수-성지-성-김대건-신부-표착기념관",
-    name: "용수 성지 (성 김대건 신부 표착기념관)",
+    id: "용수-성지",
+    name: "용수 성지",
     category: "순교사적지",
     diocese: "제주교구",
     address: "제주특별자치도 제주시 한경면 용수1길 108",
@@ -1153,8 +1153,8 @@ export const shrines: Shrine[] = [
     lng: 128.8288940
   },
   {
-    id: "우포도청-터-교회사적지",
-    name: "우포도청 터 (교회사적지)",
+    id: "우포도청-터",
+    name: "우포도청 터",
     category: "순교사적지",
     diocese: "서울대교구",
     address: "서울특별시 종로구 종로 6 (서린동)",
@@ -1193,8 +1193,8 @@ export const shrines: Shrine[] = [
     lng: 127.2777687
   },
   {
-    id: "의금부-터-교회사적지",
-    name: "의금부 터 (교회사적지)",
+    id: "의금부-터",
+    name: "의금부 터",
     category: "순교사적지",
     diocese: "서울대교구",
     address: "서울특별시 종로구 종로 6 (서린동)",
@@ -1213,8 +1213,8 @@ export const shrines: Shrine[] = [
     lng: 127.0414397
   },
   {
-    id: "이승훈-베드로-묘반주골",
-    name: "이승훈 베드로 묘(반주골)",
+    id: "이승훈-베드로-묘",
+    name: "이승훈 베드로 묘",
     category: "순교사적지",
     diocese: "인천교구",
     address: "인천광역시 남동구 장수동 산 132-1",
@@ -1263,8 +1263,8 @@ export const shrines: Shrine[] = [
     lng: 127.1495747
   },
   {
-    id: "전옥서-터-교회사적지",
-    name: "전옥서 터 (교회사적지)",
+    id: "전옥서-터",
+    name: "전옥서 터",
     category: "순교사적지",
     diocese: "서울대교구",
     address: "서울특별시 종로구 청계천로 41 (서린동)",
@@ -1293,8 +1293,8 @@ export const shrines: Shrine[] = [
     lng: 127.1482171
   },
   {
-    id: "절두산-순교성지-순교성지",
-    name: "절두산 순교성지 (순교성지)",
+    id: "절두산-순교성지",
+    name: "절두산 순교성지",
     category: "성지",
     diocese: "서울대교구",
     address: "서울특별시 마포구 토정로 6 (합정동)",
@@ -1333,8 +1333,8 @@ export const shrines: Shrine[] = [
     lng: 126.9966477
   },
   {
-    id: "좌포도청-터-교회사적지",
-    name: "좌포도청 터 (교회사적지)",
+    id: "좌포도청-터",
+    name: "좌포도청 터",
     category: "순교사적지",
     diocese: "서울대교구",
     address: "서울특별시 종로구 돈화문로 28 (묘동) 종로3가역 9번출구, 치안센터 앞",
@@ -1363,8 +1363,8 @@ export const shrines: Shrine[] = [
     lng: 129.0225060
   },
   {
-    id: "죽림동-순교-성지-625-순교자-묘역",
-    name: "죽림동 순교 성지 (6.25 순교자 묘역)",
+    id: "죽림동-순교-성지",
+    name: "죽림동 순교 성지",
     category: "성지",
     diocese: "춘천교구",
     address: "강원특별자치도 춘천시 약사고개길 21 (성직자 묘역 내)",
@@ -1473,8 +1473,8 @@ export const shrines: Shrine[] = [
     lng: 127.1308572
   },
   {
-    id: "청주-읍성-순교-성지",
-    name: "청주 읍성 순교 성지",
+    id: "서운동-순교-성지",
+    name: "서운동 순교 성지",
     category: "성지",
     diocese: "청주교구",
     address: "충청북도 청주시 상당구 대성로 41 서운동 성당",
@@ -1543,8 +1543,8 @@ export const shrines: Shrine[] = [
     lng: 126.9222841
   },
   {
-    id: "한국-천주교회-창립-터-교회사적지",
-    name: "한국 천주교회 창립 터 (교회사적지)",
+    id: "한국-천주교회-창립-터",
+    name: "한국 천주교회 창립 터",
     category: "순교사적지",
     diocese: "서울대교구",
     address: "서울특별시 종로구 청계천로 105 (관수동) 전태일 기념관 앞",
@@ -1603,8 +1603,8 @@ export const shrines: Shrine[] = [
     lng: 126.8167904
   },
   {
-    id: "형조-터-교회사적지",
-    name: "형조 터 (교회사적지)",
+    id: "형조-터",
+    name: "형조 터",
     category: "순교사적지",
     diocese: "서울대교구",
     address: "서울특별시 종로구 세종대로 175 (세종로)",
@@ -1633,8 +1633,8 @@ export const shrines: Shrine[] = [
     lng: 127.8869569
   },
   {
-    id: "화현-이벽-성지",
-    name: "화현 이벽 성지",
+    id: "광암이벽요한세례자-진묘터와-생가터",
+    name: "광암이벽요한세례자 진묘터와 생가터",
     category: "순교사적지",
     diocese: "춘천교구",
     address: "경기도 포천시 화현면 화동로477번길 31",
