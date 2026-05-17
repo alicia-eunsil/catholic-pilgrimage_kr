@@ -297,7 +297,7 @@ h3 {
   gap: 10px;
   width: min(320px, calc(100% - 32px));
   max-height: calc(100% - 32px);
-  overflow: auto;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.78);
   border-radius: 8px;
   padding: 13px;
@@ -324,6 +324,10 @@ h3 {
 .course-filter-list {
   display: grid;
   gap: 7px;
+  max-height: 216px;
+  overflow-y: auto;
+  padding-right: 2px;
+  scrollbar-gutter: stable;
 }
 
 .course-filter-list button {
