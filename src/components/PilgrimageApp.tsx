@@ -123,6 +123,10 @@ function formatShortDate(value: string) {
   });
 }
 
+function formatDistanceLabel(distance: number) {
+  return `${distance.toFixed(distance >= 10 ? 0 : 1)}km`;
+}
+
 function AnimatedMetric({ value, suffix }: { value: number; suffix: string }) {
   const [displayValue, setDisplayValue] = useState(0);
 
@@ -515,6 +519,30 @@ export default function PilgrimageApp() {
     selectedShrineRecordPageSafe * VISITS_PER_PAGE
   );
   const recordShrineOptions = useMemo(() => [...shrines].sort((a, b) => a.name.localeCompare(b.name, "ko")), []);
+  const activeCourseShrineIds = useMemo(() => new Set(activeCourseShrines.map((shrine) => shrine.id)), [activeCourseShrines]);
+  const activeCourseTotalDistance = useMemo(() => {
+    if (activeCourseShrines.length < 2) {
+      return 0;
+    }
+
+    return activeCourseShrines.slice(0, -1).reduce((sum, shrine, index) => {
+      return sum + distanceKm(shrine, activeCourseShrines[index + 1]);
+    }, 0);
+  }, [activeCourseShrines]);
+  const activeCourseSegments = useMemo(() => {
+    return activeCourseShrines.map((shrine, index) => ({
+      shrine,
+      visitCount: allRecentVisits.filter((visit) => visit.shrineId === shrine.id).length,
+      nextDistanceKm:
+        index < activeCourseShrines.length - 1 ? distanceKm(shrine, activeCourseShrines[index + 1]) : undefined
+    }));
+  }, [activeCourseShrines, allRecentVisits]);
+  const activeCourseVisits = useMemo(
+    () => allRecentVisits.filter((visit) => activeCourseShrineIds.has(visit.shrineId)),
+    [activeCourseShrineIds, allRecentVisits]
+  );
+  const activeCourseVerifiedVisitCount = activeCourseVisits.filter((visit) => visit.verified).length;
+  const activeCourseVisitedShrineCount = new Set(activeCourseVisits.map((visit) => visit.shrineId)).size;
   const sortedShrineList = useMemo(() => {
     return [...shrines].sort((a, b) => {
       const direction = shrineSortDirection === "asc" ? 1 : -1;
@@ -840,157 +868,119 @@ export default function PilgrimageApp() {
           </section>
 
           <aside className="records-workspace">
-            <section className="metric-grid">
-              <div>
-                <span>전체 인증</span>
-                <AnimatedMetric value={visits.length} suffix="건" />
-              </div>
-              <div>
-                <span>GPS 인증</span>
-                <AnimatedMetric value={verifiedVisitCount} suffix="건" />
-              </div>
-              <div>
-                <span>인증 성지</span>
-                <AnimatedMetric value={visitedShrineCount} suffix="곳" />
-              </div>
-            </section>
-
-            <section className="records-panel">
-              <div className="record-mode-tabs">
-                <button
-                  className={recordViewMode === "all" ? "active" : ""}
-                  onClick={() => {
-                    setRecordViewMode("all");
-                    setAllRecordPage(1);
-                  }}
-                >
-                  전체 인증보기
-                </button>
-                <button
-                  className={recordViewMode === "byShrine" ? "active" : ""}
-                  onClick={() => {
-                    setRecordViewMode("byShrine");
-                    setSelectedShrineRecordPage(1);
-                  }}
-                >
-                  성지별 모아보기
-                </button>
-              </div>
-
-              {recordViewMode === "all" ? (
-                <section className="insight-card">
-                  <div className="record-sort-tabs" aria-label="인증 정렬">
-                    <button
-                      className={recordSortMode === "latest" ? "active" : ""}
-                      onClick={() => {
-                        setRecordSortMode("latest");
-                        setAllRecordPage(1);
-                      }}
-                    >
-                      최신순
-                    </button>
-                    <button
-                      className={recordSortMode === "shrine" ? "active" : ""}
-                      onClick={() => {
-                        setRecordSortMode("shrine");
-                        setAllRecordPage(1);
-                      }}
-                    >
-                      성지순
-                    </button>
-                  </div>
-                  {allRecentVisits.length === 0 ? (
-                    <div className="empty-state compact">아직 인증 기록이 없습니다. 첫 순례 기록을 남겨보세요.</div>
-                  ) : (
-                    <>
-                      <div className="visit-table">
-                        {pagedAllVisits.map((visit) => {
-                          const shrine = shrines.find((item) => item.id === visit.shrineId);
-                          return (
-                            <VisitRecordRow
-                              key={visit.id}
-                              visit={visit}
-                              shrineLabel={shrine?.name ?? "성지"}
-                              onImageOpen={setExpandedImage}
-                            />
-                          );
-                        })}
+            <section className="course-detail-panel">
+              {activeCourse ? (
+                <>
+                  <section className="insight-card">
+                    <div className="record-section-title">
+                      <div>
+                        <strong>{activeCourse.title}</strong>
                       </div>
-                      <RecordPagination
-                        label="전체 인증 페이지"
-                        page={allRecordPageSafe}
-                        pageCount={allRecordPageCount}
-                        onPageChange={setAllRecordPage}
-                      />
-                    </>
-                  )}
-                </section>
+                      <span>{activeCourse.region}</span>
+                    </div>
+                    <div className="course-meta-row">
+                      <span>{activeCourse.theme}</span>
+                      <span>{activeCourse.duration}</span>
+                      <span>{activeCourse.transport}</span>
+                    </div>
+                    <div className="course-summary-grid">
+                      <div>
+                        <span>성지 수</span>
+                        <strong>{activeCourseShrines.length}곳</strong>
+                      </div>
+                      <div>
+                        <span>총 거리</span>
+                        <strong>{formatDistanceLabel(activeCourseTotalDistance)}</strong>
+                      </div>
+                      <div>
+                        <span>인증 건수</span>
+                        <strong>{activeCourseVisits.length}건</strong>
+                      </div>
+                      <div>
+                        <span>인증 성지</span>
+                        <strong>{activeCourseVisitedShrineCount}곳</strong>
+                      </div>
+                    </div>
+                    <p className="course-description">{activeCourse.description}</p>
+                  </section>
+
+                  <section className="insight-card">
+                    <div className="record-section-title">
+                      <div>
+                        <strong>코스 순서</strong>
+                      </div>
+                      <span>{activeCourseShrines.length}개 성지</span>
+                    </div>
+                    <div className="course-stop-list">
+                      {activeCourseSegments.map(({ shrine, visitCount, nextDistanceKm }, index) => (
+                        <article key={shrine.id} className="course-stop-card">
+                          <div className="course-stop-index">{index + 1}</div>
+                          <div className="course-stop-body">
+                            <strong>{shrine.name}</strong>
+                            <span>{shrine.diocese}</span>
+                            <p>{shrine.address}</p>
+                            <div className="course-stop-meta">
+                              <small>인증 {visitCount}건</small>
+                              {nextDistanceKm !== undefined ? (
+                                <small>다음 성지까지 {formatDistanceLabel(nextDistanceKm)}</small>
+                              ) : (
+                                <small>마지막 성지</small>
+                              )}
+                            </div>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section className="insight-card">
+                    <div className="record-section-title compact">
+                      <div>
+                        <strong>코스 인증 요약</strong>
+                      </div>
+                      <span>간단 집계</span>
+                    </div>
+                    <div className="course-summary-grid compact">
+                      <div>
+                        <span>전체 인증</span>
+                        <strong>{activeCourseVisits.length}건</strong>
+                      </div>
+                      <div>
+                        <span>GPS 인증</span>
+                        <strong>{activeCourseVerifiedVisitCount}건</strong>
+                      </div>
+                      <div>
+                        <span>인증 성지</span>
+                        <strong>{activeCourseVisitedShrineCount}곳</strong>
+                      </div>
+                    </div>
+                  </section>
+                </>
               ) : (
                 <section className="insight-card">
                   <div className="record-section-title">
                     <div>
-                      <strong>성지별 인증 TOP 5</strong>
+                      <strong>추천코스 안내</strong>
                     </div>
-                    <span>{topShrineRecordStats.length}곳</span>
+                    <span>{recommendedCourses.length}개 코스</span>
                   </div>
-                  {topShrineRecordStats.length === 0 ? (
-                    <div className="empty-state compact">아직 성지별로 모아볼 인증 기록이 없습니다.</div>
-                  ) : (
-                    <>
-                      <div className="stat-list compact-stat-list">
-                        {topShrineRecordStats.map(({ shrine, count }) => (
-                          <button
-                            key={shrine.id}
-                            className={selectedRecordShrine?.id === shrine.id ? "active" : ""}
-                            onClick={() => selectRecordShrine(shrine.id, true)}
-                          >
-                            <span>
-                              <strong>{shrine.name}</strong>
-                              <small>{shrine.diocese}</small>
-                            </span>
-                            <b>{count}건</b>
-                          </button>
-                        ))}
-                      </div>
-
-                      <section className="record-pick-section">
-                        <div className="record-section-title compact">
-                          <div>
-                            <strong>전체 성지 선택</strong>
-                          </div>
-                          <span>직접 선택</span>
-                        </div>
-                        <label className="record-shrine-picker">
-                          <select
-                            value={selectedRecordShrine?.id ?? ""}
-                            onChange={(event) => selectRecordShrine(event.target.value)}
-                          >
-                            {recordShrineOptions.map((shrine) => (
-                              <option key={shrine.id} value={shrine.id}>
-                                {shrine.name}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                      </section>
-
-                      <div className="panel-heading sub" ref={selectedRecordSectionRef}>
-                        <strong>{selectedRecordShrine?.name ?? "성지"} 인증</strong>
-                        <span>{selectedShrineRecords.length}건</span>
-                      </div>
-                      <div className="visit-table">
-                        {pagedSelectedShrineRecords.map((visit) => (
-                          <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
-                        ))}
-                      </div>
-                      <RecordPagination
-                        label={`${selectedRecordShrine?.name ?? "성지"} 인증 페이지`}
-                        page={selectedShrineRecordPageSafe}
-                        pageCount={selectedShrineRecordPageCount}
-                        onPageChange={setSelectedShrineRecordPage}
-                      />
-                    </>
-                  )}
+                  <p className="course-description">
+                    지도에서 코스를 선택하면 코스 설명, 성지 순서, 구간 거리와 간단한 인증 요약을 볼 수 있습니다.
+                  </p>
+                  <div className="course-summary-grid compact">
+                    <div>
+                      <span>전체 코스</span>
+                      <strong>{recommendedCourses.length}개</strong>
+                    </div>
+                    <div>
+                      <span>전체 인증</span>
+                      <strong>{visits.length}건</strong>
+                    </div>
+                    <div>
+                      <span>인증 성지</span>
+                      <strong>{visitedShrineCount}곳</strong>
+                    </div>
+                  </div>
                 </section>
               )}
             </section>
