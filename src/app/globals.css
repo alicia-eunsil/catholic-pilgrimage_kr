@@ -1373,6 +1373,47 @@ textarea {
   box-shadow: var(--emboss);
 }
 
+.related-course-list {
+  display: grid;
+  gap: 8px;
+}
+
+.related-course-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.related-course-item span {
+  display: grid;
+  min-width: 0;
+}
+
+.related-course-item strong {
+  font-size: 14px;
+}
+
+.related-course-item small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.related-course-item b {
+  flex: 0 0 auto;
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 760;
+}
+
 .panel-heading {
   display: flex;
   align-items: center;

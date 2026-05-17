@@ -457,6 +457,10 @@ export default function PilgrimageApp() {
   );
   const visitedShrineCount = new Set(visits.map((visit) => visit.shrineId)).size;
   const verifiedVisitCount = visits.filter((visit) => visit.verified).length;
+  const focusedShrineRelatedCourses = useMemo(
+    () => recommendedCourses.filter((course) => course.shrineIds.includes(focusedShrine.id)),
+    [focusedShrine.id]
+  );
   const shrineRecordStats = shrines
     .map((shrine) => {
       const shrineVisits = allRecentVisits.filter((visit) => visit.shrineId === shrine.id);
@@ -615,6 +619,11 @@ export default function PilgrimageApp() {
         selectedRecordSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 0);
     }
+  }
+
+  function openRelatedCourse(courseId: string) {
+    setActiveCourseId(courseId);
+    setActiveTab("route");
   }
 
   function requestLocation() {
@@ -789,6 +798,8 @@ export default function PilgrimageApp() {
           </div>
           <ShrineDetail
             shrine={focusedShrine}
+            relatedCourses={focusedShrineRelatedCourses}
+            onOpenCourse={openRelatedCourse}
             onVerify={() => {
               setVerifyShrineId(focusedShrine.id);
               setActiveTab("verify");
@@ -1421,26 +1432,56 @@ function KakaoMapPanel({
 
 function ShrineDetail({
   shrine,
+  relatedCourses,
+  onOpenCourse,
   onVerify
 }: {
   shrine: Shrine;
+  relatedCourses: RecommendedCourse[];
+  onOpenCourse: (courseId: string) => void;
   onVerify: () => void;
 }) {
   return (
-    <article className="detail-card">
-      <div>
-        <span className="category-badge" style={{ color: categoryStyle[shrine.category].color, background: categoryStyle[shrine.category].bg }}>
-          {shrine.category}
-        </span>
-        <h2>{shrine.name}</h2>
-        <small>{shrine.diocese} · {shrine.address}</small>
-      </div>
-      <div className="detail-actions">
-        <a href={`https://search.naver.com/search.naver?query=${encodeURIComponent(`${shrine.name} 블로그`)}`} target="_blank" rel="noreferrer">
-          블로그 후기
-        </a>
-        <button onClick={onVerify}>나도 인증하기</button>
-      </div>
-    </article>
+    <>
+      <article className="detail-card">
+        <div>
+          <span className="category-badge" style={{ color: categoryStyle[shrine.category].color, background: categoryStyle[shrine.category].bg }}>
+            {shrine.category}
+          </span>
+          <h2>{shrine.name}</h2>
+          <small>{shrine.diocese} · {shrine.address}</small>
+        </div>
+        <div className="detail-actions">
+          <a href={`https://search.naver.com/search.naver?query=${encodeURIComponent(`${shrine.name} 블로그`)}`} target="_blank" rel="noreferrer">
+            블로그 후기
+          </a>
+          <button onClick={onVerify}>나도 인증하기</button>
+        </div>
+      </article>
+
+      <section className="insight-card">
+        <div className="record-section-title compact">
+          <div>
+            <strong>관련 추천코스</strong>
+          </div>
+          <span>{relatedCourses.length}개</span>
+        </div>
+        {relatedCourses.length > 0 ? (
+          <div className="related-course-list">
+            {relatedCourses.map((course) => (
+              <button key={course.id} className="related-course-item" onClick={() => onOpenCourse(course.id)}>
+                <span>
+                  <strong>{course.title}</strong>
+                  <small>{course.region} · {course.duration}</small>
+                </span>
+                <b>{course.shrineIds.length}곳</b>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state compact">이 성지가 포함된 추천코스가 아직 없습니다.</div>
+        )}
+      </section>
+    </>
   );
 }
