@@ -274,9 +274,14 @@ h3 {
 .course-detail-panel {
   display: grid;
   gap: 10px;
+  align-content: start;
   min-height: 0;
   overflow-y: auto;
   padding-right: 2px;
+}
+
+.course-detail-panel.compact-overview {
+  align-content: start;
 }
 
 .course-meta-row {
@@ -310,6 +315,10 @@ h3 {
   margin-top: 0;
 }
 
+.course-summary-grid.overview {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .course-summary-grid div {
   display: grid;
   gap: 3px;
@@ -332,10 +341,14 @@ h3 {
 }
 
 .course-description {
-  margin: 12px 0 0;
+  margin: 6px 0 0;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;
+}
+
+.course-overview-card {
+  align-self: start;
 }
 
 .course-stop-list {
@@ -2046,6 +2059,10 @@ textarea {
   }
 
   .course-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .course-summary-grid.overview {
     grid-template-columns: 1fr;
   }
 

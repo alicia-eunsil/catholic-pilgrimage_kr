@@ -166,7 +166,7 @@ function AnimatedMetric({ value, suffix }: { value: number; suffix: string }) {
 function markerSvgDataUrl(category: ShrineCategory) {
   const color = markerColors[category];
   const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="42" viewBox="0 0 34 42">
+    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="28" viewBox="0 0 34 42">
       <path d="M17 41C13.2 35.7 4 25.6 4 16.6C4 9.1 9.8 3 17 3s13 6.1 13 13.6c0 9-9.2 19.1-13 24.4Z" fill="${color.fill}" stroke="${color.stroke}" stroke-width="2"/>
       <circle cx="17" cy="16.5" r="6.2" fill="#fff" fill-opacity=".96"/>
       <path d="M17 10.4v12.2M11.8 15.2h10.4" stroke="${color.stroke}" stroke-width="1.8" stroke-linecap="round"/>
@@ -881,7 +881,7 @@ export default function PilgrimageApp() {
           </section>
 
           <aside className="records-workspace">
-            <section className="course-detail-panel">
+            <section className={`course-detail-panel${activeCourse ? "" : " compact-overview"}`}>
               {activeCourse ? (
                 <>
                   <section className="insight-card">
@@ -949,7 +949,7 @@ export default function PilgrimageApp() {
                   </section>
                 </>
               ) : (
-                <section className="insight-card">
+                <section className="insight-card course-overview-card">
                   <div className="record-section-title">
                     <div>
                       <strong>추천코스 안내</strong>
@@ -957,9 +957,9 @@ export default function PilgrimageApp() {
                     <span>{recommendedCourses.length}개 코스</span>
                   </div>
                   <p className="course-description">
-                    지도에서 코스를 선택하면 코스 설명, 성지 순서, 구간 거리와 간단한 인증 요약을 볼 수 있습니다.
+                    지도에서 코스를 선택하면 코스 설명, 성지 순서, 구간 거리를 볼 수 있습니다.
                   </p>
-                  <div className="course-summary-grid compact">
+                  <div className="course-summary-grid compact overview">
                     <div>
                       <span>전체 코스</span>
                       <strong>{recommendedCourses.length}개</strong>
@@ -1332,8 +1332,8 @@ function KakaoMapPanel({
     const markerImages = CATEGORY_FILTERS.reduce((images, category) => {
       images[category] = new kakaoMaps.MarkerImage(
         markerSvgDataUrl(category),
-        new kakaoMaps.Size(34, 42),
-        { offset: new kakaoMaps.Point(17, 42) }
+        new kakaoMaps.Size(23, 28),
+        { offset: new kakaoMaps.Point(11, 28) }
       );
       return images;
     }, {} as Record<ShrineCategory, KakaoMarkerImage>);
