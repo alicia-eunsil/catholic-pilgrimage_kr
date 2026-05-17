@@ -1,6 +1,7 @@
 "use client";
 
 import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { recommendedCourses, type RecommendedCourse } from "@/data/courses";
 import { shrines, type Shrine, type ShrineCategory } from "@/data/shrines";
 import { distanceKm, type LatLng } from "@/lib/geo";
 import { saveVisitRecord, subscribeVisitRecords, uploadVisitPhoto, type VisitRecord } from "@/lib/storage";
@@ -86,14 +87,6 @@ const markerColors: Record<ShrineCategory, { fill: string; stroke: string }> = {
 };
 type ShrineSortKey = "diocese" | "category" | "name" | "address";
 type SortDirection = "asc" | "desc";
-type RecommendedCourse = {
-  id: string;
-  title: string;
-  theme: string;
-  region: string;
-  duration: string;
-  shrineIds: string[];
-};
 type CourseRoute = {
   id: string;
   title: string;
@@ -104,193 +97,6 @@ type RecordViewMode = "all" | "byShrine";
 type RecordSortMode = "latest" | "shrine";
 
 const courseColors = ["#2648bd", "#b7791f", "#b85c55", "#4f7fc4", "#6f7f5f"];
-
-const recommendedCourses: RecommendedCourse[] = [
-  {
-    id: "seoul-martyr-core",
-    title: "서울 도심 순교 코스",
-    theme: "도심 순교 성지",
-    region: "서울",
-    duration: "반나절-1일",
-    shrineIds: ["명동대성당-순교성지", "서소문-밖-네거리-순교성지-순교성지", "중림동-약현성당-순례지"]
-  },
-  {
-    id: "ganghwa_course",
-    title: "강화 순교 코스",
-    theme: "강화도 내 순교성지",
-    region: "인천-강화",
-    duration: "반나절",
-    shrineIds: ["갑곶-순교-성지", "진무영-순교-성지"]
-  },
-  {
-    id: "north_gg_course",
-    title: "경기 평화의 순례",
-    theme: "경기 북부-춘천 순교성지",
-    region: "경기 북부-춘천",
-    duration: "2일",
-    shrineIds: [
-      "참회와-속죄의-성당",
-      "신암리-성당",
-      "갈곡리-성당",
-      "양주-순교성지",
-      "성-남종삼-요한과-가족-순교자-묘소",
-      "황사영-알렉시오-순교자-묘",
-      "포천-순교-성지-복자-홍인-레오-순교터",
-      "광암이벽요한세례자-진묘터와-생가터",
-      "소양로-순례-성당-순교자-고-안토니오-anthony-collier",
-      "죽림동-순교-성지-625-순교자-묘역"
-    ]
-  },
-  {
-    id: "incheon_course",
-    title: "인천 순례코스",
-    theme: "인천 순교성지",
-    region: "인천",
-    duration: "반나절",
-    shrineIds: ["이승훈-베드로-묘반주골", "제물진두-순교-성지"]
-  },
-  {
-    id: "south_gg1_course",
-    title: "경기 기억과 믿음의 길",
-    theme: "경기 남부 순교성지",
-    region: "경기남부",
-    duration: "1일",
-    shrineIds: ["수리산성지", "손골성지", "수원화성순교성지", "남양성모성지", "요당리성지"]
-  },
-  {
-    id: "south_gg2_course",
-    title: "경기 은총의 길",
-    theme: "경기 남부 순교성지",
-    region: "경기남부",
-    duration: "1일",
-    shrineIds: ["구산성지", "마재-성가정-성지", "양근성지", "천진암성지", "남한산성-순교성지"]
-  },
-  {
-    id: "south_gg3_course",
-    title: "경기 빛을 따라 걷는 길",
-    theme: "경기 남부 순교성지",
-    region: "경기남부",
-    duration: "1일",
-    shrineIds: ["은이골배마실성지", "단내성가정성지", "어농성지", "죽산성지", "미리내성지"]
-  },
-  {
-    id: "west_gw_course",
-    title: "강원, 충북 순례코스",
-    theme: "강원 서부, 충북 순교성지",
-    region: "강원서부,충북",
-    duration: "1일",
-    shrineIds: ["풍수원-성당", "강원-감영", "성-남종삼-요한--순교자-남상교-아우구스티노-유택지", "배론-성지"]
-  },
-  {
-    id: "east_gw_course",
-    title: "강원 순례코스",
-    theme: "강원 순교성지",
-    region: "강원동부",
-    duration: "1일",
-    shrineIds: [
-      "양양-성지-순교자-이광재-디모테오",
-      "순교자-라-파트리치오patrick-reilly-신부-순교터",
-      "묵호-순례-성당-순교자-라-파트리치오-patrick-reilly",
-      "성내동-성당"
-    ]
-  },
-  {
-    id: "north_cn1_course",
-    title: "충남 내포 순례의 길",
-    theme: "충청남도 순교성지",
-    region: "충청남도 ",
-    duration: "1일",
-    shrineIds: ["공세리성당", "원머리성지", "솔뫼성지", "합덕성당", "황무실성지", "신리성지", "여사울성지", "남방제성지"]
-  },
-  {
-    id: "north_cn2_course",
-    title: "충남 고요한 기도의 길",
-    theme: "충청남도 순교성지",
-    region: "충청남도 ",
-    duration: "1일",
-    shrineIds: ["해미순교자국제성지", "배나드리성지", "홍주순교성지", "대흥봉수산순교성지"]
-  },
-  {
-    id: "north_cn3_course",
-    title: "충남 신앙의 발자취",
-    theme: "충청남도 순교성지",
-    region: "충청남도 ",
-    duration: "1일",
-    shrineIds: ["갈매못순교성지", "청양다락골성지", "수리치골-성모성지", "황새바위순교성지"]
-  },
-  {
-    id: "north_cn4_course",
-    title: "충남 마음의 순례",
-    theme: "충청남도 순교성지",
-    region: "충청남도 ",
-    duration: "1일",
-    shrineIds: ["도앙골-성지", "삽티-성지", "서짓골-성지", "산막골성지--작은재성지", "지석리성지"]
-  },
-  {
-    id: "cj_course",
-    title: "청주 성지로 향하는 여정",
-    theme: "충청북도 순교성지",
-    region: "충청북도",
-    duration: "1일",
-    shrineIds: ["성거산성지", "배티-순교-성지", "서운동-순교-성지", "멍에목-성지"]
-  },
-  {
-    id: "ad_course",
-    title: "문경 믿음의 발자취",
-    theme: "경상북도 순교성지",
-    region: "경상북도",
-    duration: "1일",
-    shrineIds: ["연풍-순교-성지", "마원-성지", "진안리-성지", "여우목-성지"]
-  },
-  {
-    id: "north_jj_course",
-    title: "전북 순교자의 길",
-    theme: "전라북도 순교성지",
-    region: "전라북도",
-    duration: "1일",
-    shrineIds: ["진산성지", "천호성지", "여산-하늘의-문-성당", "나바위성지"]
-  },
-  {
-    id: "center_jj_course",
-    title: "전북 위로의 순례길",
-    theme: "전라북도 순교성지",
-    region: "전라북도",
-    duration: "1일",
-    shrineIds: ["김제순교성지", "초남이성지", "전주숲정이성지", "전주옥터", "전동성당", "서천교순교터", "초록바위순교터", "치명자산성지"]
-  },
-  {
-    id: "gj_course",
-    title: "전라도 함께하는 순례길",
-    theme: "전라남도 순교성지",
-    region: "전라남도",
-    duration: "2일",
-    shrineIds: ["고창-개갑-순교성지", "영광순교자기념성당", "나주-순교자-기념성당", "가톨릭목포성지", "곡성성당-옥터"]
-  },
-  {
-    id: "dg_course",
-    title: "경상북도 신앙의 발자취",
-    theme: "경상북도 순교성지",
-    region: "경상북도",
-    duration: "2일",
-    shrineIds: ["한티순교성지", "신나무골-성지", "비산날뫼성당", "경상-감영과-옥-터", "관덕정순교기념관", "복자성당", "진목정-성지", "경주-관아와-옥-터"]
-  },
-  {
-    id: "ms_course",
-    title: "경상남도 숲과 기도의 길",
-    theme: "경상남도 순교성지",
-    region: "경상남도",
-    duration: "2일",
-    shrineIds: ["명례-성지", "복자-박대식-빅토리노-묘", "대산성당", "복자-정찬문-안토니오-묘소", "복자-윤봉문-요셉-성지"]
-  },
-  {
-    id: "jj_course",
-    title: "제주도 고요한 침묵",
-    theme: "제주도 순교성지",
-    region: "제주도",
-    duration: "반나절",
-    shrineIds: ["김기량-순교-기념관", "용수-성지-성-김대건-신부-표착기념관"]
-  }
-];
 
 function escapeHtml(value: string) {
   return value

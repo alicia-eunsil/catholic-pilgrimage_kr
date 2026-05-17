@@ -57,6 +57,19 @@ npm run build:data
 
 - `data/korean_catholic_holy_sites.geocoded.csv`
 - `src/data/shrines.ts`
+- `src/data/courses.ts`
+
+`추천코스` 시트를 수정한 뒤에는 코스 데이터도 다시 생성해야 합니다.
+
+```bash
+npm run build:courses
+```
+
+성지 데이터와 추천코스를 함께 갱신하려면 아래 명령을 사용합니다.
+
+```bash
+npm run build:data
+```
 
 ## 로컬 실행
 

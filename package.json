@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "geocode": "python3 scripts/geocode_shrines.py",
-    "build:data": "python3 scripts/build_shrine_data.py"
+    "build:shrines": "python3 scripts/build_shrine_data.py",
+    "build:courses": "python3 scripts/build_course_data.py",
+    "build:data": "python3 scripts/build_shrine_data.py && python3 scripts/build_course_data.py"
   },
   "dependencies": {
     "@types/node": "20.12.12",
