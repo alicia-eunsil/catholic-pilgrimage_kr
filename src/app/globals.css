@@ -302,8 +302,8 @@ h3 {
 .course-summary-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 10px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .course-summary-grid.compact {
@@ -312,22 +312,22 @@ h3 {
 
 .course-summary-grid div {
   display: grid;
-  gap: 4px;
+  gap: 3px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 11px 12px;
+  padding: 9px 10px;
   background: var(--surface-soft);
 }
 
 .course-summary-grid span {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 680;
 }
 
 .course-summary-grid strong {
   color: var(--ink);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 760;
 }
 
@@ -369,9 +369,24 @@ h3 {
   min-width: 0;
 }
 
+.course-stop-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .course-stop-body strong {
   display: block;
   font-size: 15px;
+}
+
+.course-stop-heading b {
+  flex: 0 0 auto;
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 760;
+  text-align: right;
 }
 
 .course-stop-body span {

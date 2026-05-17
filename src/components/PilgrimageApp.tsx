@@ -541,7 +541,6 @@ export default function PilgrimageApp() {
     () => allRecentVisits.filter((visit) => activeCourseShrineIds.has(visit.shrineId)),
     [activeCourseShrineIds, allRecentVisits]
   );
-  const activeCourseVerifiedVisitCount = activeCourseVisits.filter((visit) => visit.verified).length;
   const activeCourseVisitedShrineCount = new Set(activeCourseVisits.map((visit) => visit.shrineId)).size;
   const sortedShrineList = useMemo(() => {
     return [...shrines].sort((a, b) => {
@@ -916,11 +915,13 @@ export default function PilgrimageApp() {
                         <article key={shrine.id} className="course-stop-card">
                           <div className="course-stop-index">{index + 1}</div>
                           <div className="course-stop-body">
-                            <strong>{shrine.name}</strong>
+                            <div className="course-stop-heading">
+                              <strong>{shrine.name}</strong>
+                              <b>{visitCount}건</b>
+                            </div>
                             <span>{shrine.diocese}</span>
                             <p>{shrine.address}</p>
                             <div className="course-stop-meta">
-                              <small>인증 {visitCount}건</small>
                               {nextDistanceKm !== undefined ? (
                                 <small>다음 성지까지 {formatDistanceLabel(nextDistanceKm)}</small>
                               ) : (
@@ -930,29 +931,6 @@ export default function PilgrimageApp() {
                           </div>
                         </article>
                       ))}
-                    </div>
-                  </section>
-
-                  <section className="insight-card">
-                    <div className="record-section-title compact">
-                      <div>
-                        <strong>코스 인증 요약</strong>
-                      </div>
-                      <span>간단 집계</span>
-                    </div>
-                    <div className="course-summary-grid compact">
-                      <div>
-                        <span>전체 인증</span>
-                        <strong>{activeCourseVisits.length}건</strong>
-                      </div>
-                      <div>
-                        <span>GPS 인증</span>
-                        <strong>{activeCourseVerifiedVisitCount}건</strong>
-                      </div>
-                      <div>
-                        <span>인증 성지</span>
-                        <strong>{activeCourseVisitedShrineCount}곳</strong>
-                      </div>
                     </div>
                   </section>
                 </>
