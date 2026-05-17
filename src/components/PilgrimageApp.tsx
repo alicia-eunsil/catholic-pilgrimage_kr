@@ -801,36 +801,40 @@ export default function PilgrimageApp() {
           <section className="course-map-workspace">
             <div className="course-map-card">
               <div className="course-map-shell">
-                <KakaoMapPanel
-                  shrines={courseMapShrines}
-                  routeShrines={EMPTY_ROUTE_SHRINES}
-                  routeActive={Boolean(activeCourseId)}
-                  courseRoutes={shownCourseRoutes}
-                  focusedShrineId={focusedShrineId}
-                  onClearRoute={() => setActiveCourseId(undefined)}
-                  onSelectShrine={handleSelectShrine}
-                />
-                <div className="course-map-overlay">
-                  <div>
-                    <strong>추천코스 지도</strong>
-                    <span>{activeCourse ? activeCourse.title : "전체 코스 표시 중"}</span>
-                  </div>
-                  <div className="course-filter-list">
-                    <button className={!activeCourseId ? "active" : ""} onClick={() => setActiveCourseId(undefined)}>
-                      <i style={{ backgroundColor: "#9aa3af" }} />
-                      전체 코스
-                    </button>
-                    {courseRoutes.map((course) => (
-                      <button
-                        key={course.id}
-                        className={activeCourseId === course.id ? "active" : ""}
-                        onClick={() => setActiveCourseId(course.id)}
-                      >
-                        <i style={{ backgroundColor: course.color }} />
-                        {course.title}
+                <aside className="course-map-sidebar">
+                  <div className="course-map-overlay">
+                    <div>
+                      <strong>추천코스 지도</strong>
+                      <span>{activeCourse ? activeCourse.title : "전체 코스 표시 중"}</span>
+                    </div>
+                    <div className="course-filter-list">
+                      <button className={!activeCourseId ? "active" : ""} onClick={() => setActiveCourseId(undefined)}>
+                        <i style={{ backgroundColor: "#9aa3af" }} />
+                        전체 코스
                       </button>
-                    ))}
+                      {courseRoutes.map((course) => (
+                        <button
+                          key={course.id}
+                          className={activeCourseId === course.id ? "active" : ""}
+                          onClick={() => setActiveCourseId(course.id)}
+                        >
+                          <i style={{ backgroundColor: course.color }} />
+                          {course.title}
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                </aside>
+                <div className="course-map-canvas">
+                  <KakaoMapPanel
+                    shrines={courseMapShrines}
+                    routeShrines={EMPTY_ROUTE_SHRINES}
+                    routeActive={Boolean(activeCourseId)}
+                    courseRoutes={shownCourseRoutes}
+                    focusedShrineId={focusedShrineId}
+                    onClearRoute={() => setActiveCourseId(undefined)}
+                    onSelectShrine={handleSelectShrine}
+                  />
                 </div>
               </div>
             </div>

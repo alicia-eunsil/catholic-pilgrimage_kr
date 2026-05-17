@@ -250,7 +250,7 @@ h3 {
 .course-dashboard {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 430px;
+  grid-template-columns: minmax(0, 1fr) 376px;
   gap: 14px;
   min-height: 0;
 }
@@ -278,32 +278,41 @@ h3 {
 }
 
 .course-map-shell {
-  position: relative;
+  display: grid;
+  grid-template-columns: 188px minmax(0, 1fr);
   height: 100%;
   min-height: 0;
 }
 
+.course-map-sidebar,
+.course-map-canvas,
 .course-map-shell .map-panel {
   height: 100%;
   min-height: 0;
 }
 
+.course-map-sidebar {
+  min-width: 0;
+  border-right: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(18px);
+}
+
+.course-map-canvas {
+  min-width: 0;
+  min-height: 0;
+}
+
 .course-map-overlay {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 5;
   display: grid;
   gap: 10px;
-  width: min(192px, calc(100% - 32px));
-  max-height: calc(100% - 32px);
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  border-radius: 8px;
-  padding: 13px;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: var(--soft-shadow), var(--emboss);
-  backdrop-filter: blur(18px);
+  padding: 12px 10px 12px 12px;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .course-map-overlay > div:first-child {
@@ -323,7 +332,7 @@ h3 {
 
 .course-filter-list {
   display: grid;
-  gap: 7px;
+  gap: 6px;
   max-height: 216px;
   overflow-y: auto;
   padding-right: 2px;
@@ -332,16 +341,17 @@ h3 {
 
 .course-filter-list button {
   display: flex;
-  min-height: 36px;
+  min-height: 34px;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 0 10px;
+  padding: 0 9px;
   background: var(--surface);
   color: var(--accent-strong);
   cursor: pointer;
-  font-weight: 760;
+  font-size: 12px;
+  font-weight: 740;
   text-align: left;
   box-shadow: none;
 }
@@ -1791,25 +1801,34 @@ textarea {
   }
 
   .course-map-shell {
-    display: grid;
+    grid-template-columns: 1fr;
     grid-template-rows: minmax(360px, 52vh) auto;
     height: auto;
   }
 
+  .course-map-canvas {
+    grid-row: 1;
+  }
+
   .course-map-shell .map-panel {
-    grid-row: auto;
     height: auto;
     min-height: 360px;
   }
 
+  .course-map-sidebar {
+    grid-row: 2;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    backdrop-filter: none;
+  }
+
   .course-map-overlay {
-    position: static;
-    grid-row: auto;
     width: 100%;
+    height: auto;
     max-height: none;
     overflow: visible;
     border: 0;
-    border-top: 1px solid var(--line);
     border-radius: 0 0 8px 8px;
     background: var(--surface);
     box-shadow: none;
