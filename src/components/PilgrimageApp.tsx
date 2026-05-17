@@ -508,7 +508,9 @@ export default function PilgrimageApp() {
     .sort((a, b) => b.count - a.count || a.diocese.localeCompare(b.diocese, "ko"))
     .slice(0, 5);
   const maxDioceseRecordCount = Math.max(...dioceseRecordStats.map((item) => item.count), 1);
-  const selectedRecordShrine = shrines.find((shrine) => shrine.id === selectedRecordShrineId) ?? topShrineRecordStats[0]?.shrine;
+  const selectedRecordShrine = selectedRecordShrineId
+    ? shrines.find((shrine) => shrine.id === selectedRecordShrineId)
+    : undefined;
   const selectedShrineRecords = selectedRecordShrine
     ? allRecentVisits.filter((visit) => visit.shrineId === selectedRecordShrine.id)
     : [];
@@ -603,11 +605,11 @@ export default function PilgrimageApp() {
     return shrineSortDirection === "asc" ? " ▲" : " ▼";
   }
 
-  function selectRecordShrine(shrineId: string, shouldScroll = false) {
-    setSelectedRecordShrineId(shrineId);
+  function selectRecordShrine(shrineId?: string, shouldScroll = false) {
+    setSelectedRecordShrineId(shrineId || undefined);
     setSelectedShrineRecordPage(1);
 
-    if (shouldScroll) {
+    if (shouldScroll && shrineId) {
       window.setTimeout(() => {
         selectedRecordSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 0);
@@ -1121,9 +1123,10 @@ export default function PilgrimageApp() {
                   </div>
                   <label className="record-shrine-picker">
                     <select
-                      value={selectedRecordShrine?.id ?? ""}
+                      value={selectedRecordShrineId ?? ""}
                       onChange={(event) => selectRecordShrine(event.target.value)}
                     >
+                      <option value="">전체</option>
                       {recordShrineOptions.map((shrine) => (
                         <option key={shrine.id} value={shrine.id}>
                           {shrine.name}
@@ -1133,21 +1136,27 @@ export default function PilgrimageApp() {
                   </label>
                 </section>
 
-                <div className="panel-heading sub" ref={selectedRecordSectionRef}>
-                  <strong>{selectedRecordShrine?.name ?? "성지"} 인증</strong>
-                  <span>{selectedShrineRecords.length}건</span>
-                </div>
-                <div className="visit-table">
-                  {pagedSelectedShrineRecords.map((visit) => (
-                    <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
-                  ))}
-                </div>
-                <RecordPagination
-                  label={`${selectedRecordShrine?.name ?? "성지"} 인증 페이지`}
-                  page={selectedShrineRecordPageSafe}
-                  pageCount={selectedShrineRecordPageCount}
-                  onPageChange={setSelectedShrineRecordPage}
-                />
+                {selectedRecordShrine ? (
+                  <>
+                    <div className="panel-heading sub" ref={selectedRecordSectionRef}>
+                      <strong>{selectedRecordShrine.name} 인증</strong>
+                      <span>{selectedShrineRecords.length}건</span>
+                    </div>
+                    <div className="visit-table">
+                      {pagedSelectedShrineRecords.map((visit) => (
+                        <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
+                      ))}
+                    </div>
+                    <RecordPagination
+                      label={`${selectedRecordShrine.name} 인증 페이지`}
+                      page={selectedShrineRecordPageSafe}
+                      pageCount={selectedShrineRecordPageCount}
+                      onPageChange={setSelectedShrineRecordPage}
+                    />
+                  </>
+                ) : (
+                  <div className="empty-state compact">성지를 선택하면 해당 인증 기록을 볼 수 있습니다.</div>
+                )}
               </>
             )}
           </section>
