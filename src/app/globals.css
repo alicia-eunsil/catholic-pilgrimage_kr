@@ -1807,6 +1807,13 @@ textarea {
   font-weight: 760;
 }
 
+.about-credit {
+  margin-top: 8px;
+  color: var(--subtle);
+  font-size: 12px;
+  text-align: center;
+}
+
 .shrine-table-wrap {
   min-height: 0;
   overflow: auto;
