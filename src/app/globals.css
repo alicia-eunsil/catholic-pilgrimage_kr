@@ -1789,8 +1789,8 @@ textarea {
   margin: 0 0 12px;
   color: var(--muted);
   font-family: "Nanum Pen Script", "Nanum Brush Script", "Comic Sans MS", "Bradley Hand", "Segoe Print", "Marker Felt", "Apple SD Gothic Neo", cursive;
-  font-size: 17px;
-  line-height: 1.74;
+  font-size: 20px;
+  line-height: 1.76;
 }
 
 .about-content p:last-child {
