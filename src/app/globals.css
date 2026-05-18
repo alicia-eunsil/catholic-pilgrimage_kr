@@ -1700,6 +1700,10 @@ textarea {
   width: min(860px, 100%);
 }
 
+.course-stop-visit-modal-panel {
+  width: min(700px, 100%);
+}
+
 .list-modal-header {
   display: flex;
   align-items: center;

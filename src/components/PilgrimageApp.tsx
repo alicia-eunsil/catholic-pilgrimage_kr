@@ -1406,7 +1406,7 @@ export default function PilgrimageApp() {
 
       {selectedCourseStopShrine ? (
         <div className="list-modal" role="dialog" aria-modal="true" aria-label="성지 인증 기록" onClick={() => setSelectedCourseStopShrineId(undefined)}>
-          <section className="list-modal-panel" onClick={(event) => event.stopPropagation()}>
+          <section className="list-modal-panel course-stop-visit-modal-panel" onClick={(event) => event.stopPropagation()}>
             <div className="list-modal-header">
               <div>
                 <strong>{selectedCourseStopShrine.name} 인증 기록</strong>
