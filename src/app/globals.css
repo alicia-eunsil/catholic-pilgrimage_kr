@@ -929,11 +929,33 @@ h3 {
 
 .site-credit {
   grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   padding: 4px 0 0;
   color: var(--subtle);
   font-size: 12px;
   font-weight: 650;
   text-align: center;
+}
+
+.site-credit button {
+  min-height: 28px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 0 10px;
+  background: #f8fafc;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.site-credit button:hover {
+  border-color: rgba(79, 102, 141, 0.22);
+  background: #eef3ff;
+  color: var(--accent-strong);
 }
 
 .eyebrow {
@@ -1660,6 +1682,10 @@ textarea {
   grid-template-rows: auto auto minmax(0, 1fr);
 }
 
+.about-modal-panel {
+  width: min(860px, 100%);
+}
+
 .list-modal-header {
   display: flex;
   align-items: center;
@@ -1749,6 +1775,38 @@ textarea {
   font-size: 14px;
   line-height: 1.8;
   white-space: pre-line;
+}
+
+.about-content {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 18px 22px;
+}
+
+.about-content h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.about-content p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.about-content p:last-child {
+  margin-bottom: 0;
+}
+
+.about-content a {
+  color: var(--accent-strong);
+  font-weight: 720;
+}
+
+.about-highlight {
+  color: var(--ink);
+  font-weight: 760;
 }
 
 .shrine-table-wrap {

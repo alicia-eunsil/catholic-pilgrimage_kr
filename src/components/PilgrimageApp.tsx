@@ -386,6 +386,7 @@ export default function PilgrimageApp() {
   const [introVisitPage, setIntroVisitPage] = useState(1);
   const [showShrineList, setShowShrineList] = useState(false);
   const [showPrayerModal, setShowPrayerModal] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
   const [activePrayerIndex, setActivePrayerIndex] = useState(0);
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
@@ -1303,6 +1304,71 @@ export default function PilgrimageApp() {
         </div>
       ) : null}
 
+      {showAboutModal ? (
+        <div className="list-modal" role="dialog" aria-modal="true" aria-label="About Us" onClick={() => setShowAboutModal(false)}>
+          <section className="list-modal-panel about-modal-panel" onClick={(event) => event.stopPropagation()}>
+            <div className="list-modal-header">
+              <div>
+                <strong>About Us</strong>
+              </div>
+              <button onClick={() => setShowAboutModal(false)}>닫기</button>
+            </div>
+
+            <article className="about-content">
+              <h3>성지를 찾고, 순례를 계획하고, 믿음의 여정을 기록하는 공간</h3>
+              <p>이곳은 한국 천주교 성지순례를 조금 더 쉽고, 조금 더 의미 있게 경험하고 싶은 마음에서 시작한 공간입니다.</p>
+              <p>
+                성지순례를 준비하다 보면
+                <br />
+                어디에 어떤 성지가 있는지,
+                <br />
+                어떤 길로 다녀오면 좋을지,
+                <br />
+                다른 순례자들은 어떤 마음으로 그곳을 다녀왔는지
+                <br />
+                궁금할 때가 많습니다.
+              </p>
+              <p>
+                이 사이트에서는 전국의 천주교 성지 정보를 찾아보고,
+                <br />
+                순례 코스를 살펴보며,
+                <br />
+                나의 순례 기록을 남길 수 있습니다.
+                <br />
+                또한 다른 순례자들의 기록을 함께 보며
+                <br />
+                서로의 발걸음이 또 다른 이에게 작은 길잡이가 되기를 바랍니다.
+              </p>
+              <p>
+                성지순례는 단순한 여행이 아니라,
+                <br />
+                신앙을 지켜낸 이들의 삶을 기억하고
+                <br />
+                오늘의 나를 조용히 돌아보는 시간이라고 생각합니다.
+              </p>
+              <p>
+                이 공간이 순례를 준비하는 분들에게는 작은 안내자가 되고,
+                <br />
+                순례를 마친 분들에게는 소중한 기억의 자리로 남으며,
+                <br />
+                다시 길을 떠나는 분들에게는 따뜻한 동반자가 되기를 바랍니다.
+              </p>
+              <p className="about-highlight">당신의 발걸음이 기도가 되고, 당신의 기록이 누군가의 길이 되기를 바랍니다.</p>
+
+              <h3>안내</h3>
+              <p>
+                성지 정보와 코스 정보는 가능한 한 정확하게 제공하고자 노력하고 있으나, 현장 사정에 따라 변경될 수 있습니다.
+                <br />
+                수정이 필요한 정보나 추가로 알려주실 내용이 있다면 아래 이메일로 편하게 알려주세요.
+              </p>
+              <p>
+                이메일: <a href="mailto:pilgrimage.alicia@gmail.com">pilgrimage.alicia@gmail.com</a>
+              </p>
+            </article>
+          </section>
+        </div>
+      ) : null}
+
       {expandedImage ? (
         <div className="image-modal" role="dialog" aria-modal="true" aria-label="인증 사진 크게 보기" onClick={() => setExpandedImage(undefined)}>
           <button className="image-modal-close" type="button" onClick={() => setExpandedImage(undefined)}>
@@ -1312,7 +1378,12 @@ export default function PilgrimageApp() {
         </div>
       ) : null}
 
-      <footer className="site-credit">-created by alicia (pilgrimage.alicia@gmail.com)-</footer>
+      <footer className="site-credit">
+        <button type="button" onClick={() => setShowAboutModal(true)}>
+          About Us
+        </button>
+        <span>-created by alicia (pilgrimage.alicia@gmail.com)-</span>
+      </footer>
     </main>
   );
 }
