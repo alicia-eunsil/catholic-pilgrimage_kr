@@ -1194,6 +1194,22 @@ textarea {
   color: var(--muted);
 }
 
+.kakao-info-window.selected {
+  min-width: 0;
+  padding: 6px 9px;
+  border: 1px solid rgba(79, 102, 141, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 20px rgba(16, 24, 40, 0.14);
+}
+
+.kakao-info-window.selected strong {
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 820;
+  white-space: nowrap;
+}
+
 .map-marker {
   position: absolute;
   width: 36px;

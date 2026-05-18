@@ -210,11 +210,16 @@ function AnimatedMetric({ value, suffix }: { value: number; suffix: string }) {
   );
 }
 
-function markerSvgDataUrl(category: ShrineCategory) {
+function markerSvgDataUrl(category: ShrineCategory, selected = false) {
   const color = markerColors[category];
+  const glow = selected
+    ? `<circle cx="17" cy="17" r="16" fill="${color.fill}" fill-opacity=".16"/>`
+    : "";
+  const strokeWidth = selected ? 2.8 : 2;
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="28" viewBox="0 0 34 42">
-      <path d="M17 41C13.2 35.7 4 25.6 4 16.6C4 9.1 9.8 3 17 3s13 6.1 13 13.6c0 9-9.2 19.1-13 24.4Z" fill="${color.fill}" stroke="${color.stroke}" stroke-width="2"/>
+      ${glow}
+      <path d="M17 41C13.2 35.7 4 25.6 4 16.6C4 9.1 9.8 3 17 3s13 6.1 13 13.6c0 9-9.2 19.1-13 24.4Z" fill="${color.fill}" stroke="${color.stroke}" stroke-width="${strokeWidth}"/>
       <circle cx="17" cy="16.5" r="6.2" fill="#fff" fill-opacity=".96"/>
       <path d="M17 10.4v12.2M11.8 15.2h10.4" stroke="${color.stroke}" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
@@ -1562,30 +1567,45 @@ function KakaoMapPanel({
 
     const bounds = new kakaoMaps.LatLngBounds();
     const markerImages = CATEGORY_FILTERS.reduce((images, category) => {
-      images[category] = new kakaoMaps.MarkerImage(
+      images.default[category] = new kakaoMaps.MarkerImage(
         markerSvgDataUrl(category),
         new kakaoMaps.Size(23, 28),
         { offset: new kakaoMaps.Point(11, 28) }
       );
+      images.selected[category] = new kakaoMaps.MarkerImage(
+        markerSvgDataUrl(category, true),
+        new kakaoMaps.Size(31, 38),
+        { offset: new kakaoMaps.Point(15, 38) }
+      );
       return images;
-    }, {} as Record<ShrineCategory, KakaoMarkerImage>);
+    }, { default: {}, selected: {} } as Record<"default" | "selected", Record<ShrineCategory, KakaoMarkerImage>>);
 
     mapShrines.forEach((shrine) => {
       const position = new kakaoMaps.LatLng(shrine.lat, shrine.lng);
       bounds.extend(position);
+      const isFocused = shrine.id === focusedShrineId;
 
       const marker = new kakaoMaps.Marker({
-        image: markerImages[shrine.category],
+        image: isFocused ? markerImages.selected[shrine.category] : markerImages.default[shrine.category],
         map,
         position
       });
       const infoWindow = new kakaoMaps.InfoWindow({
         content: `<div class="kakao-info-window"><strong>${escapeHtml(shrine.name)}</strong><span>${escapeHtml(shrine.category)}</span></div>`
       });
+      const selectedInfoWindow = isFocused
+        ? new kakaoMaps.InfoWindow({
+            content: `<div class="kakao-info-window selected"><strong>${escapeHtml(shrine.name)}</strong></div>`
+          })
+        : undefined;
 
       marker.setMap(map);
       markersRef.current.push(marker);
       infoWindowsRef.current.push(infoWindow);
+      if (selectedInfoWindow) {
+        selectedInfoWindow.open(map, marker);
+        infoWindowsRef.current.push(selectedInfoWindow);
+      }
 
       kakaoMaps.event.addListener(marker, "click", () => {
         const currentCenter = map.getCenter();
@@ -1594,7 +1614,11 @@ function KakaoMapPanel({
           level: map.getLevel()
         });
       });
-      kakaoMaps.event.addListener(marker, "mouseover", () => infoWindow.open(map, marker));
+      kakaoMaps.event.addListener(marker, "mouseover", () => {
+        if (!isFocused) {
+          infoWindow.open(map, marker);
+        }
+      });
       kakaoMaps.event.addListener(marker, "mouseout", () => infoWindow.close());
     });
 
@@ -1637,7 +1661,7 @@ function KakaoMapPanel({
       infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
       polylineRefs.current.forEach((polyline) => polyline.setMap(null));
     };
-  }, [courseRoutes, initialView, mapShrines, onSelectShrine, routeShrines, status]);
+  }, [courseRoutes, focusedShrineId, initialView, mapShrines, onSelectShrine, routeShrines, status]);
 
   useEffect(() => {
     if (status !== "ready" || !mapRef.current || !window.kakao?.maps || initialView) {
