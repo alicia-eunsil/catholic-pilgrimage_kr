@@ -41,6 +41,13 @@ declare global {
         Point: new (x: number, y: number) => KakaoPoint;
         Size: new (width: number, height: number) => KakaoSize;
         InfoWindow: new (options: { content: string }) => KakaoInfoWindow;
+        CustomOverlay: new (options: {
+          content: string;
+          map?: KakaoMap;
+          position: KakaoLatLng;
+          xAnchor?: number;
+          yAnchor?: number;
+        }) => KakaoCustomOverlay;
         Polyline: new (options: {
           path: KakaoLatLng[];
           strokeColor: string;
@@ -81,6 +88,9 @@ type KakaoPolyline = {
 type KakaoInfoWindow = {
   open: (map: KakaoMap, marker: KakaoMarker) => void;
   close: () => void;
+};
+type KakaoCustomOverlay = {
+  setMap: (map: KakaoMap | null) => void;
 };
 type KakaoLatLngBounds = {
   extend: (latLng: KakaoLatLng) => void;
@@ -1494,6 +1504,7 @@ function KakaoMapPanel({
   const mapRef = useRef<KakaoMap | null>(null);
   const markersRef = useRef<KakaoMarker[]>([]);
   const infoWindowsRef = useRef<KakaoInfoWindow[]>([]);
+  const selectedLabelRefs = useRef<KakaoCustomOverlay[]>([]);
   const polylineRefs = useRef<KakaoPolyline[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "missing-key" | "error">("loading");
 
@@ -1560,9 +1571,11 @@ function KakaoMapPanel({
 
     markersRef.current.forEach((marker) => marker.setMap(null));
     infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
+    selectedLabelRefs.current.forEach((overlay) => overlay.setMap(null));
     polylineRefs.current.forEach((polyline) => polyline.setMap(null));
     markersRef.current = [];
     infoWindowsRef.current = [];
+    selectedLabelRefs.current = [];
     polylineRefs.current = [];
 
     const bounds = new kakaoMaps.LatLngBounds();
@@ -1593,18 +1606,21 @@ function KakaoMapPanel({
       const infoWindow = new kakaoMaps.InfoWindow({
         content: `<div class="kakao-info-window"><strong>${escapeHtml(shrine.name)}</strong><span>${escapeHtml(shrine.category)}</span></div>`
       });
-      const selectedInfoWindow = isFocused
-        ? new kakaoMaps.InfoWindow({
-            content: `<div class="kakao-info-window selected"><strong>${escapeHtml(shrine.name)}</strong></div>`
+      const selectedLabel = isFocused
+        ? new kakaoMaps.CustomOverlay({
+            content: `<div class="kakao-selected-label"><strong>${escapeHtml(shrine.name)}</strong></div>`,
+            map,
+            position,
+            xAnchor: 0.5,
+            yAnchor: 2.9
           })
         : undefined;
 
       marker.setMap(map);
       markersRef.current.push(marker);
       infoWindowsRef.current.push(infoWindow);
-      if (selectedInfoWindow) {
-        selectedInfoWindow.open(map, marker);
-        infoWindowsRef.current.push(selectedInfoWindow);
+      if (selectedLabel) {
+        selectedLabelRefs.current.push(selectedLabel);
       }
 
       kakaoMaps.event.addListener(marker, "click", () => {
@@ -1659,6 +1675,7 @@ function KakaoMapPanel({
     return () => {
       markersRef.current.forEach((marker) => marker.setMap(null));
       infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
+      selectedLabelRefs.current.forEach((overlay) => overlay.setMap(null));
       polylineRefs.current.forEach((polyline) => polyline.setMap(null));
     };
   }, [courseRoutes, focusedShrineId, initialView, mapShrines, onSelectShrine, routeShrines, status]);
