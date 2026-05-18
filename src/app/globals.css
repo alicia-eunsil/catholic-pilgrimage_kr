@@ -940,21 +940,18 @@ h3 {
   text-align: center;
 }
 
-.site-credit button {
-  min-height: 28px;
-  border: 1px solid var(--line-strong);
-  border-radius: 8px;
-  padding: 0 10px;
-  background: #f8fafc;
+.site-credit-link {
+  border: 0;
+  padding: 0;
+  background: transparent;
   color: var(--muted);
   cursor: pointer;
   font-size: 12px;
   font-weight: 700;
+  text-decoration: underline;
 }
 
-.site-credit button:hover {
-  border-color: rgba(79, 102, 141, 0.22);
-  background: #eef3ff;
+.site-credit-link:hover {
   color: var(--accent-strong);
 }
 
@@ -1791,6 +1788,7 @@ textarea {
 .about-content p {
   margin: 0 0 12px;
   color: var(--muted);
+  font-family: "Chalkboard SE", "Marker Felt", "Arial Rounded MT Bold", "Apple SD Gothic Neo", sans-serif;
   font-size: 14px;
   line-height: 1.75;
 }

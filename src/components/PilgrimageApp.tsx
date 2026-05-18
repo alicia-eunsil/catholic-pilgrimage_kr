@@ -1335,7 +1335,7 @@ export default function PilgrimageApp() {
                 <br />
                 나의 순례 기록을 남길 수 있습니다.
                 <br />
-                또한 다른 순례자들의 기록을 함께 보며
+                또한, 다른 순례자들의 기록을 함께 보며
                 <br />
                 서로의 발걸음이 또 다른 이에게 작은 길잡이가 되기를 바랍니다.
               </p>
@@ -1379,10 +1379,10 @@ export default function PilgrimageApp() {
       ) : null}
 
       <footer className="site-credit">
-        <button type="button" onClick={() => setShowAboutModal(true)}>
+        <button type="button" className="site-credit-link" onClick={() => setShowAboutModal(true)}>
           About Us
         </button>
-        <span>-created by alicia (pilgrimage.alicia@gmail.com)-</span>
+        <span> // Created by Alicia</span>
       </footer>
     </main>
   );
