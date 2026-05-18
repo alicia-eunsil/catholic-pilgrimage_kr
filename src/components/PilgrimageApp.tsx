@@ -394,6 +394,8 @@ export default function PilgrimageApp() {
   const [recordViewMode, setRecordViewMode] = useState<RecordViewMode>("all");
   const [recordSortMode, setRecordSortMode] = useState<RecordSortMode>("latest");
   const [selectedRecordShrineId, setSelectedRecordShrineId] = useState<string | undefined>();
+  const [selectedCourseStopShrineId, setSelectedCourseStopShrineId] = useState<string | undefined>();
+  const [courseStopVisitPage, setCourseStopVisitPage] = useState(1);
   const [allRecordPage, setAllRecordPage] = useState(1);
   const [selectedShrineRecordPage, setSelectedShrineRecordPage] = useState(1);
   const [visitSaveStatus, setVisitSaveStatus] = useState<"idle" | "saving">("idle");
@@ -587,6 +589,18 @@ export default function PilgrimageApp() {
     () => allRecentVisits.filter((visit) => activeCourseShrineIds.has(visit.shrineId)),
     [activeCourseShrineIds, allRecentVisits]
   );
+  const selectedCourseStopShrine = selectedCourseStopShrineId
+    ? shrines.find((shrine) => shrine.id === selectedCourseStopShrineId)
+    : undefined;
+  const selectedCourseStopVisits = selectedCourseStopShrine
+    ? allRecentVisits.filter((visit) => visit.shrineId === selectedCourseStopShrine.id)
+    : [];
+  const courseStopVisitPageCount = Math.max(1, Math.ceil(selectedCourseStopVisits.length / VISITS_PER_PAGE));
+  const courseStopVisitPageSafe = Math.min(courseStopVisitPage, courseStopVisitPageCount);
+  const pagedCourseStopVisits = selectedCourseStopVisits.slice(
+    (courseStopVisitPageSafe - 1) * VISITS_PER_PAGE,
+    courseStopVisitPageSafe * VISITS_PER_PAGE
+  );
   const activeCourseVisitedShrineCount = new Set(activeCourseVisits.map((visit) => visit.shrineId)).size;
   const sortedShrineList = useMemo(() => {
     return [...shrines].sort((a, b) => {
@@ -663,6 +677,11 @@ export default function PilgrimageApp() {
   function openRelatedCourse(courseId: string) {
     setActiveCourseId(courseId);
     setActiveTab("route");
+  }
+
+  function openCourseStopVisits(shrineId: string) {
+    setSelectedCourseStopShrineId(shrineId);
+    setCourseStopVisitPage(1);
   }
 
   function requestLocation() {
@@ -973,7 +992,13 @@ export default function PilgrimageApp() {
                           <div className="course-stop-body">
                             <div className="course-stop-heading">
                               <strong>{shrine.name}</strong>
-                              <b>{visitCount}건</b>
+                              {visitCount > 0 ? (
+                                <button type="button" className="course-stop-visit-link" onClick={() => openCourseStopVisits(shrine.id)}>
+                                  {visitCount}건
+                                </button>
+                              ) : (
+                                <b>{visitCount}건</b>
+                              )}
                             </div>
                             <span>{shrine.diocese}</span>
                             <p>{shrine.address}</p>
@@ -1376,6 +1401,38 @@ export default function PilgrimageApp() {
             닫기
           </button>
           <img src={expandedImage} alt="인증 사진 확대" onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
+
+      {selectedCourseStopShrine ? (
+        <div className="list-modal" role="dialog" aria-modal="true" aria-label="성지 인증 기록" onClick={() => setSelectedCourseStopShrineId(undefined)}>
+          <section className="list-modal-panel" onClick={(event) => event.stopPropagation()}>
+            <div className="list-modal-header">
+              <div>
+                <strong>{selectedCourseStopShrine.name} 인증 기록</strong>
+                <span>{selectedCourseStopVisits.length}건</span>
+              </div>
+              <button onClick={() => setSelectedCourseStopShrineId(undefined)}>닫기</button>
+            </div>
+
+            {selectedCourseStopVisits.length === 0 ? (
+              <div className="empty-state compact">아직 인증 기록이 없습니다.</div>
+            ) : (
+              <>
+                <div className="visit-table">
+                  {pagedCourseStopVisits.map((visit) => (
+                    <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
+                  ))}
+                </div>
+                <RecordPagination
+                  label={`${selectedCourseStopShrine.name} 인증 기록 페이지`}
+                  page={courseStopVisitPageSafe}
+                  pageCount={courseStopVisitPageCount}
+                  onPageChange={setCourseStopVisitPage}
+                />
+              </>
+            )}
+          </section>
         </div>
       ) : null}
 

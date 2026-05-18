@@ -402,6 +402,23 @@ h3 {
   text-align: right;
 }
 
+.course-stop-visit-link {
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 760;
+  text-align: right;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.course-stop-visit-link:hover {
+  color: var(--accent-pressed);
+}
+
 .course-stop-body span {
   display: block;
   margin-top: 3px;
