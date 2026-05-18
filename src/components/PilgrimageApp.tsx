@@ -97,6 +97,42 @@ type RecordViewMode = "all" | "byShrine";
 type RecordSortMode = "latest" | "shrine";
 
 const courseColors = ["#2648bd", "#b7791f", "#b85c55", "#4f7fc4", "#6f7f5f"];
+const PILGRIMAGE_PRAYERS = [
+  {
+    title: "순례를 떠나면서 바치는 기도",
+    body: `자비로우신 주님,
+약속의 땅을 향하여 떠난
+믿음의 조상 아브라함과
+친척 엘리사벳을 돕기 위하여 길을 나선
+겸손과 순명의 여인 마리아의 발걸음을 인도하셨듯이
+지금 길을 떠나는 저(저희)를 돌보시고
+안전하게 지켜 주시어
+목적지까지 잘 도착할 수 있도록 이끌어 주소서.
+또한 주님께서 언제나 저(저희)와 함께 계심을 깨닫게 하시고
+길에서 얻는 기쁨과 어려움을 이웃과 함께 나누게 하시며
+하느님 나라에 대한 희망과 믿음, 사랑의 생활로
+참다운 그리스도인이 되게 하소서.
+우리 주 그리스도를 통하여 비나이다.
+아멘.`
+  },
+  {
+    title: "순례를 마치면서 바치는 기도",
+    body: `주님,
+오늘 저(저희)의 발걸음을 이끌어 주시고
+모든 일에 함께하여 주심에 감사하나이다.
+기뻤던 시간들, 힘들었던 순간들을
+주님께 봉헌하며 청하오니
+건강한 모습으로 집에 돌아가
+가족과 이웃에게 주님의 감사를 전하게 하소서.
+아울러 이 세상에 살면서도
+늘 영원을 향해 나아가는 지상의 나그네로서
+하느님 나라에 대한 굳은 믿음과 희망을 지니게 하시고
+이 순례의 끝에 주님께서 마련하신 사랑의 천상 잔치에
+기쁜 마음으로 참여하게 하소서.
+우리 주 그리스도를 통하여 비나이다.
+아멘.`
+  }
+] as const;
 
 function escapeHtml(value: string) {
   return value
@@ -349,6 +385,7 @@ export default function PilgrimageApp() {
   const [expandedImage, setExpandedImage] = useState<string | undefined>();
   const [introVisitPage, setIntroVisitPage] = useState(1);
   const [showShrineList, setShowShrineList] = useState(false);
+  const [showPrayerModal, setShowPrayerModal] = useState(false);
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
   const [activeCourseId, setActiveCourseId] = useState<string | undefined>();
@@ -792,6 +829,9 @@ export default function PilgrimageApp() {
       <aside className="info-side">
         <section className="screen">
           <div className="detail-topbar">
+            <button className="list-button subtle-list-button" onClick={() => setShowPrayerModal(true)}>
+              순례기도문
+            </button>
             <button className="list-button subtle-list-button" onClick={() => setShowShrineList(true)}>
               성지목록보기
             </button>
@@ -1222,6 +1262,29 @@ export default function PilgrimageApp() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </section>
+        </div>
+      ) : null}
+
+      {showPrayerModal ? (
+        <div className="list-modal" role="dialog" aria-modal="true" aria-label="순례 기도문" onClick={() => setShowPrayerModal(false)}>
+          <section className="list-modal-panel prayer-modal-panel" onClick={(event) => event.stopPropagation()}>
+            <div className="list-modal-header">
+              <div>
+                <strong>순례기도문</strong>
+                <span>{PILGRIMAGE_PRAYERS.length}편</span>
+              </div>
+              <button onClick={() => setShowPrayerModal(false)}>닫기</button>
+            </div>
+
+            <div className="prayer-list">
+              {PILGRIMAGE_PRAYERS.map((prayer) => (
+                <article key={prayer.title} className="prayer-card">
+                  <h3>{prayer.title}</h3>
+                  <p>{prayer.body}</p>
+                </article>
+              ))}
             </div>
           </section>
         </div>
