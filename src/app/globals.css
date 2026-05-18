@@ -1835,7 +1835,7 @@ textarea {
   margin-top: 8px;
   color: var(--subtle);
   font-size: 12px;
-  text-align: center;
+  text-align: right;
 }
 
 .shrine-table-wrap {

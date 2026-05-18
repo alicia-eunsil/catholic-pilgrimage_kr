@@ -1389,7 +1389,7 @@ export default function PilgrimageApp() {
               <p>
                 이메일: <a href="mailto:pilgrimage.alicia@gmail.com">pilgrimage.alicia@gmail.com</a>
               </p>
-              <p className="about-credit">Created by Alicia</p>
+              <p className="about-credit">- Created by Alicia -</p>
             </article>
           </section>
         </div>
