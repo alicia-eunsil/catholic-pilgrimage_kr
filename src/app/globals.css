@@ -1788,9 +1788,9 @@ textarea {
 .about-content p {
   margin: 0 0 12px;
   color: var(--muted);
-  font-family: "Chalkboard SE", "Marker Felt", "Arial Rounded MT Bold", "Apple SD Gothic Neo", sans-serif;
-  font-size: 14px;
-  line-height: 1.75;
+  font-family: "Comic Sans MS", "Bradley Hand", "Segoe Print", "Marker Felt", "Apple SD Gothic Neo", cursive;
+  font-size: 13px;
+  line-height: 1.68;
 }
 
 .about-content p:last-child {

@@ -1380,9 +1380,8 @@ export default function PilgrimageApp() {
 
       <footer className="site-credit">
         <button type="button" className="site-credit-link" onClick={() => setShowAboutModal(true)}>
-          About Us
+          About Us(Created by Alicia)
         </button>
-        <span> // Created by Alicia</span>
       </footer>
     </main>
   );
