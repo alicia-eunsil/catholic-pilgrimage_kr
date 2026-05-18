@@ -58,10 +58,16 @@ declare global {
   }
 }
 
-type KakaoLatLng = object;
+type KakaoLatLng = {
+  getLat: () => number;
+  getLng: () => number;
+};
 type KakaoMap = {
+  getCenter: () => KakaoLatLng;
+  getLevel: () => number;
   setBounds: (bounds: KakaoLatLngBounds) => void;
   setCenter: (latLng: KakaoLatLng) => void;
+  setLevel: (level: number) => void;
 };
 type KakaoMarker = {
   setMap: (map: KakaoMap | null) => void;
@@ -95,7 +101,12 @@ type CourseRoute = {
 };
 type RecordViewMode = "all" | "byShrine";
 type RecordSortMode = "latest" | "shrine";
+type MapViewState = {
+  center: LatLng;
+  level: number;
+};
 
+const EMPTY_COURSE_ROUTES: CourseRoute[] = [];
 const courseColors = ["#2648bd", "#b7791f", "#b85c55", "#4f7fc4", "#6f7f5f"];
 const PILGRIMAGE_PRAYERS = [
   {
@@ -391,6 +402,7 @@ export default function PilgrimageApp() {
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
   const [activeCourseId, setActiveCourseId] = useState<string | undefined>();
+  const [preservedMapView, setPreservedMapView] = useState<MapViewState | undefined>();
   const [recordViewMode, setRecordViewMode] = useState<RecordViewMode>("all");
   const [recordSortMode, setRecordSortMode] = useState<RecordSortMode>("latest");
   const [selectedRecordShrineId, setSelectedRecordShrineId] = useState<string | undefined>();
@@ -614,15 +626,17 @@ export default function PilgrimageApp() {
       return result * direction;
     });
   }, [shrineSortDirection, shrineSortKey]);
-  const handleSelectShrine = useCallback((shrine: Shrine) => {
+  const handleSelectShrine = useCallback((shrine: Shrine, mapView?: MapViewState) => {
     setFocusedShrineId(shrine.id);
     setVerifyShrineId(shrine.id);
     setIntroVisitPage(1);
+    setPreservedMapView(mapView);
     setActiveTab("map");
   }, []);
 
   function toggleCategory(category: ShrineCategory) {
     setActiveCourseId(undefined);
+    setPreservedMapView(undefined);
     setSelectedCategories((current) => {
       if (current.includes(category)) {
         return current.filter((item) => item !== category);
@@ -633,16 +647,19 @@ export default function PilgrimageApp() {
 
   function toggleAllCategories() {
     setActiveCourseId(undefined);
+    setPreservedMapView(undefined);
     setSelectedCategories((current) => (current.length === CATEGORY_FILTERS.length ? [] : CATEGORY_FILTERS));
   }
 
   function runSearch() {
     setActiveCourseId(undefined);
+    setPreservedMapView(undefined);
     setQuery(searchInput);
   }
 
   function resetSearch() {
     setActiveCourseId(undefined);
+    setPreservedMapView(undefined);
     setSearchInput("");
     setQuery("");
   }
@@ -842,7 +859,11 @@ export default function PilgrimageApp() {
           routeShrines={visibleRouteShrines}
           routeActive={courseMapActive}
           focusedShrineId={focusedShrineId}
-          onClearRoute={() => setActiveCourseId(undefined)}
+          initialView={preservedMapView}
+          onClearRoute={() => {
+            setActiveCourseId(undefined);
+            setPreservedMapView(undefined);
+          }}
           onSelectShrine={handleSelectShrine}
         />
       </section>
@@ -1449,8 +1470,9 @@ function KakaoMapPanel({
   shrines: mapShrines,
   routeShrines,
   routeActive,
-  courseRoutes = [],
+  courseRoutes = EMPTY_COURSE_ROUTES,
   focusedShrineId,
+  initialView,
   onClearRoute,
   onSelectShrine
 }: {
@@ -1459,8 +1481,9 @@ function KakaoMapPanel({
   routeActive: boolean;
   courseRoutes?: CourseRoute[];
   focusedShrineId: string;
+  initialView?: MapViewState;
   onClearRoute: () => void;
-  onSelectShrine: (shrine: Shrine) => void;
+  onSelectShrine: (shrine: Shrine, mapView?: MapViewState) => void;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<KakaoMap | null>(null);
@@ -1509,20 +1532,25 @@ function KakaoMapPanel({
 
     const kakaoMaps = window.kakao.maps;
     const centerShrine = mapShrines[0] ?? shrines[0];
-    const center = new kakaoMaps.LatLng(centerShrine.lat, centerShrine.lng);
+    const center = initialView
+      ? new kakaoMaps.LatLng(initialView.center.lat, initialView.center.lng)
+      : new kakaoMaps.LatLng(centerShrine.lat, centerShrine.lng);
 
     if (!mapRef.current) {
       mapRef.current = new kakaoMaps.Map(containerRef.current, {
         center,
-        level: 12
+        level: initialView?.level ?? 12
       });
-    } else {
-      mapRef.current.setCenter(center);
     }
 
     const map = mapRef.current;
     if (!map) {
       return;
+    }
+
+    if (initialView) {
+      map.setCenter(center);
+      map.setLevel(initialView.level);
     }
 
     markersRef.current.forEach((marker) => marker.setMap(null));
@@ -1559,7 +1587,13 @@ function KakaoMapPanel({
       markersRef.current.push(marker);
       infoWindowsRef.current.push(infoWindow);
 
-      kakaoMaps.event.addListener(marker, "click", () => onSelectShrine(shrine));
+      kakaoMaps.event.addListener(marker, "click", () => {
+        const currentCenter = map.getCenter();
+        onSelectShrine(shrine, {
+          center: { lat: currentCenter.getLat(), lng: currentCenter.getLng() },
+          level: map.getLevel()
+        });
+      });
       kakaoMaps.event.addListener(marker, "mouseover", () => infoWindow.open(map, marker));
       kakaoMaps.event.addListener(marker, "mouseout", () => infoWindow.close());
     });
@@ -1594,7 +1628,7 @@ function KakaoMapPanel({
       polylineRefs.current.push(polyline);
     });
 
-    if (mapShrines.length > 1) {
+    if (mapShrines.length > 1 && !initialView) {
       map.setBounds(bounds);
     }
 
@@ -1603,10 +1637,10 @@ function KakaoMapPanel({
       infoWindowsRef.current.forEach((infoWindow) => infoWindow.close());
       polylineRefs.current.forEach((polyline) => polyline.setMap(null));
     };
-  }, [courseRoutes, mapShrines, onSelectShrine, routeShrines, status]);
+  }, [courseRoutes, initialView, mapShrines, onSelectShrine, routeShrines, status]);
 
   useEffect(() => {
-    if (status !== "ready" || !mapRef.current || !window.kakao?.maps) {
+    if (status !== "ready" || !mapRef.current || !window.kakao?.maps || initialView) {
       return;
     }
 
@@ -1616,7 +1650,7 @@ function KakaoMapPanel({
     }
 
     mapRef.current.setCenter(new window.kakao.maps.LatLng(shrine.lat, shrine.lng));
-  }, [focusedShrineId, status]);
+  }, [focusedShrineId, initialView, status]);
 
   return (
     <div className="map-panel" aria-label="카카오 성지 지도">
