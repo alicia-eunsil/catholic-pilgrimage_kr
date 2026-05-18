@@ -1355,7 +1355,7 @@ export default function PilgrimageApp() {
               </p>
               <p className="about-highlight">당신의 발걸음이 기도가 되고, 당신의 기록이 누군가의 길이 되기를 바랍니다.</p>
 
-              <h3>안내</h3>
+              <h3 className="about-note-title">-안내-</h3>
               <p>
                 성지 정보와 코스 정보는 가능한 한 정확하게 제공하고자 노력하고 있으나, 현장 사정에 따라 변경될 수 있습니다.
                 <br />
