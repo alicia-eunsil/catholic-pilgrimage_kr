@@ -386,6 +386,7 @@ export default function PilgrimageApp() {
   const [introVisitPage, setIntroVisitPage] = useState(1);
   const [showShrineList, setShowShrineList] = useState(false);
   const [showPrayerModal, setShowPrayerModal] = useState(false);
+  const [activePrayerIndex, setActivePrayerIndex] = useState(0);
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
   const [activeCourseId, setActiveCourseId] = useState<string | undefined>();
@@ -829,11 +830,11 @@ export default function PilgrimageApp() {
       <aside className="info-side">
         <section className="screen">
           <div className="detail-topbar">
-            <button className="list-button subtle-list-button" onClick={() => setShowPrayerModal(true)}>
-              순례기도문
-            </button>
             <button className="list-button subtle-list-button" onClick={() => setShowShrineList(true)}>
               성지목록보기
+            </button>
+            <button className="list-button subtle-list-button" onClick={() => setShowPrayerModal(true)}>
+              순례기도문
             </button>
           </div>
           <ShrineDetail
@@ -1273,18 +1274,30 @@ export default function PilgrimageApp() {
             <div className="list-modal-header">
               <div>
                 <strong>순례기도문</strong>
-                <span>{PILGRIMAGE_PRAYERS.length}편</span>
               </div>
               <button onClick={() => setShowPrayerModal(false)}>닫기</button>
             </div>
 
-            <div className="prayer-list">
-              {PILGRIMAGE_PRAYERS.map((prayer) => (
-                <article key={prayer.title} className="prayer-card">
-                  <h3>{prayer.title}</h3>
-                  <p>{prayer.body}</p>
-                </article>
+            <div className="prayer-tabs" role="tablist" aria-label="순례 기도문 선택">
+              {PILGRIMAGE_PRAYERS.map((prayer, index) => (
+                <button
+                  key={prayer.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={activePrayerIndex === index}
+                  className={activePrayerIndex === index ? "active" : ""}
+                  onClick={() => setActivePrayerIndex(index)}
+                >
+                  {prayer.title}
+                </button>
               ))}
+            </div>
+
+            <div className="prayer-list">
+              <article className="prayer-card" role="tabpanel" aria-label={PILGRIMAGE_PRAYERS[activePrayerIndex].title}>
+                <h3>{PILGRIMAGE_PRAYERS[activePrayerIndex].title}</h3>
+                <p>{PILGRIMAGE_PRAYERS[activePrayerIndex].body}</p>
+              </article>
             </div>
           </section>
         </div>

@@ -1703,6 +1703,30 @@ textarea {
   padding: 16px 18px 18px;
 }
 
+.prayer-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 14px 18px 0;
+}
+
+.prayer-tabs button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 740;
+}
+
+.prayer-tabs button.active {
+  border-color: rgba(79, 102, 141, 0.34);
+  background: #eef3ff;
+  color: var(--accent-strong);
+}
+
 .prayer-card {
   display: grid;
   gap: 10px;
