@@ -798,7 +798,7 @@ h3 {
 .record-stat-card b {
   align-self: end;
   color: var(--accent-strong);
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 880;
   line-height: 1;
   letter-spacing: 0;
@@ -2252,8 +2252,23 @@ textarea {
     min-height: 96px;
   }
 
+  .record-stat-card strong {
+    font-size: 14px;
+  }
+
+  .record-stat-card span {
+    font-size: 12px;
+  }
+
   .record-stat-card b {
-    font-size: 24px;
+    font-size: 22px;
+  }
+
+  .trend-grid strong,
+  .diocese-bar-row strong,
+  .visit-row-meta strong,
+  .popular-shrine-title strong {
+    font-size: 13px;
   }
 
   .record-section-title {
@@ -2327,7 +2342,22 @@ textarea {
     padding: 11px 12px;
   }
 
+  .record-stat-card strong {
+    font-size: 15px;
+  }
+
+  .record-stat-card span {
+    font-size: 13px;
+  }
+
   .record-stat-card b {
-    font-size: 20px;
+    font-size: 18px;
+  }
+
+  .trend-grid strong,
+  .diocese-bar-row strong,
+  .visit-row-meta strong,
+  .popular-shrine-title strong {
+    font-size: 14px;
   }
 }
