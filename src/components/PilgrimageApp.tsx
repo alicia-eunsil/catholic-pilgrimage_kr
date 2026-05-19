@@ -117,6 +117,7 @@ type MapViewState = {
 };
 
 const EMPTY_COURSE_ROUTES: CourseRoute[] = [];
+const MOBILE_COURSE_PREVIEW_COUNT = 6;
 const courseColors = ["#2648bd", "#b7791f", "#b85c55", "#4f7fc4", "#6f7f5f"];
 const PILGRIMAGE_PRAYERS = [
   {
@@ -418,6 +419,7 @@ export default function PilgrimageApp() {
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
   const [activeCourseId, setActiveCourseId] = useState<string | undefined>();
   const [preservedMapView, setPreservedMapView] = useState<MapViewState | undefined>();
+  const [showAllMobileCourses, setShowAllMobileCourses] = useState(false);
   const [recordViewMode, setRecordViewMode] = useState<RecordViewMode>("all");
   const [recordSortMode, setRecordSortMode] = useState<RecordSortMode>("latest");
   const [selectedRecordShrineId, setSelectedRecordShrineId] = useState<string | undefined>();
@@ -508,6 +510,8 @@ export default function PilgrimageApp() {
     []
   );
   const shownCourseRoutes = activeCourseId ? courseRoutes.filter((course) => course.id === activeCourseId) : courseRoutes;
+  const visibleMobileCourseRoutes = showAllMobileCourses ? courseRoutes : courseRoutes.slice(0, MOBILE_COURSE_PREVIEW_COUNT);
+  const hiddenMobileCourseCount = Math.max(0, courseRoutes.length - MOBILE_COURSE_PREVIEW_COUNT);
   const courseMapShrines = uniqueShrines(shownCourseRoutes.flatMap((course) => course.shrines));
   const focusedShrine = shrines.find((shrine) => shrine.id === focusedShrineId) ?? shrines[0];
   const verifyShrine = shrines.find((shrine) => shrine.id === verifyShrineId) ?? shrines[0];
@@ -944,7 +948,7 @@ export default function PilgrimageApp() {
                     <div>
                       <strong>추천코스 지도</strong>
                     </div>
-                    <div className="course-filter-list">
+                    <div className="course-filter-list desktop-course-filter-list">
                       <button className={!activeCourseId ? "active" : ""} onClick={() => setActiveCourseId(undefined)}>
                         <i style={{ backgroundColor: "#9aa3af" }} />
                         전체 코스
@@ -959,6 +963,29 @@ export default function PilgrimageApp() {
                           {course.title}
                         </button>
                       ))}
+                    </div>
+                    <div className="mobile-course-filter-panel">
+                      <div className="mobile-course-filter-grid">
+                        <button className={!activeCourseId ? "active" : ""} onClick={() => setActiveCourseId(undefined)}>
+                          <i style={{ backgroundColor: "#9aa3af" }} />
+                          전체 코스
+                        </button>
+                        {visibleMobileCourseRoutes.map((course) => (
+                          <button
+                            key={course.id}
+                            className={activeCourseId === course.id ? "active" : ""}
+                            onClick={() => setActiveCourseId(course.id)}
+                          >
+                            <i style={{ backgroundColor: course.color }} />
+                            {course.title}
+                          </button>
+                        ))}
+                      </div>
+                      {hiddenMobileCourseCount > 0 ? (
+                        <button className="mobile-course-toggle" type="button" onClick={() => setShowAllMobileCourses((current) => !current)}>
+                          {showAllMobileCourses ? "코스 접기" : `전체 코스 보기 (${hiddenMobileCourseCount}개 더)`}
+                        </button>
+                      ) : null}
                     </div>
                   </div>
                 </aside>

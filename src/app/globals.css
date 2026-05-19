@@ -562,6 +562,10 @@ h3 {
     0 1px 2px rgba(15, 23, 42, 0.18);
 }
 
+.mobile-course-filter-panel {
+  display: none;
+}
+
 .records-panel {
   min-height: 0;
   overflow: hidden;
@@ -2207,16 +2211,67 @@ textarea {
     backdrop-filter: none;
   }
 
-  .course-filter-list {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 2px;
+  .desktop-course-filter-list {
+    display: none;
   }
 
-  .course-filter-list button {
+  .mobile-course-filter-panel {
+    display: grid;
+    gap: 10px;
+  }
+
+  .mobile-course-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .mobile-course-filter-grid button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 9px;
+    background: var(--surface);
+    color: var(--accent-strong);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 760;
+    text-align: left;
+  }
+
+  .mobile-course-filter-grid button.active {
+    border-color: rgba(79, 102, 141, 0.35);
+    background: #eef3ff;
+  }
+
+  .mobile-course-filter-grid button.active::after {
+    width: 7px;
+    height: 7px;
+    margin-left: auto;
+    border-radius: 999px;
+    background: var(--accent);
+    content: "";
+  }
+
+  .mobile-course-filter-grid i {
+    width: 10px;
+    height: 10px;
     flex: 0 0 auto;
-    white-space: nowrap;
+    border-radius: 999px;
+  }
+
+  .mobile-course-toggle {
+    min-height: 36px;
+    border: 1px solid rgba(79, 102, 141, 0.18);
+    border-radius: 8px;
+    background: #f8fafc;
+    color: var(--accent-strong);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 780;
   }
 
   .records-workspace {
