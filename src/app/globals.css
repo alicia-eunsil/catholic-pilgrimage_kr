@@ -2248,6 +2248,14 @@ textarea {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .record-stat-card {
+    min-height: 96px;
+  }
+
+  .record-stat-card b {
+    font-size: 24px;
+  }
+
   .record-section-title {
     grid-template-columns: 1fr;
     gap: 7px;
@@ -2312,5 +2320,14 @@ textarea {
 
   .record-stat-grid {
     grid-template-columns: 1fr;
+  }
+
+  .record-stat-card {
+    min-height: 78px;
+    padding: 11px 12px;
+  }
+
+  .record-stat-card b {
+    font-size: 20px;
   }
 }
