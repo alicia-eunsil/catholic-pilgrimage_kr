@@ -117,7 +117,7 @@ type MapViewState = {
 };
 
 const EMPTY_COURSE_ROUTES: CourseRoute[] = [];
-const MOBILE_COURSE_PREVIEW_COUNT = 6;
+const MOBILE_COURSE_PREVIEW_COUNT = 7;
 const courseColors = ["#2648bd", "#b7791f", "#b85c55", "#4f7fc4", "#6f7f5f"];
 const PILGRIMAGE_PRAYERS = [
   {
