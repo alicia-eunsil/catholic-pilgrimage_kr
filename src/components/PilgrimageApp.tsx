@@ -1024,21 +1024,6 @@ export default function PilgrimageApp() {
                     <span>GPS {focusedVerifiedVisitCount}건</span>
                   </div>
                   <p className="course-description">{focusedShrine.address}</p>
-                  {focusedShrineRelatedCourses.length > 0 ? (
-                    <div className="related-course-list">
-                      {focusedShrineRelatedCourses.map((course) => (
-                        <button key={course.id} className="related-course-item" onClick={() => setActiveCourseId(course.id)}>
-                          <div>
-                            <strong>{course.title}</strong>
-                            <small>{course.region} · {course.duration}</small>
-                          </div>
-                          <b>{course.shrineIds.length}곳</b>
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="empty-state compact">이 성지가 포함된 추천코스가 없습니다.</div>
-                  )}
                 </section>
               ) : null}
 
