@@ -420,6 +420,7 @@ export default function PilgrimageApp() {
   const [activeCourseId, setActiveCourseId] = useState<string | undefined>();
   const [preservedMapView, setPreservedMapView] = useState<MapViewState | undefined>();
   const [showAllMobileCourses, setShowAllMobileCourses] = useState(false);
+  const [showRouteShrineDetail, setShowRouteShrineDetail] = useState(false);
   const [recordViewMode, setRecordViewMode] = useState<RecordViewMode>("all");
   const [recordSortMode, setRecordSortMode] = useState<RecordSortMode>("latest");
   const [selectedRecordShrineId, setSelectedRecordShrineId] = useState<string | undefined>();
@@ -650,8 +651,11 @@ export default function PilgrimageApp() {
     setVerifyShrineId(shrine.id);
     setIntroVisitPage(1);
     setPreservedMapView(mapView);
+    if (activeTab === "route") {
+      setShowRouteShrineDetail(true);
+    }
     setActiveTab((current) => (current === "route" ? "route" : "map"));
-  }, []);
+  }, [activeTab]);
 
   function toggleCategory(category: ShrineCategory) {
     setActiveCourseId(undefined);
@@ -1006,35 +1010,37 @@ export default function PilgrimageApp() {
 
           <aside className="records-workspace">
             <section className={`course-detail-panel${activeCourse ? "" : " compact-overview"}`}>
-              <section className="insight-card">
-                <div className="record-section-title">
-                  <div>
-                    <strong>{focusedShrine.name}</strong>
+              {showRouteShrineDetail ? (
+                <section className="insight-card">
+                  <div className="record-section-title">
+                    <div>
+                      <strong>{focusedShrine.name}</strong>
+                    </div>
+                    <span>{focusedShrine.category}</span>
                   </div>
-                  <span>{focusedShrine.category}</span>
-                </div>
-                <div className="course-meta-row">
-                  <span>{focusedShrine.diocese}</span>
-                  <span>인증 {focusedVisits.length}건</span>
-                  <span>GPS {focusedVerifiedVisitCount}건</span>
-                </div>
-                <p className="course-description">{focusedShrine.address}</p>
-                {focusedShrineRelatedCourses.length > 0 ? (
-                  <div className="related-course-list">
-                    {focusedShrineRelatedCourses.map((course) => (
-                      <button key={course.id} className="related-course-item" onClick={() => setActiveCourseId(course.id)}>
-                        <div>
-                          <strong>{course.title}</strong>
-                          <small>{course.region} · {course.duration}</small>
-                        </div>
-                        <b>{course.shrineIds.length}곳</b>
-                      </button>
-                    ))}
+                  <div className="course-meta-row">
+                    <span>{focusedShrine.diocese}</span>
+                    <span>인증 {focusedVisits.length}건</span>
+                    <span>GPS {focusedVerifiedVisitCount}건</span>
                   </div>
-                ) : (
-                  <div className="empty-state compact">이 성지가 포함된 추천코스가 없습니다.</div>
-                )}
-              </section>
+                  <p className="course-description">{focusedShrine.address}</p>
+                  {focusedShrineRelatedCourses.length > 0 ? (
+                    <div className="related-course-list">
+                      {focusedShrineRelatedCourses.map((course) => (
+                        <button key={course.id} className="related-course-item" onClick={() => setActiveCourseId(course.id)}>
+                          <div>
+                            <strong>{course.title}</strong>
+                            <small>{course.region} · {course.duration}</small>
+                          </div>
+                          <b>{course.shrineIds.length}곳</b>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="empty-state compact">이 성지가 포함된 추천코스가 없습니다.</div>
+                  )}
+                </section>
+              ) : null}
 
               {activeCourse ? (
                 <>
