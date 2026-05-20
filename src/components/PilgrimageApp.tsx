@@ -653,6 +653,8 @@ export default function PilgrimageApp() {
     setPreservedMapView(mapView);
     if (activeTab === "route") {
       setShowRouteShrineDetail(true);
+      const matchedCourse = recommendedCourses.find((course) => course.shrineIds.includes(shrine.id));
+      setActiveCourseId(matchedCourse?.id);
     }
     setActiveTab((current) => (current === "route" ? "route" : "map"));
   }, [activeTab]);
@@ -1099,30 +1101,6 @@ export default function PilgrimageApp() {
                     </div>
                   </section>
                 </>
-              ) : showRouteShrineDetail ? (
-                <section className="insight-card">
-                  <div className="record-section-title">
-                    <div>
-                      <strong>이 성지가 포함된 코스</strong>
-                    </div>
-                    <span>{focusedShrineRelatedCourses.length}개 코스</span>
-                  </div>
-                  {focusedShrineRelatedCourses.length > 0 ? (
-                    <div className="related-course-list">
-                      {focusedShrineRelatedCourses.map((course) => (
-                        <button key={course.id} className="related-course-item" onClick={() => setActiveCourseId(course.id)}>
-                          <div>
-                            <strong>{course.title}</strong>
-                            <small>{course.region} · {course.duration}</small>
-                          </div>
-                          <b>{course.shrineIds.length}곳</b>
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="empty-state compact">이 성지가 포함된 추천코스가 없습니다.</div>
-                  )}
-                </section>
               ) : (
                 <section className="insight-card course-overview-card">
                   <div className="record-section-title">
