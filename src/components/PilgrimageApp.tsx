@@ -955,7 +955,13 @@ export default function PilgrimageApp() {
                       <strong>추천코스 지도</strong>
                     </div>
                     <div className="course-filter-list desktop-course-filter-list">
-                      <button className={!activeCourseId ? "active" : ""} onClick={() => setActiveCourseId(undefined)}>
+                      <button
+                        className={!activeCourseId ? "active" : ""}
+                        onClick={() => {
+                          setActiveCourseId(undefined);
+                          setShowRouteShrineDetail(false);
+                        }}
+                      >
                         <i style={{ backgroundColor: "#9aa3af" }} />
                         전체 코스
                       </button>
@@ -972,7 +978,13 @@ export default function PilgrimageApp() {
                     </div>
                     <div className="mobile-course-filter-panel">
                       <div className="mobile-course-filter-grid">
-                        <button className={!activeCourseId ? "active" : ""} onClick={() => setActiveCourseId(undefined)}>
+                        <button
+                          className={!activeCourseId ? "active" : ""}
+                          onClick={() => {
+                            setActiveCourseId(undefined);
+                            setShowRouteShrineDetail(false);
+                          }}
+                        >
                           <i style={{ backgroundColor: "#9aa3af" }} />
                           전체 코스
                         </button>
