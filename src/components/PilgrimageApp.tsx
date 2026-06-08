@@ -390,7 +390,9 @@ function VisitRecordCard({
       )}
       <div className="visit-card-body">
         <div className="visit-card-meta">
-          {visit.verified ? <span className="visit-card-badge verified">GPS 인증</span> : <span className="visit-card-badge visit-card-badge-empty" aria-hidden="true" />}
+          <span className={`visit-card-badge ${visit.verified ? "verified" : "unverified"}`}>
+            {visit.verified ? "GPS 인증" : "GPS 미인증"}
+          </span>
         </div>
         <div className="visit-card-date">
           <time>{visitedAt}</time>
