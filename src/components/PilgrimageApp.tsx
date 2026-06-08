@@ -368,6 +368,40 @@ function VisitRecordRow({
   );
 }
 
+function VisitRecordCard({
+  visit,
+  onImageOpen
+}: {
+  visit: VisitRecord;
+  onImageOpen: (url: string) => void;
+}) {
+  const visitedAt = formatDateTime(visit.visitedAt ?? visit.createdAt);
+
+  return (
+    <article className={`visit-card ${visit.photoUrl ? "has-photo" : ""}`}>
+      {visit.photoUrl ? (
+        <button className="visit-card-photo" type="button" onClick={() => onImageOpen(visit.photoUrl as string)}>
+          <img src={visit.photoUrl} alt={`${visit.nickname} 인증 사진`} loading="lazy" />
+        </button>
+      ) : (
+        <div className="visit-card-photo placeholder" aria-hidden="true">
+          <span>사진 없음</span>
+        </div>
+      )}
+      <div className="visit-card-body">
+        <div className="visit-card-meta">
+          <span className={`visit-card-badge ${visit.verified ? "verified" : ""}`}>
+            {visit.verified ? "GPS 인증" : "일반 인증"}
+          </span>
+          <time>{visitedAt}</time>
+        </div>
+        <p>{visit.comment || "감상평 없음"}</p>
+        <small>{visit.nickname}</small>
+      </div>
+    </article>
+  );
+}
+
 function RecordPagination({
   label,
   page,
@@ -1344,9 +1378,9 @@ export default function PilgrimageApp() {
                   <div className="empty-state compact">아직 인증 기록이 없습니다.</div>
                 ) : (
                   <>
-                    <div className="visit-table">
+                    <div className="visit-card-grid">
                       {pagedSelectedShrineRecords.map((visit) => (
-                        <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
+                        <VisitRecordCard key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
                       ))}
                     </div>
                     <RecordPagination

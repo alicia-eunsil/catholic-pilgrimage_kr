@@ -1515,6 +1515,115 @@ textarea {
   gap: 8px;
 }
 
+.visit-card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.visit-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--emboss);
+}
+
+.visit-card-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: #eef2f7;
+  cursor: zoom-in;
+}
+
+.visit-card-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.visit-card-photo.placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--subtle);
+  cursor: default;
+}
+
+.visit-card-photo.placeholder span {
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.visit-card-body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 10px 11px;
+}
+
+.visit-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.visit-card-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 999px;
+  background: #f8fafc;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 780;
+  white-space: nowrap;
+}
+
+.visit-card-badge.verified {
+  border-color: rgba(79, 102, 141, 0.22);
+  background: #eef3ff;
+  color: var(--accent-strong);
+}
+
+.visit-card-meta time {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.visit-card-body p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: #374151;
+  font-size: 12px;
+  line-height: 1.42;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  word-break: keep-all;
+}
+
+.visit-card-body small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
 .visit-row {
   display: grid;
   align-items: stretch;
@@ -2331,6 +2440,10 @@ textarea {
     gap: 7px;
   }
 
+  .visit-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .map-side {
     min-height: 620px;
   }
@@ -2414,5 +2527,9 @@ textarea {
   .visit-row-meta strong,
   .popular-shrine-title strong {
     font-size: 14px;
+  }
+
+  .visit-card-grid {
+    grid-template-columns: 1fr;
   }
 }
