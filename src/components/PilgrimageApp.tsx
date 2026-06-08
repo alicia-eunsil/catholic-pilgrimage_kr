@@ -393,6 +393,8 @@ function VisitRecordCard({
           <span className={`visit-card-badge ${visit.verified ? "verified" : ""}`}>
             {visit.verified ? "GPS 인증" : "일반 인증"}
           </span>
+        </div>
+        <div className="visit-card-date">
           <time>{visitedAt}</time>
         </div>
         <p>{visit.comment || "감상평 없음"}</p>
