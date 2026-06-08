@@ -12,7 +12,7 @@ const categoryStyle: Record<ShrineCategory, { color: string; bg: string }> = {
   순례지: { color: "#175cd3", bg: "#dbeafe" }
 };
 
-const VERIFY_RADIUS_METERS = 500;
+const VERIFY_RADIUS_METERS = 100;
 const MAX_VISIT_PHOTO_BYTES = 500 * 1024;
 const MAX_VISIT_PHOTO_EDGE = 1280;
 const SUPPORTED_VISIT_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
@@ -1038,6 +1038,29 @@ export default function PilgrimageApp() {
                     <span>GPS {focusedVerifiedVisitCount}건</span>
                   </div>
                   <p className="course-description">{focusedShrine.address}</p>
+                  {focusedVisits.length > 0 ? (
+                    <>
+                      <div className="record-section-title compact">
+                        <div>
+                          <strong>인증 세부기록</strong>
+                        </div>
+                        <span>{focusedVisits.length}건</span>
+                      </div>
+                      <div className="visit-table">
+                        {pagedFocusedVisits.map((visit) => (
+                          <VisitRecordRow key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
+                        ))}
+                      </div>
+                      {introVisitPageCount > 1 ? (
+                        <RecordPagination
+                          label={`${focusedShrine.name} 인증 기록 페이지`}
+                          page={introVisitPageSafe}
+                          pageCount={introVisitPageCount}
+                          onPageChange={setIntroVisitPage}
+                        />
+                      ) : null}
+                    </>
+                  ) : null}
                 </section>
               ) : null}
 
