@@ -1595,6 +1595,13 @@ textarea {
   color: var(--accent-strong);
 }
 
+.visit-card-badge-empty {
+  border-color: transparent;
+  background: transparent;
+  color: transparent;
+  pointer-events: none;
+}
+
 .visit-card-date {
   display: flex;
   justify-content: flex-end;

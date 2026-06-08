@@ -18,7 +18,7 @@ const MAX_VISIT_PHOTO_EDGE = 1280;
 const SUPPORTED_VISIT_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
 const KAKAO_MAP_SDK_ID = "kakao-map-sdk";
 const CATEGORY_FILTERS: ShrineCategory[] = ["성지", "순교사적지", "순례지"];
-const VISITS_PER_PAGE = 10;
+const VISITS_PER_PAGE = 20;
 const CATEGORY_ORDER: Record<ShrineCategory, number> = {
   성지: 0,
   순교사적지: 1,
@@ -390,9 +390,7 @@ function VisitRecordCard({
       )}
       <div className="visit-card-body">
         <div className="visit-card-meta">
-          <span className={`visit-card-badge ${visit.verified ? "verified" : ""}`}>
-            {visit.verified ? "GPS 인증" : "일반 인증"}
-          </span>
+          {visit.verified ? <span className="visit-card-badge verified">GPS 인증</span> : <span className="visit-card-badge visit-card-badge-empty" aria-hidden="true" />}
         </div>
         <div className="visit-card-date">
           <time>{visitedAt}</time>
