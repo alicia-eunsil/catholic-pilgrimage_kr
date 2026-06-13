@@ -1590,9 +1590,10 @@ textarea {
 }
 
 .visit-card-badge.verified {
-  border-color: rgba(79, 102, 141, 0.22);
-  background: #eef3ff;
-  color: var(--accent-strong);
+  border-color: rgba(79, 102, 141, 0.34);
+  background: #e7efff;
+  color: #38528a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .visit-card-badge.unverified {
