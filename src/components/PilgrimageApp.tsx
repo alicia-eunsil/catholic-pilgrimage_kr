@@ -1288,12 +1288,6 @@ export default function PilgrimageApp() {
           </div>
 
           <section className="insight-card">
-            <div className="record-section-title">
-              <div>
-                <strong>성지별 인증 통계</strong>
-              </div>
-              <span>상위 {topShrineDashboardStats.length}곳</span>
-            </div>
             {shrineRecordStats.length === 0 ? (
               <div className="empty-state compact">아직 집계할 인증 기록이 없습니다.</div>
             ) : (
@@ -1318,21 +1312,51 @@ export default function PilgrimageApp() {
                       ))}
                     </select>
                   </label>
+
+                  <div className="panel-heading sub" ref={selectedRecordSectionRef}>
+                    <strong>{selectedRecordLabel} 인증</strong>
+                    <span>{selectedShrineRecords.length}건</span>
+                  </div>
+                  {selectedShrineRecords.length === 0 ? (
+                    <div className="empty-state compact">아직 인증 기록이 없습니다.</div>
+                  ) : (
+                    <>
+                      <div className="visit-card-grid">
+                        {pagedSelectedShrineRecords.map((visit) => (
+                          <VisitRecordCard key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
+                        ))}
+                      </div>
+                      <RecordPagination
+                        label={`${selectedRecordLabel} 인증 페이지`}
+                        page={selectedShrineRecordPageSafe}
+                        pageCount={selectedShrineRecordPageCount}
+                        onPageChange={setSelectedShrineRecordPage}
+                      />
+                    </>
+                  )}
                 </section>
 
-                <div className="record-stat-grid">
-                  {topShrineDashboardStats.map(({ shrine, count }) => (
-                    <button
-                      key={shrine.id}
-                      className={`record-stat-card ${selectedRecordShrine?.id === shrine.id ? "active" : ""}`}
-                      onClick={() => selectRecordShrine(shrine.id, true)}
-                    >
-                      <strong>{shrine.name}</strong>
-                      <span>{shrine.diocese}</span>
-                      <b>{count}건</b>
-                    </button>
-                  ))}
-                </div>
+                <section className="record-mini-section">
+                  <div className="record-section-title">
+                    <div>
+                      <strong>성지별 인증 통계</strong>
+                    </div>
+                    <span>상위 {topShrineDashboardStats.length}곳</span>
+                  </div>
+                  <div className="record-stat-grid">
+                    {topShrineDashboardStats.map(({ shrine, count }) => (
+                      <button
+                        key={shrine.id}
+                        className={`record-stat-card ${selectedRecordShrine?.id === shrine.id ? "active" : ""}`}
+                        onClick={() => selectRecordShrine(shrine.id, true)}
+                      >
+                        <strong>{shrine.name}</strong>
+                        <span>{shrine.diocese}</span>
+                        <b>{count}건</b>
+                      </button>
+                    ))}
+                  </div>
+                </section>
 
                 <section className="record-mini-section">
                   <div className="record-section-title compact">
@@ -1381,28 +1405,6 @@ export default function PilgrimageApp() {
                     ))}
                   </div>
                 </section>
-
-                <div className="panel-heading sub" ref={selectedRecordSectionRef}>
-                  <strong>{selectedRecordLabel} 인증</strong>
-                  <span>{selectedShrineRecords.length}건</span>
-                </div>
-                {selectedShrineRecords.length === 0 ? (
-                  <div className="empty-state compact">아직 인증 기록이 없습니다.</div>
-                ) : (
-                  <>
-                    <div className="visit-card-grid">
-                      {pagedSelectedShrineRecords.map((visit) => (
-                        <VisitRecordCard key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
-                      ))}
-                    </div>
-                    <RecordPagination
-                      label={`${selectedRecordLabel} 인증 페이지`}
-                      page={selectedShrineRecordPageSafe}
-                      pageCount={selectedShrineRecordPageCount}
-                      onPageChange={setSelectedShrineRecordPage}
-                    />
-                  </>
-                )}
               </>
             )}
           </section>
