@@ -847,6 +847,7 @@ export default function PilgrimageApp() {
       setComment("");
       clearVisitPhoto();
       setActiveTab("records");
+      selectRecordShrine(verifyShrineId, true);
     } catch (error) {
       setVisitSyncError(error instanceof Error ? error.message : "방문 기록 저장 중 오류가 발생했습니다.");
     } finally {
@@ -1254,10 +1255,19 @@ export default function PilgrimageApp() {
             {visitSyncError ? <p className="notice compact">{visitSyncError}</p> : null}
 
             <button className="primary-action" onClick={submitVisit} disabled={visitSaveStatus === "saving"}>
-              {visitSaveStatus === "saving" ? "저장 중" : "방문 기록 남기기"}
+              방문 기록 남기기
             </button>
           </div>
         </section>
+      ) : null}
+
+      {visitSaveStatus === "saving" ? (
+        <div className="saving-modal" role="status" aria-live="polite" aria-label="인증 기록 중">
+          <div className="saving-modal-panel">
+            <span className="saving-spinner" aria-hidden="true" />
+            <strong>인증 기록중...</strong>
+          </div>
+        </div>
       ) : null}
 
       {activeTab === "records" ? (
