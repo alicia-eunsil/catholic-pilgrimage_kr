@@ -1298,6 +1298,28 @@ export default function PilgrimageApp() {
               <div className="empty-state compact">아직 집계할 인증 기록이 없습니다.</div>
             ) : (
               <>
+                <section className="record-pick-section">
+                  <div className="record-section-title compact">
+                    <div>
+                      <strong>전체 성지 선택</strong>
+                    </div>
+                    <span>직접 선택</span>
+                  </div>
+                  <label className="record-shrine-picker">
+                    <select
+                      value={selectedRecordShrineId ?? ""}
+                      onChange={(event) => selectRecordShrine(event.target.value)}
+                    >
+                      <option value="">전체</option>
+                      {recordShrineOptions.map((shrine) => (
+                        <option key={shrine.id} value={shrine.id}>
+                          {shrine.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </section>
+
                 <div className="record-stat-grid">
                   {topShrineDashboardStats.map(({ shrine, count }) => (
                     <button
@@ -1358,28 +1380,6 @@ export default function PilgrimageApp() {
                       </div>
                     ))}
                   </div>
-                </section>
-
-                <section className="record-pick-section">
-                  <div className="record-section-title compact">
-                    <div>
-                      <strong>전체 성지 선택</strong>
-                    </div>
-                    <span>직접 선택</span>
-                  </div>
-                  <label className="record-shrine-picker">
-                    <select
-                      value={selectedRecordShrineId ?? ""}
-                      onChange={(event) => selectRecordShrine(event.target.value)}
-                    >
-                      <option value="">전체</option>
-                      {recordShrineOptions.map((shrine) => (
-                        <option key={shrine.id} value={shrine.id}>
-                          {shrine.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
                 </section>
 
                 <div className="panel-heading sub" ref={selectedRecordSectionRef}>
