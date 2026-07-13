@@ -2542,9 +2542,25 @@ textarea {
     font-size: 25px;
   }
 
-  .chips,
-  .metric-grid {
+  .chips {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .metric-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .metric-grid div {
+    min-height: 58px;
+    padding: 8px 4px;
+  }
+
+  .metric-grid span {
+    font-size: 11px;
+  }
+
+  .metric-grid strong {
+    font-size: 18px;
   }
 
   .app-nav {
@@ -2558,20 +2574,20 @@ textarea {
   }
 
   .record-stat-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .record-stat-card {
-    min-height: 78px;
-    padding: 11px 12px;
+    min-height: 86px;
+    padding: 10px;
   }
 
   .record-stat-card strong {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .record-stat-card span {
-    font-size: 13px;
+    font-size: 11px;
   }
 
   .record-stat-card b {
