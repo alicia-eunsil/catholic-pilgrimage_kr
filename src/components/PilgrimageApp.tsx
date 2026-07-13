@@ -1221,7 +1221,7 @@ export default function PilgrimageApp() {
               <strong>{canVerify ? "인증 가능" : "위치 확인 필요"}</strong>
               <span>
                 {verifyDistanceMeters === undefined
-                  ? "현재 위치를 확인하면 500m 이내 여부를 계산합니다."
+                  ? `현재 위치를 확인하면 ${VERIFY_RADIUS_METERS.toLocaleString()}m 이내 여부를 계산합니다.`
                   : `현재 위치와 ${verifyDistanceMeters.toLocaleString()}m 거리입니다.`}
               </span>
             </div>
