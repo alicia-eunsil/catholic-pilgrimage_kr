@@ -866,7 +866,7 @@ export default function PilgrimageApp() {
         <nav className="app-nav" aria-label="주요 화면">
           <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>추천코스</button>
           <button className={activeTab === "map" ? "active" : ""} onClick={() => setActiveTab("map")}>성지지도</button>
-          <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>인증기록</button>
+          <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>순례기록</button>
           <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>방문인증</button>
         </nav>
       </header>
