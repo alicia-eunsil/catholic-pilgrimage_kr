@@ -17,6 +17,20 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko">
+      <head>
+        <Script
+          id="google-analytics-script"
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-58FE08FHST"
+          strategy="beforeInteractive"
+        />
+        <Script id="google-analytics-config" strategy="beforeInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-58FE08FHST');`}
+        </Script>
+      </head>
       <body>
         <noscript>
           <iframe
