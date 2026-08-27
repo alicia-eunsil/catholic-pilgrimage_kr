@@ -1570,6 +1570,7 @@ textarea {
 
 .visit-card-shrine {
   overflow: hidden;
+  min-width: 0;
   color: var(--ink);
   font-size: 13px;
   font-weight: 830;
@@ -1579,7 +1580,8 @@ textarea {
 }
 
 .visit-card-meta {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
   min-width: 0;

@@ -391,8 +391,8 @@ function VisitRecordCard({
         </div>
       )}
       <div className="visit-card-body">
-        {shrineLabel ? <strong className="visit-card-shrine">{shrineLabel}</strong> : null}
         <div className="visit-card-meta">
+          {shrineLabel ? <strong className="visit-card-shrine">{shrineLabel}</strong> : null}
           <span className={`visit-card-badge ${visit.verified ? "verified" : "unverified"}`}>
             {visit.verified ? "GPS 인증" : "GPS 미인증"}
           </span>
