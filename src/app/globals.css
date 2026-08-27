@@ -1568,6 +1568,16 @@ textarea {
   padding: 10px 10px 11px;
 }
 
+.visit-card-shrine {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 830;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .visit-card-meta {
   display: flex;
   align-items: center;

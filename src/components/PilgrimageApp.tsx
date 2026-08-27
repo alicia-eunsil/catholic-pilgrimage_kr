@@ -370,9 +370,11 @@ function VisitRecordRow({
 
 function VisitRecordCard({
   visit,
+  shrineLabel,
   onImageOpen
 }: {
   visit: VisitRecord;
+  shrineLabel?: string;
   onImageOpen: (url: string) => void;
 }) {
   const visitedAt = formatDateTime(visit.visitedAt ?? visit.createdAt);
@@ -389,6 +391,7 @@ function VisitRecordCard({
         </div>
       )}
       <div className="visit-card-body">
+        {shrineLabel ? <strong className="visit-card-shrine">{shrineLabel}</strong> : null}
         <div className="visit-card-meta">
           <span className={`visit-card-badge ${visit.verified ? "verified" : "unverified"}`}>
             {visit.verified ? "GPS 인증" : "GPS 미인증"}
@@ -1323,7 +1326,12 @@ export default function PilgrimageApp() {
                     <>
                       <div className="visit-card-grid">
                         {pagedSelectedShrineRecords.map((visit) => (
-                          <VisitRecordCard key={visit.id} visit={visit} onImageOpen={setExpandedImage} />
+                          <VisitRecordCard
+                            key={visit.id}
+                            visit={visit}
+                            shrineLabel={shrines.find((shrine) => shrine.id === visit.shrineId)?.name ?? "성지"}
+                            onImageOpen={setExpandedImage}
+                          />
                         ))}
                       </div>
                       <RecordPagination
