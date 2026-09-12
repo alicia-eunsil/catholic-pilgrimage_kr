@@ -19,8 +19,8 @@ export const shrines: Shrine[] = [
     diocese: "대구대교구",
     address: "경상북도 칠곡군 왜관읍 가실1길 1",
     region: "경상북",
-    lat: 35.9368166,
-    lng: 128.4049226
+    lat: 35.9366187,
+    lng: 128.4053528
   },
   {
     id: "가톨릭대학교-성신교정-순례지",
@@ -39,8 +39,8 @@ export const shrines: Shrine[] = [
     diocese: "광주대교구",
     address: "전라남도 목포시 노송길 35",
     region: "전라남",
-    lat: 34.7997099,
-    lng: 126.3858908
+    lat: 34.7995399,
+    lng: 126.3860181
   },
   {
     id: "가회동-성당-순례지",
@@ -359,8 +359,8 @@ export const shrines: Shrine[] = [
     diocese: "광주대교구",
     address: "전라남도 나주시 박정길 3 (산정동)",
     region: "전라남",
-    lat: 35.0361410,
-    lng: 126.7146839
+    lat: 35.0361396,
+    lng: 126.7146838
   },
   {
     id: "남방제성지",
@@ -440,7 +440,7 @@ export const shrines: Shrine[] = [
     address: "인천광역시 중구 우현로50번길 2 (답동)",
     region: "인천",
     lat: 37.4715250,
-    lng: 126.6298560
+    lng: 126.6298559
   },
   {
     id: "당고개-순교성지",
@@ -747,10 +747,10 @@ export const shrines: Shrine[] = [
     name: "서짓골 성지",
     category: "순교사적지",
     diocese: "대전교구",
-    address: "충청남도 보령시 미산면 보령호로 238",
+    address: "충청남도 보령시 미산면 평라리 438-2",
     region: "충청남",
-    lat: 36.2311152,
-    lng: 126.6583996
+    lat: 36.2328876,
+    lng: 126.6574655
   },
   {
     id: "서천교순교터",
@@ -819,8 +819,8 @@ export const shrines: Shrine[] = [
     diocese: "인천교구",
     address: "인천광역시 동구 박문로 1 (송림동)",
     region: "인천",
-    lat: 37.4706891,
-    lng: 126.6518396
+    lat: 37.4707090,
+    lng: 126.6518702
   },
   {
     id: "성모당",
@@ -879,8 +879,8 @@ export const shrines: Shrine[] = [
     diocese: "수원교구",
     address: "경기도 용인시 수지구 동천로437번길 67",
     region: "경기",
-    lat: 37.3442395,
-    lng: 127.0524998
+    lat: 37.3442404,
+    lng: 127.0524991
   },
   {
     id: "솔뫼성지",
@@ -899,8 +899,8 @@ export const shrines: Shrine[] = [
     diocese: "수원교구",
     address: "경기도 안양시 만안구 병목안로 408",
     region: "경기",
-    lat: 37.3702390,
-    lng: 126.9053965
+    lat: 37.3702505,
+    lng: 126.9053957
   },
   {
     id: "수리치골-성모성지",
@@ -1089,8 +1089,8 @@ export const shrines: Shrine[] = [
     diocese: "광주대교구",
     address: "전라남도 영광군 영광읍 중앙로2길 40",
     region: "전라남",
-    lat: 35.2727211,
-    lng: 126.5140028
+    lat: 35.2727151,
+    lng: 126.5140100
   },
   {
     id: "오륜대-순교자-성지",
@@ -1309,8 +1309,8 @@ export const shrines: Shrine[] = [
     diocese: "인천교구",
     address: "인천광역시 중구 제물량로 240 (항동)",
     region: "인천",
-    lat: 37.4735584,
-    lng: 126.6185404
+    lat: 37.4735361,
+    lng: 126.6185387
   },
   {
     id: "조씨-형제-순교자-묘",
@@ -1349,8 +1349,8 @@ export const shrines: Shrine[] = [
     diocese: "대구대교구",
     address: "대구광역시 중구 서성로 10 (계산동2가)",
     region: "대구",
-    lat: 35.8733228,
-    lng: 128.5870631
+    lat: 35.8679374,
+    lng: 128.5878503
   },
   {
     id: "죽림굴-신앙-사적지",
@@ -1579,7 +1579,7 @@ export const shrines: Shrine[] = [
     diocese: "대전교구",
     address: "충청남도 서산시 해미면 성지1로 13",
     region: "충청남",
-    lat: 36.7128749,
+    lat: 36.7128642,
     lng: 126.5377472
   },
   {
