@@ -407,6 +407,55 @@ function VisitRecordCard({
   );
 }
 
+function HomeVisitDialog({ visit, onClose }: { visit: VisitRecord; onClose: () => void }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const shrine = shrines.find((item) => item.id === visit.shrineId);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const previousOverflow = document.body.style.overflow;
+    dialog?.showModal();
+    document.body.style.overflow = "hidden";
+    return () => {
+      dialog?.close();
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  return (
+    <dialog
+      ref={dialogRef}
+      className="home-visit-dialog"
+      aria-labelledby="home-visit-title"
+      onCancel={(event) => { event.preventDefault(); onClose(); }}
+      onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
+    >
+      <div className="list-modal-header">
+        <div>
+          <strong id="home-visit-title">{shrine?.name ?? "성지"}</strong>
+          <span>순례기록</span>
+        </div>
+        <button type="button" autoFocus onClick={onClose}>닫기</button>
+      </div>
+      <div className="home-visit-dialog-content">
+        {visit.photoUrl ? (
+          <img className="home-visit-dialog-photo" src={visit.photoUrl} alt={`${shrine?.name ?? "성지"} 방문 사진`} />
+        ) : <div className="home-visit-dialog-empty">등록된 사진이 없습니다.</div>}
+        <div className="home-visit-dialog-record">
+          <span className={`visit-card-badge ${visit.verified ? "verified" : "unverified"}`}>
+            {visit.verified ? "GPS 인증" : "GPS 미인증"}
+          </span>
+          <dl>
+            <div><dt>방문일시</dt><dd>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</dd></div>
+            <div><dt>작성자</dt><dd>{visit.nickname}</dd></div>
+          </dl>
+          <p>{visit.comment || "감상평 없음"}</p>
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
 function RecordPagination({
   label,
   page,
@@ -449,6 +498,7 @@ export default function PilgrimageApp() {
   const [visitPhotoPreview, setVisitPhotoPreview] = useState("");
   const [photoInputKey, setPhotoInputKey] = useState(0);
   const [expandedImage, setExpandedImage] = useState<string | undefined>();
+  const [selectedHomeVisit, setSelectedHomeVisit] = useState<VisitRecord | undefined>();
   const [introVisitPage, setIntroVisitPage] = useState(1);
   const [showShrineList, setShowShrineList] = useState(false);
   const [showPrayerModal, setShowPrayerModal] = useState(false);
@@ -1013,7 +1063,7 @@ export default function PilgrimageApp() {
                 {homeVisits.map((visit) => {
                   const name = shrines.find((shrine) => shrine.id === visit.shrineId)?.name ?? "성지";
                   return (
-                    <button type="button" className="home-visit" key={visit.id} onClick={() => openHomeRecords(visit.shrineId)}>
+                    <button type="button" className="home-visit" key={visit.id} aria-haspopup="dialog" onClick={() => setSelectedHomeVisit(visit)}>
                       {visit.photoUrl ? (
                         <img className="home-visit-photo" src={visit.photoUrl} alt={`${name} 방문 사진`} loading="lazy" />
                       ) : <div className="home-visit-photo home-photo-empty">사진 없음</div>}
@@ -1616,6 +1666,8 @@ export default function PilgrimageApp() {
           </section>
         </div>
       ) : null}
+
+      {selectedHomeVisit ? <HomeVisitDialog visit={selectedHomeVisit} onClose={() => setSelectedHomeVisit(undefined)} /> : null}
 
       {expandedImage ? (
         <div className="image-modal" role="dialog" aria-modal="true" aria-label="인증 사진 크게 보기" onClick={() => setExpandedImage(undefined)}>
