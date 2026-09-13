@@ -433,11 +433,11 @@ function HomeVisitDialog({ visit, onClose }: { visit: VisitRecord; onClose: () =
       <div className="list-modal-header">
         <div>
           <strong id="home-visit-title">{shrine?.name ?? "성지"}</strong>
-          <span>순례기록</span>
         </div>
         <button type="button" autoFocus onClick={onClose}>닫기</button>
       </div>
       <div className="home-visit-dialog-content">
+        <p className="home-visit-dialog-comment">{visit.comment || "등록된 한줄기록이 없습니다."}</p>
         {visit.photoUrl ? (
           <img className="home-visit-dialog-photo" src={visit.photoUrl} alt={`${shrine?.name ?? "성지"} 방문 사진`} />
         ) : <div className="home-visit-dialog-empty">등록된 사진이 없습니다.</div>}
@@ -449,7 +449,6 @@ function HomeVisitDialog({ visit, onClose }: { visit: VisitRecord; onClose: () =
             <div><dt>방문일시</dt><dd>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</dd></div>
             <div><dt>작성자</dt><dd>{visit.nickname}</dd></div>
           </dl>
-          <p>{visit.comment || "감상평 없음"}</p>
         </div>
       </div>
     </dialog>

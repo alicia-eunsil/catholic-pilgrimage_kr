@@ -1994,8 +1994,10 @@ textarea {
   margin: 0;
 }
 
-.home-visit-dialog-record p {
-  margin: 16px 0 0;
+.home-visit-dialog-comment {
+  margin: 0;
+  padding: 16px 18px;
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
   line-height: 1.7;
   font-size: 16px;
