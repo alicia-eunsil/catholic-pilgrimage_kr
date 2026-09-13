@@ -673,6 +673,23 @@ export default function PilgrimageApp() {
     courseStopVisitPageSafe * VISITS_PER_PAGE
   );
   const activeCourseVisitedShrineCount = new Set(activeCourseVisits.map((visit) => visit.shrineId)).size;
+  const homeVisits = useMemo(() => {
+    const candidates = activeCourseId ? activeCourseVisits : allRecentVisits;
+    const seen = new Set<string>();
+    const distinct = candidates.filter((visit) => {
+      if (seen.has(visit.shrineId)) return false;
+      seen.add(visit.shrineId);
+      return true;
+    });
+    const selected = distinct.slice(0, 4);
+    const selectedIds = new Set(selected.map((visit) => visit.id));
+    return [...selected, ...candidates.filter((visit) => !selectedIds.has(visit.id))].slice(0, 4);
+  }, [activeCourseId, activeCourseVisits, allRecentVisits]);
+
+  function openHomeRecords(shrineId = "") {
+    setActiveTab("records");
+    selectRecordShrine(shrineId, Boolean(shrineId));
+  }
   const sortedShrineList = useMemo(() => {
     return [...shrines].sort((a, b) => {
       const direction = shrineSortDirection === "asc" ? 1 : -1;
@@ -867,7 +884,7 @@ export default function PilgrimageApp() {
           <p>전국 성지 코스를 살펴보고 방문기록을 쌓아보세요.</p>
         </div>
         <nav className="app-nav" aria-label="주요 화면">
-          <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>추천코스</button>
+          <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>순례홈</button>
           <button className={activeTab === "map" ? "active" : ""} onClick={() => setActiveTab("map")}>성지지도</button>
           <button className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>순례기록</button>
           <button className={activeTab === "verify" ? "active" : ""} onClick={() => setActiveTab("verify")}>방문인증</button>
@@ -985,7 +1002,35 @@ export default function PilgrimageApp() {
       ) : null}
 
       {activeTab === "route" ? (
-        <section className="course-dashboard">
+        <section className="course-dashboard pilgrimage-home">
+          <section className="home-recent">
+            <div className="record-section-title">
+              <strong>{activeCourse ? "코스 순례기록" : "최근 순례기록"}</strong>
+              <button type="button" className="course-stop-visit-link" onClick={() => openHomeRecords()}>전체보기</button>
+            </div>
+            {homeVisits.length > 0 ? (
+              <div className="home-visit-grid">
+                {homeVisits.map((visit) => {
+                  const name = shrines.find((shrine) => shrine.id === visit.shrineId)?.name ?? "성지";
+                  return (
+                    <button type="button" className="home-visit" key={visit.id} onClick={() => openHomeRecords(visit.shrineId)}>
+                      {visit.photoUrl ? (
+                        <img className="home-visit-photo" src={visit.photoUrl} alt={`${name} 방문 사진`} loading="lazy" />
+                      ) : <div className="home-visit-photo home-photo-empty">사진 없음</div>}
+                      <div className="home-visit-body">
+                        <div className="visit-card-meta">
+                          <strong className="visit-card-shrine" title={name}>{name}</strong>
+                          <span className={`visit-card-badge ${visit.verified ? "verified" : "unverified"}`}>{visit.verified ? "GPS 인증" : "GPS 미인증"}</span>
+                        </div>
+                        <p>{visit.comment || "감상평 없음"}</p>
+                        <time>{formatShortDate(visit.visitedAt ?? visit.createdAt)}</time>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : <div className="empty-state compact">{activeCourse ? "이 코스에는 아직 순례기록이 없습니다." : "아직 순례기록이 없습니다."}</div>}
+          </section>
           <section className="course-map-workspace">
             <div className="course-map-card">
               <div className="course-map-shell">
@@ -1062,7 +1107,7 @@ export default function PilgrimageApp() {
             </div>
           </section>
 
-          <aside className="records-workspace">
+          <aside className="records-workspace home-course-details">
             <section className={`course-detail-panel${activeCourse ? "" : " compact-overview"}`}>
               {showRouteShrineDetail ? (
                 <section className="insight-card">
@@ -1205,6 +1250,22 @@ export default function PilgrimageApp() {
               )}
             </section>
           </aside>
+          {trendingShrineRecordStats.length > 0 ? (
+            <section className="home-trending">
+              <div className="record-section-title">
+                <strong>최근 뜨는 성지</strong>
+                <span>{recentShrineRecordStats.length > 0 ? "최근 7일" : "최근 인증순"}</span>
+              </div>
+              <div className="trend-grid">
+                {trendingShrineRecordStats.map(({ shrine, recentCount, count }) => (
+                  <button type="button" key={shrine.id} onClick={() => openHomeRecords(shrine.id)}>
+                    <strong>{shrine.name}</strong>
+                    <span>{recentCount > 0 ? `최근 7일 ${recentCount}건` : `전체 인증 ${count}건`}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          ) : null}
         </section>
       ) : null}
 
