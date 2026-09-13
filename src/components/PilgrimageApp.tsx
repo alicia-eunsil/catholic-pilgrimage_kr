@@ -1250,22 +1250,6 @@ export default function PilgrimageApp() {
               )}
             </section>
           </aside>
-          {trendingShrineRecordStats.length > 0 ? (
-            <section className="home-trending">
-              <div className="record-section-title">
-                <strong>최근 뜨는 성지</strong>
-                <span>{recentShrineRecordStats.length > 0 ? "최근 7일" : "최근 인증순"}</span>
-              </div>
-              <div className="trend-grid">
-                {trendingShrineRecordStats.map(({ shrine, recentCount, count }) => (
-                  <button type="button" key={shrine.id} onClick={() => openHomeRecords(shrine.id)}>
-                    <strong>{shrine.name}</strong>
-                    <span>{recentCount > 0 ? `최근 7일 ${recentCount}건` : `전체 인증 ${count}건`}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-          ) : null}
         </section>
       ) : null}
 

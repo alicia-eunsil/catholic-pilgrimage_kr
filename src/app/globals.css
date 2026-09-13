@@ -273,8 +273,7 @@ h3 {
   min-height: 480px;
 }
 
-.pilgrimage-home > .home-course-details,
-.home-trending {
+.pilgrimage-home > .home-course-details {
   grid-column: 1 / -1;
   min-width: 0;
 }
