@@ -148,6 +148,38 @@ h3 {
   line-height: 1.35;
 }
 
+.header-guide-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.usage-guide-button {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  color: var(--accent-strong);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.usage-guide-button:hover {
+  border-color: var(--accent);
+}
+
+.usage-guide-dialog .home-visit-dialog-header {
+  justify-content: space-between;
+}
+
+.usage-guide-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .app-nav {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

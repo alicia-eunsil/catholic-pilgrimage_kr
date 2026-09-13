@@ -407,6 +407,45 @@ function VisitRecordCard({
   );
 }
 
+function UsageGuideDialog({ onClose }: { onClose: () => void }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const previousOverflow = document.body.style.overflow;
+    dialog?.showModal();
+    document.body.style.overflow = "hidden";
+    return () => {
+      dialog?.close();
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  return (
+    <dialog
+      ref={dialogRef}
+      className="home-visit-dialog usage-guide-dialog"
+      aria-labelledby="usage-guide-title"
+      onCancel={(event) => { event.preventDefault(); onClose(); }}
+      onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
+    >
+      <div className="home-visit-dialog-header">
+        <strong id="usage-guide-title">이용안내</strong>
+        <button type="button" autoFocus onClick={onClose}>닫기</button>
+      </div>
+      <div className="home-visit-dialog-content">
+        <img
+          className="usage-guide-image"
+          src="/images/usage-guide-autumn.png"
+          width={1024}
+          height={1536}
+          alt="성지GO 이용안내. 첫 화면에서 추천코스와 최근 순례기록을 보고, 성지지도에서 위치와 주소를 확인하세요. 방문인증에서 성지를 선택하고 현재 위치를 확인한 후 사진과 한줄소감을 남기세요. 순례기록에서 다른 순례자들의 사진과 소감을 볼 수 있습니다. 위치 확인이 안 되면 휴대폰과 브라우저의 위치 권한을 확인하고 야외에서 다시 시도하세요. 등록 좌표와 현재 위치의 차이로 인증이 어려울 수 있습니다."
+        />
+      </div>
+    </dialog>
+  );
+}
+
 function HomeVisitDialog({ visit, onClose }: { visit: VisitRecord; onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const shrine = shrines.find((item) => item.id === visit.shrineId);
@@ -500,6 +539,7 @@ export default function PilgrimageApp() {
   const [showShrineList, setShowShrineList] = useState(false);
   const [showPrayerModal, setShowPrayerModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
+  const [showUsageGuide, setShowUsageGuide] = useState(false);
   const [activePrayerIndex, setActivePrayerIndex] = useState(0);
   const [shrineSortKey, setShrineSortKey] = useState<ShrineSortKey>("diocese");
   const [shrineSortDirection, setShrineSortDirection] = useState<SortDirection>("asc");
@@ -926,7 +966,10 @@ export default function PilgrimageApp() {
     <main className="app-shell">
       <header className="app-header">
         <div>
-          <p className="eyebrow">✝️ 한국 천주교 성지순례</p>
+          <p className="eyebrow header-guide-row">
+            <span>✝️ 한국 천주교 성지순례</span>
+            <button type="button" className="usage-guide-button" aria-haspopup="dialog" onClick={() => setShowUsageGuide(true)}>이용안내</button>
+          </p>
           <h1>성지GO</h1>
           <p>전국 성지 코스를 살펴보고 방문기록을 쌓아보세요.</p>
         </div>
@@ -1664,6 +1707,7 @@ export default function PilgrimageApp() {
         </div>
       ) : null}
 
+      {showUsageGuide ? <UsageGuideDialog onClose={() => setShowUsageGuide(false)} /> : null}
       {selectedHomeVisit ? <HomeVisitDialog visit={selectedHomeVisit} onClose={() => setSelectedHomeVisit(undefined)} /> : null}
 
       {expandedImage ? (
