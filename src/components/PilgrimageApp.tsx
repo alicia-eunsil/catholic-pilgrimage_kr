@@ -430,9 +430,16 @@ function HomeVisitDialog({ visit, onClose }: { visit: VisitRecord; onClose: () =
       onCancel={(event) => { event.preventDefault(); onClose(); }}
       onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
     >
-      <div className="list-modal-header">
-        <div>
-          <strong id="home-visit-title">{shrine?.name ?? "성지"}</strong>
+      <div className="home-visit-dialog-header">
+        <div className="home-visit-dialog-meta">
+          <strong id="home-visit-title" title={shrine?.name ?? "성지"}>{shrine?.name ?? "성지"}</strong>
+          <span className={`visit-card-badge ${visit.verified ? "verified" : "unverified"}`}>
+            {visit.verified ? "GPS 인증" : "GPS 미인증"}
+          </span>
+          <time title={`방문일시: ${formatDateTime(visit.visitedAt ?? visit.createdAt)}`}>
+            {new Date(visit.visitedAt ?? visit.createdAt).toLocaleDateString("ko-KR", { year: "2-digit", month: "2-digit", day: "2-digit" })}
+          </time>
+          <span className="home-visit-dialog-author" title={`방문자: ${visit.nickname}`}>{visit.nickname}</span>
         </div>
         <button type="button" autoFocus onClick={onClose}>닫기</button>
       </div>
@@ -441,15 +448,6 @@ function HomeVisitDialog({ visit, onClose }: { visit: VisitRecord; onClose: () =
         {visit.photoUrl ? (
           <img className="home-visit-dialog-photo" src={visit.photoUrl} alt={`${shrine?.name ?? "성지"} 방문 사진`} />
         ) : <div className="home-visit-dialog-empty">등록된 사진이 없습니다.</div>}
-        <div className="home-visit-dialog-record">
-          <span className={`visit-card-badge ${visit.verified ? "verified" : "unverified"}`}>
-            {visit.verified ? "GPS 인증" : "GPS 미인증"}
-          </span>
-          <dl>
-            <div><dt>방문일시</dt><dd>{formatDateTime(visit.visitedAt ?? visit.createdAt)}</dd></div>
-            <div><dt>작성자</dt><dd>{visit.nickname}</dd></div>
-          </dl>
-        </div>
       </div>
     </dialog>
   );

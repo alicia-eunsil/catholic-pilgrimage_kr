@@ -1935,17 +1935,55 @@ textarea {
   background: rgba(0, 0, 0, 0.6);
 }
 
-.home-visit-dialog .list-modal-header {
+.home-visit-dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
   flex-shrink: 0;
 }
 
-.home-visit-dialog .list-modal-header > div {
+.home-visit-dialog-meta {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  flex: 1;
   min-width: 0;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  font-size: 12px;
 }
 
-.home-visit-dialog .list-modal-header button {
+.home-visit-dialog-meta strong,
+.home-visit-dialog-author {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-visit-dialog-meta strong {
+  font-size: 14px;
+}
+
+.home-visit-dialog-meta .visit-card-badge {
+  font-size: 10px;
+  padding: 3px 4px;
+}
+
+.home-visit-dialog-meta time,
+.home-visit-dialog-author {
+  color: var(--muted);
+}
+
+.home-visit-dialog-header button {
   flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 6px;
+  border: 0;
+  background: transparent;
+  color: var(--accent-strong);
+  cursor: pointer;
 }
 
 .home-visit-dialog-content {
@@ -1969,38 +2007,13 @@ textarea {
   background: var(--surface-soft);
 }
 
-.home-visit-dialog-record {
-  padding: 18px;
-  overflow-wrap: anywhere;
-}
-
-.home-visit-dialog-record dl {
-  display: grid;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.home-visit-dialog-record dl > div {
-  display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
-  gap: 12px;
-}
-
-.home-visit-dialog-record dt {
-  color: var(--muted);
-}
-
-.home-visit-dialog-record dd {
-  margin: 0;
-}
-
 .home-visit-dialog-comment {
   margin: 0;
-  padding: 16px 18px;
+  padding: 12px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  line-height: 1.7;
-  font-size: 16px;
+  line-height: 1.6;
+  font-size: 13px;
 }
 
 .image-modal {
