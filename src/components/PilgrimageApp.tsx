@@ -966,12 +966,12 @@ export default function PilgrimageApp() {
     <main className="app-shell">
       <header className="app-header">
         <div>
-          <p className="eyebrow header-guide-row">
-            <span>✝️ 한국 천주교 성지순례</span>
+          <p className="eyebrow">✝️ 한국 천주교 성지순례</p>
+          <h1>성지GO</h1>
+          <p>
+            전국 성지 코스를 살펴보고 방문기록을 쌓아보세요.{" "}
             <button type="button" className="usage-guide-button" aria-haspopup="dialog" onClick={() => setShowUsageGuide(true)}>이용안내</button>
           </p>
-          <h1>성지GO</h1>
-          <p>전국 성지 코스를 살펴보고 방문기록을 쌓아보세요.</p>
         </div>
         <nav className="app-nav" aria-label="주요 화면">
           <button className={activeTab === "route" ? "active" : ""} onClick={() => setActiveTab("route")}>순례홈</button>
