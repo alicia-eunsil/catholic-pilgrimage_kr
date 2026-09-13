@@ -1946,7 +1946,7 @@ textarea {
 
 .home-visit-dialog-meta {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) auto auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto auto fit-content(20%);
   align-items: center;
   gap: 8px;
   flex: 1;
@@ -1974,6 +1974,7 @@ textarea {
 .home-visit-dialog-meta time,
 .home-visit-dialog-author {
   color: var(--muted);
+  text-align: right;
 }
 
 .home-visit-dialog-header button {
